@@ -9,3 +9,6 @@ build/
 !.env.example
 .vscode/
 .idea/
+
+# Bildordner aus der Codex-Ausgabe, nicht Teil der Website
+SuperIntelNex-Profilbild/
