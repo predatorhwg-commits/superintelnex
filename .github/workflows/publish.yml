@@ -22,7 +22,6 @@ on:
       - 'sitemap.xml'
       - 'manifest.webmanifest'
       - 'superintelnex-sn-anthrazit.svg'
-      - 'superintelnex-sn-weiss.svg'
       - 'CNAME'
   workflow_dispatch:
 
@@ -57,7 +56,7 @@ jobs:
                    token/assets/superintelnex-logo-512.png \
                    og-image.png apple-touch-icon.png icon-192.png icon-512.png \
                    robots.txt sitemap.xml manifest.webmanifest \
-                   superintelnex-sn-anthrazit.svg superintelnex-sn-weiss.svg CNAME; do
+                   superintelnex-sn-anthrazit.svg CNAME; do
             mkdir -p "$TMP/$(dirname "$f")"
             [ -f "$f" ] && cp "$f" "$TMP/$f" || { echo "FEHLT auf main: $f"; exit 1; }
           done

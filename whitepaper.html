@@ -9,7 +9,7 @@
 <meta property="og:image" content="https://superintelnex.com/og-image.png">
 <meta property="og:url" content="https://superintelnex.com/whitepaper.html">
 <title>SuperIntelNex (SIN) — Whitepaper</title>
-<link rel="icon" href="superintelnex-sn-weiss.svg" type="image/svg+xml">
+<link rel="icon" href="superintelnex-sn-anthrazit.svg" type="image/svg+xml">
 <script>
 /* theme first, before first paint */
 (function(){
@@ -48,7 +48,7 @@
   .topbar{position:sticky;top:0;z-index:20;background:var(--topbar-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .topbar .wrap{display:flex;align-items:center;gap:14px;min-height:60px}
   .mark{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
-  .mark img{width:40px;height:40px;flex:none;border-radius:9px;display:block}
+  .mark .brand-mark{width:40px;height:40px;flex:none;display:block;transform:translateY(-.5px)}
   .mark b{font-family:var(--serif);font-size:18px;font-weight:600;letter-spacing:-.01em}
   .mark small{font-size:9.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.14em}
   .topbar .spacer{flex:1}
@@ -189,7 +189,15 @@
 <nav class="topbar" aria-label="Whitepaper navigation">
   <div class="wrap">
     <a class="mark" href="index.html">
-      <img src="superintelnex-sn-weiss.svg" alt="" width="40" height="40">
+      <svg class="brand-mark" width="40" height="40" viewBox="0 0 1254 1254" fill="#fff" aria-hidden="true">
+        <path d="M222 685L454 817L318 878Q284 894 263 881C232 864 217 842 217 811V690Q217 681 222 685Z"/>
+        <path d="M740 707L941 905L664 1061C638 1077 611 1079 586 1065L479 1006Q474 1003 480 1001L732 885Q740 881 740 873Z"/>
+        <path d="M615 368L880 534L883 345L796 292C778 282 762 285 744 297Z"/>
+        <path d="M449 721L609 606L620 612L542 678L621 745L605 753L540 780Z"/>
+        <path d="M598 220C622 205 648 204 674 219L795 291C777 283 762 286 744 298L364 507Q357 511 364 515L552 614L608 607L449 722L263 622C233 605 215 580 215 548V494C215 460 233 432 264 412Z"/>
+        <path d="M263 881C282 891 297 887 318 878L605 753Q620 747 632 737L699 679L740 717V766C724 792 705 823 686 844Q678 853 663 862L459 983Q449 990 438 983Z"/>
+        <path d="M559 428C670 499 779 583 880 681V349Q879 340 886 345L990 408C1016 424 1029 448 1029 479V811C1029 842 1015 866 989 881L941 906L620 613Q612 605 607 609L552 650V432Q552 423 559 428Z"/>
+      </svg>
       <span><b>SuperIntelNex</b> <small>WHITEPAPER</small></span>
     </a>
     <span class="spacer"></span>
