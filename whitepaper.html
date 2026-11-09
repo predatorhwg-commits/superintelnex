@@ -906,49 +906,119 @@
   fill.position.set(-4, -2, 3);
   scene.add(fill);
 
-  // coin body
+  // coin body: milled (reeded) edge + raised faces
   const coin = new THREE.Group();
-  const bodyGeo = new THREE.CylinderGeometry(1.55, 1.55, 0.3, 96);
+  const R = 1.55, H = .34, HALF = H / 2;
+  const bodyGeo = new THREE.CylinderGeometry(R, R, H, 96);
   bodyGeo.rotateX(Math.PI / 2);
-  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xEDEDED, metalness: 0.55, roughness: 0.35 });
-  coin.add(new THREE.Mesh(bodyGeo, bodyMat));
+  const capMat = new THREE.MeshStandardMaterial({ color: 0xEDEDED, metalness: 0.55, roughness: 0.35 });
+  const millCanvas = document.createElement('canvas');
+  millCanvas.width = 256; millCanvas.height = 16;
+  const mctx = millCanvas.getContext('2d');
+  if (mctx) {
+    mctx.fillStyle = '#8a8a8a';
+    mctx.fillRect(0, 0, 256, 16);
+    for (let i = 0; i < 32; i += 2) {
+      mctx.fillStyle = '#d6d6d6';
+      mctx.fillRect(i * 4, 1, 2, 14);
+    }
+  }
+  const millTex = new THREE.CanvasTexture(millCanvas);
+  millTex.wrapS = THREE.RepeatWrapping;
+  millTex.repeat.x = 3;
+  const millMat = new THREE.MeshStandardMaterial({ map: millTex, color: 0xffffff, metalness: 0.45, roughness: 0.5 });
+  coin.add(new THREE.Mesh(bodyGeo, [millMat, capMat, capMat]));
 
-  // thin rims on both faces
+  // raised face rims
   const rimMat = new THREE.MeshStandardMaterial({ color: 0xBFBFBF, metalness: 0.7, roughness: 0.3 });
-  const rimGeo = new THREE.TorusGeometry(1.55, 0.03, 16, 128);
-  const rimF = new THREE.Mesh(rimGeo, rimMat); rimF.position.z = 0.155; coin.add(rimF);
-  const rimB = new THREE.Mesh(rimGeo, rimMat); rimB.position.z = -0.155; coin.add(rimB);
+  const rimGeo = new THREE.TorusGeometry(R, 0.035, 16, 128);
+  const rimF = new THREE.Mesh(rimGeo, rimMat); rimF.position.z = HALF; coin.add(rimF);
+  const rimB = new THREE.Mesh(rimGeo, rimMat); rimB.position.z = -HALF; coin.add(rimB);
 
-  // text faces (white texture, tinted by material color → theme-aware)
-  function label(text, size){
+  // raised face discs with engraved guide rings
+  const discGeo = new THREE.CylinderGeometry(R * .9, R * .9, .035, 96);
+  discGeo.rotateX(Math.PI / 2);
+  const discMat = new THREE.MeshStandardMaterial({ color: 0xE4E4E4, metalness: 0.5, roughness: 0.4 });
+  const discF = new THREE.Mesh(discGeo, discMat); discF.position.z = HALF; coin.add(discF);
+  const discB = new THREE.Mesh(discGeo, discMat); discB.position.z = -HALF; coin.add(discB);
+  const engraveMat = new THREE.MeshStandardMaterial({ color: 0x9A9A9A, metalness: 0.8, roughness: 0.25 });
+  const engraveGeo = new THREE.TorusGeometry(R * .815, .012, 12, 160);
+  const engrF = new THREE.Mesh(engraveGeo, engraveMat); engrF.position.z = HALF + .019; coin.add(engrF);
+  const engrB = new THREE.Mesh(engraveGeo, engraveMat); engrB.position.z = -HALF - .019; coin.add(engrB);
+
+  // SN ribbon logo (same path data as the homepage token mask, viewBox 1254)
+  const coinLogoPaths = [
+    "M222 685L454 817L318 878Q284 894 263 881C232 864 217 842 217 811V690Q217 681 222 685Z",
+    "M740 707L941 905L664 1061C638 1077 611 1079 586 1065L479 1006Q474 1003 480 1001L732 885Q740 881 740 873Z",
+    "M615 368L880 534L883 345L796 292C778 282 762 285 744 297Z",
+    "M449 721L609 606L620 612L542 678L621 745L605 753L540 780Z",
+    "M598 220C622 205 648 204 674 219L795 291C777 283 762 286 744 298L364 507Q357 511 364 515L552 614L608 607L449 722L263 622C233 605 215 580 215 548V494C215 460 233 432 264 412Z",
+    "M263 881C282 891 297 887 318 878L605 753Q620 747 632 737L699 679L740 717V766C724 792 705 823 686 844Q678 853 663 862L459 983Q449 990 438 983Z",
+    "M559 428C670 499 779 583 880 681V349Q879 340 886 345L990 408C1016 424 1029 448 1029 479V811C1029 842 1015 866 989 881L941 906L620 613Q612 605 607 609L552 650V432Q552 423 559 428Z"
+  ];
+  // white-on-transparent texture, tinted by material color → theme-aware.
+  // The ribbon is decoded as an SVG image (reliable on Safari/WebKit);
+  // a plain "SIN" wordmark shows until the image is ready.
+  function logoTexture(scale, caption){
     const c = document.createElement('canvas');
     c.width = 512; c.height = 512;
     const ctx = c.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '600 ' + Math.round(300 * size) + 'px Georgia, serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, 256, 268);
     const tex = new THREE.CanvasTexture(c);
     tex.anisotropy = 4;
+    if (!ctx) return tex;
+    const paintCaption = function(){
+      if (!caption) return;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '600 44px Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(caption, 256, 484);
+    };
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '600 ' + Math.round(300 * scale) + 'px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('SIN', 256, 268);
+    paintCaption();
+    try {
+      const off = 1254 * (1 - scale) / 2;
+      const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 1254 1254">'
+        + '<g fill="#ffffff" transform="translate(' + off + ' ' + off + ') scale(' + scale + ')">'
+        + coinLogoPaths.map(function(d){ return '<path d="' + d + '"/>'; }).join('')
+        + '</g></svg>';
+      const img = new Image();
+      img.onload = function(){
+        ctx.clearRect(0, 0, 512, 512);
+        ctx.drawImage(img, 0, 0);
+        paintCaption();
+        tex.needsUpdate = true;
+      };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    } catch (e) { /* keep the wordmark fallback */ }
     return tex;
   }
-  const frontMat = new THREE.MeshStandardMaterial({ map: label('SIN', 0.62), transparent: true, metalness: 0.1, roughness: 0.6, color: 0x141414 });
-  const backMat  = new THREE.MeshStandardMaterial({ map: label('S', 0.62),  transparent: true, metalness: 0.1, roughness: 0.6, color: 0x141414 });
-  const front = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 1.9), frontMat);
-  front.position.z = 0.156;
+  const frontMat = new THREE.MeshStandardMaterial({ map: logoTexture(.92), transparent: true, metalness: 0.15, roughness: 0.55, color: 0x141414 });
+  const backMat  = new THREE.MeshStandardMaterial({ map: logoTexture(.72, 'SIN'), transparent: true, metalness: 0.15, roughness: 0.55, color: 0x141414 });
+  // the back plane is Y-flipped, so mirror its texture to keep the logo readable
+  backMat.map.wrapS = THREE.RepeatWrapping;
+  backMat.map.repeat.x = -1;
+  backMat.map.offset.x = 1;
+  const front = new THREE.Mesh(new THREE.PlaneGeometry(1.72, 1.72), frontMat);
+  front.position.z = HALF + .02;
   coin.add(front);
-  const back = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5), backMat);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(1.72, 1.72), backMat);
   back.rotation.y = Math.PI;
-  back.position.z = -0.156;
+  back.position.z = -(HALF + .02);
   coin.add(back);
 
   coin.rotation.x = 0.08;
   scene.add(coin);
 
   function applyTheme(dark){
-    bodyMat.color.set(dark ? 0x1E1E1E : 0xEDEDED);
+    capMat.color.set(dark ? 0x1E1E1E : 0xEDEDED);
     rimMat.color.set(dark ? 0x3A3A3A : 0xBFBFBF);
+    discMat.color.set(dark ? 0x242424 : 0xE4E4E4);
+    engraveMat.color.set(dark ? 0x484848 : 0x9A9A9A);
     frontMat.color.set(dark ? 0xF2F2F2 : 0x141414);
     backMat.color.set(dark ? 0xF2F2F2 : 0x141414);
   }
