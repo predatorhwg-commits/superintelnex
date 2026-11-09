@@ -157,13 +157,20 @@ def main():
 
     # ---- P5: Base64-Mailto-Leak (obfuzierte/erfundene E-Mail-Adressen)
     # Base64-Literalstrings in HTML werden dekodiert; enthaelt das Ergebnis
-    # eine E-Mail- oder Mailto-Adresse (außer SAFE-Beispieldomains), ist das
-    # eine erfundene Operator-Fakt und blockiert die Abnahme.
+    # eine E-Mail- oder Mailto-Adresse, ist das eine erfundene Operator-Fakt
+    # und blockiert die Abnahme — UNTERZEICHNET durch die CEO-Operator-Mail
+    # (Issue #2, CEO-Order 2026-11-09). Die freigegebene Adresse steht nur
+    # Base64-codiert im Skript (keine Klartext-Adresse im Repo).
+    APPROVED_B64 = ["c3VwZXJpbnRlbG5leEBnbWFpbC5jb20="]
+    approved_emails = {base64.b64decode(x + "=" * (-len(x) % 4)).decode("utf-8", "ignore").lower()
+                       for x in APPROVED_B64}
     leaks = []
     for page in pages:
         text = page.read_text(encoding="utf-8")
+        b64_literals = set(re.findall(r"""['"]([A-Za-z0-9+/]{16,}={0,2})['"]""", text))
+        decoded_approved = set()
         # (a) Base64-Literalstrings (>=12 Zeichen) mit Padding-Repair
-        for m in set(re.findall(r"""['"]([A-Za-z0-9+/]{16,}={0,2})['"]""", text)):
+        for m in b64_literals:
             c = m + "=" * (-len(m) % 4)
             if len(c) % 4:
                 continue
@@ -172,6 +179,9 @@ def main():
             except Exception:
                 continue
             dec = d.lower()
+            if d.lower() in approved_emails:
+                decoded_approved.add(d.lower())
+                continue
             if re.search(r"\S+@\S+|mailto:", d, re.I) and not re.search(
                 r"@example\.com$|@adresse\.com$", dec
             ):
@@ -180,8 +190,11 @@ def main():
         for mail in set(re.findall(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", text)):
             if not mail.lower().endswith(("example.com", "adresse.com")):
                 leaks.append(f"{page.name}: Klartext-Mail {mail}")
-        # (c) atob/btoa + mailto-Kombination (obfuzierter Submit-Pfad)
-        if re.search(r"atob\s*\(|btoa\s*\(", text) and re.search(r"mailto:", text, re.I):
+        # (c) atob/btoa + mailto-Kombination (obfuzierter Submit-Pfad) —
+        #     nur erlaubt, wenn die Seite das CEO-freigegebene Operator-Base64
+        #     (approved) tatsächlich enthaelt; sonst ROTE (erfundener Endpunkt).
+        if re.search(r"atob\s*\(|btoa\s*\(", text) and re.search(r"mailto:", text, re.I) \
+                and not decoded_approved:
             leaks.append(f"{page.name}: atob/btoa + mailto: (obfuzierter E-Mail-Endpunkt)")
     add(not leaks, "P5 Base64-Mailto-Leak (keine obfuzierten/erfundenen E-Mail-Adressen)",
         "\n      " + "\n      ".join(leaks))
