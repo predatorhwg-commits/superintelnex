@@ -51,6 +51,7 @@
   .details div{display:grid;grid-template-columns:115px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
   .details dt{color:var(--ink);font-size:13px;font-weight:700;line-height:1.5}
   .details dd{margin:0;color:#bdbdbd;font-size:14px;line-height:1.5;text-wrap:pretty}
+  .details a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
   .actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-top:30px}
   .pill{display:inline-flex;align-items:center;gap:18px;border:1px solid transparent;border-radius:99px;padding:13px 19px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s}
   .primary{color:var(--ink);background:#000;border-color:#ffffff66}
@@ -145,8 +146,9 @@
         <p class="eyebrow">03 / Projektstatus</p>
         <h2 id="title-3">Im Aufbau.</h2>
         <dl class="details">
-          <div><dt>Token-Details</dt><dd>Blockchain, Token-Kürzel, Gesamtmenge, Verteilung und Ausgaberechte sind noch offen.</dd></div>
-          <div><dt>Veröffentlichung</dt><dd>Eine Token-Veröffentlichung, eine Contract-Adresse und Börsenlistings sind bisher nicht bestätigt.</dd></div>
+          <div><dt>Token-Details</dt><dd>Blockchain: Solana. Kürzel: SIN. Gesamtmenge: 100.000.000.000.000 SIN (fest). Ausgaberechte: Mint- und Freeze-Vollmacht nach Emission entzogen.</dd></div>
+          <div><dt>Devnet-Prototyp</dt><dd>Erstellt am 09.11.2026 im Solana-Devnet (Testnetz). Mint: <a href="https://explorer.solana.com/address/CyEcfZw2FogCrehQqkWxksKtsndNwrtKHQqDfPdHCLLf?cluster=devnet" target="_blank" rel="noopener">CyEcfZw2FogCrehQqkWxksKtsndNwrtKHQqDfPdHCLLf</a>. Devnet-Testtoken: kein echtes Geld, keine Anlage, kein Verkauf.</dd></div>
+          <div><dt>Mainnet</dt><dd>Noch kein Mainnet-Launch. Nächste Schritte: Metadaten auf IPFS/Arweave, Emissionsverteuerung mit Plan 55/20/15/10, Prüfung der Rechtslage.</dd></div>
           <div><dt>Projektangaben</dt><dd>Partnerschaften, Audits, Teamangaben und offizielle Social-Media-Links sind bisher nicht bestätigt.</dd></div>
         </dl>
         <div class="actions">
