@@ -193,6 +193,7 @@
   const motion = document.querySelector('#motion');
   const preference = matchMedia('(prefers-reduced-motion: reduce)');
   const labels = ['RING', 'WELLE', 'HELIX'];
+  const TITLES = {start: 'SuperIntelNex | Start', vision: 'SuperIntelNex | Vision', status: 'SuperIntelNex | Projektstatus', fragen: 'SuperIntelNex | Fragen', faq: 'SuperIntelNex | Fragen'};
   const shapeIntervalMs = 7000;
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
   let shape = 0, shapeAgeMs = 0;
@@ -364,7 +365,7 @@
     next.disabled = i === scenes.length - 1;
     const number = String(i + 1).padStart(2, '0');
     document.querySelector('#current').textContent = number;
-    document.title = ['SuperIntelNex | Start', 'SuperIntelNex | Vision', 'SuperIntelNex | Projektstatus'][i];
+    document.title = TITLES[scenes[i].id] || 'SuperIntelNex';
     if (writeHash && location.hash !== '#' + scenes[i].id) {
       try { history.pushState(null, '', '#' + scenes[i].id); }
       catch { location.hash = scenes[i].id; }
