@@ -1,0 +1,53 @@
+# Publish-Sync: main -> gh-pages (reine statische Publikationsquelle)
+name: Publish main -> gh-pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - '404.html'
+      - 'impressum.html'
+      - 'datenschutz.html'
+      - 'og-image.png'
+      - 'apple-touch-icon.png'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'manifest.webmanifest'
+      - 'superintelnex-sn-anthrazit.svg'
+      - 'CNAME'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: gh-pages auf Main-Stand bringen
+        run: |
+          set -euo pipefail
+          mkdir -p .publish
+          for f in index.html 404.html impressum.html datenschutz.html \
+                   og-image.png apple-touch-icon.png robots.txt sitemap.xml \
+                   manifest.webmanifest superintelnex-sn-anthrazit.svg CNAME; do
+            [ -f "$f" ] && cp "$f" .publish/ || { echo "FEHLT auf main: $f"; exit 1; }
+          done
+          git config user.name  "SuperIntelNex CI"
+          git config user.email "superintelnex@gmail.com"
+          git checkout -q gh-pages 2>/dev/null || git checkout -q -b gh-pages
+          git rm -rq --ignore-unmatch .
+          cp -R .publish/. .
+          git add -A
+          if git diff --staged --quiet; then
+            echo "gh-pages bereits auf Main-Stand — nichts zu tun."
+          else
+            git commit -q -m "publish: sync mit main @ ${GITHUB_SHA::7} (CI)"
+            git push -q origin gh-pages
+            echo "gh-pages synchronisiert."
+          fi
