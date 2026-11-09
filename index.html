@@ -68,6 +68,8 @@
   .actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-top:30px}
   .pill{display:inline-flex;align-items:center;gap:18px;border:1px solid transparent;border-radius:99px;padding:13px 19px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s;position:relative}
   .pill::before{content:"";position:absolute;inset:-5px}
+  .pill-arrow{display:inline-flex}
+  .pill-arrow svg{display:block}
   .primary{color:var(--ink);background:#000;border-color:#ffffff66}
   .primary:hover{border-color:var(--ink)}
   .secondary{background:#000;border-color:var(--line);color:var(--ink)}
@@ -92,7 +94,7 @@
   .pager{display:flex;align-items:center;gap:13px}
   .count{color:var(--muted);font:11px var(--mono);letter-spacing:.14em;min-width:67px;text-align:center}
   .count strong{color:var(--ink);font-weight:500}
-  .arrow{width:39px;height:39px;border-radius:50%;border:1px solid var(--line);background:#000;font-size:17px}
+  .arrow{width:39px;height:39px;border-radius:50%;border:1px solid var(--line);background:#000;display:inline-flex;align-items:center;justify-content:center}
   .arrow.next{border-color:#ffffff66}
   .arrow.next:hover:not(:disabled){border-color:var(--ink)}
   .arrow:disabled{opacity:.3;cursor:default}
@@ -157,7 +159,7 @@
         <h1 id="title-1"><span data-de="KI und digitale">AI and digital</span><br><span class="headline-accent" data-de="Zahlungen.">payments.</span></h1>
         <p class="desc" data-de="SuperIntelNex ist ein Community-Token-Projekt mit einer langfristigen Vision für KI, Superintelligenz und digitale Zahlungen.">SuperIntelNex is a community token project with a long-term vision for AI, superintelligence, and digital payments.</p>
         <div class="actions">
-          <button class="pill primary" type="button" data-go="1"><span data-de="Vision entdecken">Explore the vision</span> <span aria-hidden="true">↗</span></button>
+          <button class="pill primary" type="button" data-go="1"><span data-de="Vision entdecken">Explore the vision</span> <span class="pill-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10L10 4M10 4H6M10 4V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
           <button class="pill secondary" type="button" data-go="2" data-de="Projektstatus">Project status</button>
         </div>
       </section>
@@ -170,7 +172,7 @@
           <div><dt data-de="Bezahlen und KI">Payments and AI</dt><dd data-de="Zahlungen bei teilnehmenden Anbietern sind vorgesehen. Händlerakzeptanz und KI-Anwendungen sind langfristige Ziele.">We plan to enable payments with participating providers. Merchant adoption and AI applications are long-term goals.</dd></div>
         </dl>
         <div class="actions">
-          <button class="pill primary" type="button" data-go="2"><span data-de="Projektstatus ansehen">See project status</span> <span aria-hidden="true">↗</span></button>
+          <button class="pill primary" type="button" data-go="2"><span data-de="Projektstatus ansehen">See project status</span> <span class="pill-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10L10 4M10 4H6M10 4V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
         </div>
       </section>
       <section class="scene" id="status" aria-labelledby="title-3" hidden>
@@ -182,7 +184,7 @@
           <div><dt data-de="Projektangaben">Project details</dt><dd data-de="Partnerschaften, Audits und Teamangaben sind bisher nicht bestätigt. Offiziell: X @superintelnex (Link im Footer).">Partnerships, audits, and team details are unconfirmed. Official: X @superintelnex (link in footer).</dd></div>
         </dl>
         <div class="actions">
-          <button class="pill secondary" type="button" data-go="0"><span data-de="Zur Startseite">Back to home</span> <span aria-hidden="true">↖</span></button>
+          <button class="pill secondary" type="button" data-go="0"><span data-de="Zur Startseite">Back to home</span> <span class="pill-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 10L4 4M4 4H8M4 4V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
         </div>
       </section>
     </div>
@@ -190,9 +192,9 @@
   <footer>
     <div class="caption"><a class="legal-link" href="impressum.html">Impressum</a><span aria-hidden="true">·</span><a class="legal-link" href="datenschutz.html">Datenschutz</a><span class="caption-domain">superintelnex.com</span><span class="caption-note" data-de="— Projekt im Aufbau, keine Anlageberatung">— Project in development, no investment advice</span><a class="social" href="https://x.com/superintelnex" target="_blank" rel="noopener" aria-label="SuperIntelNex on X" data-de-label="SuperIntelNex bei X"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.197L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.47l8.59-9.832L0 1.154h7.594l5.263 6.912zM17.627 20.643h2.04L6.49 3.328H4.3z"/></svg></a></div>
     <div class="pager" role="group" aria-label="Section navigation" data-de-label="Bereich wechseln">
-      <button type="button" class="arrow" id="prev" aria-label="Previous section" data-de-label="Vorheriger Bereich" disabled>←</button>
+      <button type="button" class="arrow" id="prev" aria-label="Previous section" data-de-label="Vorheriger Bereich" disabled><svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 2.5L3.5 7L8.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <span class="count" role="status" aria-label="Current section" data-de-label="Aktueller Bereich"><strong id="current">01</strong> / 03</span>
-      <button type="button" class="arrow next" id="next" aria-label="Next section" data-de-label="Nächster Bereich">→</button>
+      <button type="button" class="arrow next" id="next" aria-label="Next section" data-de-label="Nächster Bereich"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5.5 2.5L10.5 7L5.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </footer>
 </div>
