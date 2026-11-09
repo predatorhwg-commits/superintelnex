@@ -12,6 +12,8 @@
 <meta property="og:url" content="https://superintelnex.com/">
 <meta property="og:image" content="https://superintelnex.com/og-image.png">
 <meta name="color-scheme" content="dark">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://superintelnex.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2.5 29.5 16 16 29.5 2.5 16 16 2.5Z' fill='none' stroke='%23f0f0f0'/%3E%3Cpath d='M16 8v16M8 16h16' fill='none' stroke='%23f0f0f0'/%3E%3Ccircle cx='16' cy='16' r='2.7' fill='%23f0f0f0'/%3E%3C/svg%3E">
 <title>SuperIntelNex | Community-Token-Projekt im Aufbau</title>
 <style>
@@ -210,6 +212,7 @@
   const motion = document.querySelector('#motion');
   const preference = matchMedia('(prefers-reduced-motion: reduce)');
   const labels = ['RING', 'WELLE', 'HELIX'];
+  const TITLES = {start: 'SuperIntelNex | Start', vision: 'SuperIntelNex | Vision', status: 'SuperIntelNex | Projektstatus', fragen: 'SuperIntelNex | Fragen', faq: 'SuperIntelNex | Fragen'};
   const shapeIntervalMs = 7000;
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
   let shape = 0, shapeAgeMs = 0;
@@ -319,10 +322,14 @@
   function size() {
     if (!ctx) return;
     const r = canvas.getBoundingClientRect();
+    if (!r.width || !r.height) return;
     width = r.width; height = r.height;
     const dpr = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
+    // Nur das Backing Store neu reservieren, wenn sich die Größe tatsächlich
+    // geändert hat — verhindert ResizeObserver-Feedback-Loops und teures
+    // (und sichtbares) Canvas-Clear bei no-op-Callbacks.
+    const bw = Math.round(width * dpr), bh = Math.round(height * dpr);
+    if (canvas.width !== bw || canvas.height !== bh) { canvas.width = bw; canvas.height = bh; }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const narrow = width <= 560;
     count = narrow ? 4500 : width < 850 ? 5800 : total;
@@ -331,14 +338,16 @@
     draw();
   }
   function selectShape(index, instant = false) {
+    // Szenenindex in den Formen-Indexraum mappen (modulo): zusätzliche Szenen
+    // (z. B. eine FAQ-Szene) dürfen die Partikel-Formen nicht sprengen.
+    const target = ((index % labels.length) + labels.length) % labels.length;
+    if (target === shape) { shapeAgeMs = 0; return; }
     shapeAgeMs = 0;
-    if (index !== shape) {
-      from = instant ? null : coords.slice();
-      morph = instant ? 1 : 0;
-      shape = index;
-    }
-    const number = String(index + 1).padStart(2, '0');
-    document.querySelector('#figure').textContent = 'FIG. ' + number + ' / ' + labels[index];
+    from = instant ? null : coords.slice();
+    morph = instant ? 1 : 0;
+    shape = target;
+    const number = String(target + 1).padStart(2, '0');
+    document.querySelector('#figure').textContent = 'FIG. ' + number + ' / ' + labels[target];
   }
   function animate(now) {
     frame = 0;
@@ -357,7 +366,8 @@
     pointer.strength += (targetStrength - pointer.strength) * (1 - Math.exp(-dt * 12));
     if (pointer.strength < .001) pointer.strength = 0;
     draw();
-    if (running && !document.hidden) frame = requestAnimationFrame(animate);
+    // ctx-Check im Loop: wenn der 2D-Kontext fehlt, läuft die Animation nicht endlos leer.
+    if (running && ctx && !document.hidden) frame = requestAnimationFrame(animate);
   }
   function syncMotion() {
     motion.setAttribute('aria-pressed', String(running));
@@ -365,7 +375,7 @@
     if (frame) cancelAnimationFrame(frame);
     frame = 0; last = null;
     if (running && ctx && !document.hidden) frame = requestAnimationFrame(animate);
-    else if (!running) { morph = 1; pointer.strength = 0; draw(); }
+    else if (!running || !ctx) { morph = 1; pointer.strength = 0; draw(); }
   }
   function show(i, {writeHash = true, focus = null, initial = false} = {}) {
     if (!Number.isInteger(i) || i < 0 || i >= scenes.length) return;
@@ -381,7 +391,9 @@
     next.disabled = i === scenes.length - 1;
     const number = String(i + 1).padStart(2, '0');
     document.querySelector('#current').textContent = number;
-    document.title = ['SuperIntelNex | Start', 'SuperIntelNex | Vision', 'SuperIntelNex | Projektstatus', 'SuperIntelNex | Fragen'][i];
+    document.title = TITLES[scenes[i].id] || 'SuperIntelNex';
+    // Screenreader-Ankündigung: #current steht in einem role="status"-Bereich —
+    // der Zähler-Wechsel wird daher automatisch (polite live region) gemeldet.
     if (writeHash && location.hash !== '#' + scenes[i].id) {
       try { history.pushState(null, '', '#' + scenes[i].id); }
       catch { location.hash = scenes[i].id; }
@@ -406,7 +418,12 @@
       event.preventDefault(); show(destination, {focus:event.target});
     }
   });
-  addEventListener('hashchange', () => show(sceneFromHash(), {writeHash:false}));
+  addEventListener('hashchange', () => {
+    // Race-Schutz: ein (verzögerter) hashchange darf nicht die Szene zurücksetzen,
+    // die der Nutzer in der Zwischenzeit manuell aufgerufen hat.
+    const i = sceneFromHash();
+    if (i !== active) show(i, {writeHash:false});
+  });
   motion.addEventListener('click', () => {running = !running; syncMotion();});
   preference.addEventListener('change', () => {running = !preference.matches; syncMotion();});
   document.addEventListener('visibilitychange', syncMotion);
@@ -424,7 +441,24 @@
   const releasePointer = () => {pointer.inside = false;};
   stage.addEventListener('pointerleave', releasePointer);
   stage.addEventListener('pointercancel', releasePointer);
-  new ResizeObserver(size).observe(stage);
+  // Touch-Pointer: Beim Finger-Release gibt es kein verlässliches pointerleave —
+  // der Wirbel würde sonst mit voller Stärke am letzten Ort stehen bleiben.
+  stage.addEventListener('pointerup', event => {if (event.pointerType !== 'mouse') releasePointer();});
+  // Guard gegen einen Resize-Loop: size() darf Layout auslösen, das den
+  // ResizeObserver erneut triggert. Deshalb erst im nächsten Animation-Frame
+  // prüfen und nur neu ausmessen, wenn sich die Box wirklich geändert hat.
+  let resizeGuard = false;
+  function onResize() {
+    if (resizeGuard) return;
+    resizeGuard = true;
+    size();
+    requestAnimationFrame(() => {
+      resizeGuard = false;
+      const r = canvas.getBoundingClientRect();
+      if (r.width !== width || r.height !== height) onResize();
+    });
+  }
+  new ResizeObserver(onResize).observe(stage);
   show(sceneFromHash(), {initial:true, writeHash:false});
   size();
   syncMotion();
