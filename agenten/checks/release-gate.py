@@ -37,8 +37,8 @@ Checks:
         Devnet-Disclaimer (Testnetz / kein echtes Geld / keinen realen
         Wert / kein realer Wert).
     C7  Secret-Scan (git ls-files / git grep):
-          (a) Base58-Key-ähnliche 64–88-Char-Strings in token/docs,
-              site/, agenten/ (bekannte public Devnet-Adressen allowlisted)
+           (a) Base58-Key-ähnliche 64–88-Char-Strings über ALLE git ls-files
+               (bekannte public Devnet-Adressen allowlisted)
            (b) "BEGIN [A-Z0-9 ]*PRIVATE KEY" in getrackten Dateien (agenten/ ausgenommen, dort steht die Scan-Spec im Text selbst)
            (c) "secretKey" außerhalb token/scripts/ (agenten/ ebenfalls ausgenommen)
           (d) token/wallets/ und token/result/ sind NICHT getrackt
@@ -90,8 +90,6 @@ B58_RE = re.compile(
     r"([1-9A-HJ-NP-Za-km-z]{64,88})"
     r"(?![0-9A-Za-z_])"
 )
-# Scan-Bereiche für (a): nur getrackte Dateien unter diesen Prefixen.
-B58_SCAN_PREFIXES = ("token/docs/", "site/", "agenten/")
 
 DEVNET_DISCLAIMER_RE = re.compile(
     r"Testnetz|kein echtes Geld|keinen realen Wert|kein realer Wert", re.I
@@ -386,10 +384,20 @@ def fetch_text(base_url, page_name):
 
 
 def check_legal(base_url, report):
-    """C6: Platzhalter + keine Anlageberatung + Netlify + Devnet-Disclaimer."""
-    impressum = fetch_text(base_url, "impressum.html")
-    datenschutz = fetch_text(base_url, "datenschutz.html")
-    index_text = fetch_text(base_url, "index.html")
+    """C6: Platzhalter + keine Anlageberatung + Netlify + Devnet-Disclaimer.
+
+    Netzwerkfehler → sauberer rot-Check (keine Traceback)."""
+    try:
+        impressum = fetch_text(base_url, "impressum.html")
+        datenschutz = fetch_text(base_url, "datenschutz.html")
+        index_text = fetch_text(base_url, "index.html")
+    except Exception as exc:
+        report.add(
+            False,
+            "Rechtstext-Scan: lokale Site nicht erreichbar",
+            [f"FEHLER: {type(exc).__name__}: {exc} — http.server (Port) läuft nicht?"],
+        )
+        return
     checks = [
         ("index.html: 'keine Anlageberatung' im Footer/Risikohinweis",
          re.search(r"keine Anlageberatung", index_text, re.I) is not None,
@@ -462,12 +470,13 @@ def check_secrets(report, repo_root):
         [f"Fehler in {h.split(':', 1)[0]}: 'secretKey' außerhalb token/scripts: {h}" for h in hits[:20]],
     )
 
-    # (a) Base58-Key-ähnliche Strings (64–88) in token/docs, site/, agenten/
+    # (a) Base58-Key-ähnliche Strings (64–88) über ALLE getrackten Dateien
+    #     (git ls-files); ausgenommen: Binaries, .lock, token/wallets+result
     issues = []
     scanned = 0
     for rel in tracked:
-        if not rel.startswith(B58_SCAN_PREFIXES):
-            continue
+        if rel.startswith(("token/wallets/", "token/result/")):
+            continue  # deckt Check (d) ab
         if rel.endswith((".png", ".jpg", ".jpeg", ".gif", ".webp", ".lock")):
             continue
         scanned += 1
@@ -488,7 +497,7 @@ def check_secrets(report, repo_root):
             )
     report.add(
         not issues,
-        f"Secret-Scan: keine Key-ähnlichen Base58-Strings (64–88) in token/docs, site/, agenten/ ({scanned} Dateien, {len(B58_ALLOWLIST)} allowlisted)",
+        f"Secret-Scan: keine Key-ähnlichen Base58-Strings (64–88) in getrackten Dateien ({scanned} Dateien, {len(B58_ALLOWLIST)} allowlisted)",
         issues[:50],
     )
 

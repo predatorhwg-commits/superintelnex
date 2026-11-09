@@ -62,21 +62,20 @@ fi
 echo "== QA-Gate: Repo-Root = $REPO_ROOT (Port $PORT)"
 
 # --- Port-Check: nicht hijacken ------------------------------------------
-# Probe mit SO_REUSEADDR: eigene Test-Anfragen hinterlassen kurz TIME-Wait-
-# Verbindungen; ohne REUSEADDR wuerde bind() dann falsche "belegt" melden,
-# waehrend http.server (allow_reuse_address) trotzdem binden koennte.
+# Connect-Test (NICHT Bind-Test): bind() meldet bei macOS-Listenern auf
+# [::]/dual-stack mit SO_REUSEADDR f鋌sch "frei" — ein echtes connect()
+# zeigt eindeutig, ob etwas auf dem Port antwortet.
 port_in_use() {
     python3 - "$PORT" <<'PYEOF'
 import socket, sys
 s = socket.socket()
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.settimeout(0.5)
 try:
-    s.bind(("127.0.0.1", int(sys.argv[1])))
+    s.connect(("127.0.0.1", int(sys.argv[1])))
     s.close()
-    sys.exit(1)  # Port frei
+    sys.exit(0)  # antwortet → belegt
 except OSError:
-    s.close()
-    sys.exit(0)  # Port belegt
+    sys.exit(1)  # verweigert/kein Listener → frei
 PYEOF
 }
 if port_in_use; then
