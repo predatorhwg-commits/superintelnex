@@ -28,7 +28,7 @@
 <meta name="twitter:description" content="SuperIntelNex is a community token project in development with a long-term vision for AI, superintelligence, and digital payments.">
 <meta name="twitter:image" content="https://superintelnex.com/og-image.png">
 <style>
-  :root{color-scheme:dark;--bg:#0A0A0A;--ink:#f0f0f0;--muted:#a5a5a5;--line:#ffffff21;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--serif:Georgia,"Times New Roman","Noto Serif",serif;--edge:clamp(20px,5vw,84px)}
+  :root{color-scheme:dark;--bg:#0A0A0A;--ink:#f0f0f0;--muted:#a5a5a5;--line:#ffffff21;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Charter,"STIX Two Text",Georgia,serif;--edge:clamp(20px,5vw,84px)}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif)}
   button,a{-webkit-tap-highlight-color:transparent}
@@ -57,15 +57,15 @@
   .scene{text-shadow:0 1px 8px #000,0 0 22px #000}
   .eyebrow{display:flex;align-items:center;gap:13px;margin:0 0 27px;font:11px var(--mono);letter-spacing:.21em;text-transform:uppercase;color:var(--ink)}
   .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
-  h1,h2{margin:0;font-size:clamp(48px,7.3vw,120px);line-height:1.0;letter-spacing:-.02em;font-weight:600}
-  .headline-accent{color:#b0b0b0}
-  #start h1{font-size:clamp(39px,6.3vw,100px)}
+  h1,h2{margin:0;font-size:clamp(48px,7.3vw,120px);line-height:1.02;letter-spacing:-.018em;font-weight:600;font-variation-settings:"opsz" 72;-webkit-font-smoothing:antialiased}
+  .headline-accent{color:#c2c2c2;font-weight:500}
+  #start h1{font-size:clamp(27px,4.1vw,60px)}
   #status h2{font-size:clamp(43px,5.7vw,84px)}
-  .desc{max-width:430px;color:#bdbdbd;font-size:clamp(15px,1.35vw,19px);line-height:1.6;margin:28px 0 0;text-wrap:pretty}
+  .desc{max-width:440px;color:#c6c6c6;font-size:clamp(16px,1.35vw,19px);line-height:1.65;margin:30px 0 0;text-wrap:pretty}
   .details{max-width:510px;display:grid;gap:0;margin:24px 0 0;background:#0A0A0Acc;border-top:1px solid var(--line)}
-  .details div{display:grid;grid-template-columns:115px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
-  .details dt{color:var(--ink);font-size:13px;font-weight:600;line-height:1.5}
-  .details dd{margin:0;color:#bdbdbd;font-size:14px;line-height:1.5;text-wrap:pretty}
+  .details div{display:grid;grid-template-columns:130px 1fr;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .details dt{color:var(--muted);font-size:12px;font-weight:500;letter-spacing:.02em;line-height:1.5}
+  .details dd{margin:0;color:#c6c6c6;font-size:14px;line-height:1.55;text-wrap:pretty}
   .actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-top:30px}
   .pill{display:inline-flex;align-items:center;gap:18px;border:1px solid transparent;border-radius:99px;padding:13px 19px;font-size:13px;font-weight:600;text-decoration:none;transition:background .2s,border-color .2s,color .2s;position:relative}
   .pill::before{content:"";position:absolute;inset:-5px}
@@ -74,6 +74,8 @@
   .primary{color:var(--ink);background:var(--bg);border-color:#ffffff66}
   .primary:hover{border-color:var(--ink)}
   .secondary{background:var(--bg);border-color:var(--line);color:var(--ink)}
+  h1,h2{background:initial;background-clip:border-box;color:var(--ink)}
+  .headline-accent{color:#c2c2c2;font-weight:500}
   .scene.enter{animation:enter .55s cubic-bezier(.22,.7,.2,1) both}
   @keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
   footer{min-height:83px;border-top:1px solid var(--line)}
@@ -167,9 +169,9 @@
   <main>
     <div class="content">
       <section class="scene" id="start" aria-labelledby="title-1">
-        <p class="eyebrow" data-de="Community-Token-Projekt im Aufbau">Community token project in development</p>
-        <h1 id="title-1"><span data-de="KI und digitale">AI and digital</span><br><span class="headline-accent" data-de="Zahlungen.">payments.</span></h1>
-        <p class="desc" data-de="SuperIntelNex ist ein Community-Token-Projekt mit einer langfristigen Vision für KI, Superintelligenz und digitale Zahlungen.">SuperIntelNex is a community token project with a long-term vision for AI, superintelligence, and digital payments.</p>
+        <p class="eyebrow" data-de="01 / Community-Token-Projekt im Aufbau">01 / Community token project in development</p>
+        <h1 id="title-1"><span data-de="Wo Intelligenz">Where intelligence</span><br><span class="headline-accent" data-de="Währung wird.">becomes currency.</span></h1>
+        <p class="desc" data-de="SuperIntelNex verbindet ein Community-Token mit der Vision intelligenter Zahlungen — Schritt für Schritt im Aufbau.">SuperIntelNex combines a community token with a vision of intelligent payments — in progress, step by step.</p>
         <div class="actions">
           <button class="pill primary" type="button" data-go="1"><span data-de="Vision entdecken">Explore the vision</span> <span class="pill-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10L10 4M10 4H6M10 4V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
           <button class="pill secondary" type="button" data-go="2" data-de="Projektstatus">Project status</button>
@@ -180,9 +182,9 @@
         <p class="eyebrow" data-de="02 / Die Vision">02 / The vision</p>
         <h2 id="title-2"><span data-de="Was wir">What we</span><br><span class="headline-accent" data-de="vorhaben.">plan to build.</span></h2>
         <dl class="details">
-          <div><dt data-de="Übertragen">Transfers</dt><dd data-de="Wir planen Übertragungen zwischen Wallets.">We plan to support transfers between wallets.</dd></div>
-          <div><dt data-de="Handeln">Trading</dt><dd data-de="Später soll der Token auf unterstützten Plattformen handelbar sein.">We aim to make the token tradable on supported platforms at a later stage.</dd></div>
-          <div><dt data-de="Bezahlen und KI">Payments and AI</dt><dd data-de="Zahlungen bei teilnehmenden Anbietern sind vorgesehen. Händlerakzeptanz und KI-Anwendungen sind langfristige Ziele.">We plan to enable payments with participating providers. Merchant adoption and AI applications are long-term goals.</dd></div>
+          <div><dt data-de="Wallet & Transfers">Wallets & transfers</dt><dd data-de="Der Token kann zwischen Wallets übertragen werden.">The token will be transferable between wallets.</dd></div>
+          <div><dt data-de="Handelbarkeit">Tradability</dt><dd data-de="Zu einem späteren Zeitpunkt soll der Token auf unterstützten Plattformen handelbar sein.">At a later stage, the token is intended to be tradable on supported platforms.</dd></div>
+          <div><dt data-de="Zahlungen & KI">Payments &amp; AI</dt><dd data-de="Zahlungen bei teilnehmenden Anbietern sind vorgesehen. Händlerakzeptanz und KI-Anwendungen bleiben langfristige Ziele.">Payments with participating providers are planned. Merchant adoption and AI applications remain long-term goals.</dd></div>
         </dl>
         <div class="actions">
           <button class="pill primary" type="button" data-go="2"><span data-de="Projektstatus ansehen">See project status</span> <span class="pill-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10L10 4M10 4H6M10 4V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
@@ -192,9 +194,9 @@
         <p class="eyebrow" data-de="03 / Projektstatus">03 / Project status</p>
         <h2 id="title-3" data-de="Im Aufbau.">In development.</h2>
         <dl class="details">
-          <div><dt data-de="Devnet-Prototyp">Devnet prototype</dt><dd data-de="Test-Token (SIN) auf Solana Devnet, erstellt am 09.11.2026 (100 Mrd. Stück, 5 Dezimalstellen) — reiner Testwert: kein echtes Geld, keine Anlage, kein Verkauf.">Test token (SIN) on Solana Devnet, created 09 Nov 2026 (100B pieces, 5 decimals) — test value only: no real money, no investment, no sale.</dd></div>
-          <div><dt data-de="Mainnet">Mainnet</dt><dd data-de="Noch nicht veröffentlicht. Geplante Verteilung 81/10/5/4 (Community / Liquidität / Gründer / Marketing); Prüfung der Rechtslage und des Emissionsverfahrens läuft.">Not yet launched. Planned allocation 81/10/5/4 (community / liquidity / founder / marketing); legal framework and issuance process under review.</dd></div>
-          <div><dt data-de="Projektangaben">Project details</dt><dd data-de="Partnerschaften, Audits und Teamangaben sind bisher nicht bestätigt. Offiziell: X @superintelnex + Discord (Links im Footer).">Partnerships, audits, and team details are unconfirmed. Official: X @superintelnex + Discord (links in footer).</dd></div>
+          <div><dt data-de="Devnet-Prototyp">Devnet prototype</dt><dd data-de="Test-Token (SIN) auf Solana Devnet, erstellt am 09.11.2026 — 100 Mrd. Stück, 5 Dezimalstellen. Reiner Testwert: kein echtes Geld, keine Anlage, kein Verkauf.">Test token (SIN) on Solana Devnet, created 09 Nov 2026 — 100B pieces, 5 decimals. Test value only: no real money, no investment, no sale.</dd></div>
+          <div><dt data-de="Mainnet">Mainnet</dt><dd data-de="Noch nicht veröffentlicht. Geplante Verteilung: 81/10/5/4 (Community / Liquidität / Gründer / Marketing). Prüfung von Rechtslage und Emissionsverfahren läuft derzeit.">Not yet launched. Planned allocation: 81/10/5/4 (community / liquidity / founder / marketing). Legal and issuance review currently in progress.</dd></div>
+          <div><dt data-de="Projektangaben">Project details</dt><dd data-de="Partnerschaften, Audits und Teamangaben sind (noch) nicht bestätigt. Offizielle Kanäle: X @superintelnex und Discord (Links unten).">Partnerships, audits, and team details are not yet confirmed. Official channels: X @superintelnex and Discord (links below).</dd></div>
         </dl>
         <div class="actions">
           <a class="pill secondary" href="whitepaper.html"><span data-de="Whitepaper lesen">Read the whitepaper</span> <span class="pill-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10L10 4M10 4H6M10 4V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
