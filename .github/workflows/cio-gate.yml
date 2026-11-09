@@ -77,12 +77,16 @@ jobs:
           # A-Records per python3 (auf ubuntu-latest garantiert vorhanden).
           # getaddrinfo-Tupel: [4][0] = IPv4-Adresse.
           A_RECORDS=$(python3 -c 'import socket;addrs=sorted({a[4][0] for a in socket.getaddrinfo("superintelnex.com",443,socket.AF_INET)});print(" ".join(addrs) if addrs else "unresolved")')
+          http_code_or_note() { # URL PROTO — liefert Status oder Hinweis
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$1" 2>/dev/null || true)
+            if [ "$code" = "000" ] || [ -z "$code" ]; then echo "$2"; else echo "$code"; fi
+          }
           {
             echo "### Live"
             echo "- A-Records: $A_RECORDS (erwartet 4: .108/.109/.110/.111)"
-            echo "- HTTP apex: $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 http://superintelnex.com/ || echo unreachable)"
-            echo "- HTTPS apex: $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://superintelnex.com/ || echo 'noch kein TLS')"
-            echo "- HTTPS www: $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://www.superintelnex.com/ || echo 'noch kein TLS')"
+            echo "- HTTP apex: $(http_code_or_note http://superintelnex.com/ 'unreachable')"
+            echo "- HTTPS apex: $(http_code_or_note https://superintelnex.com/ 'noch kein TLS')"
+            echo "- HTTPS www: $(http_code_or_note https://www.superintelnex.com/ 'noch kein TLS')"
           } >> "$R"
 
       - name: Status-Comment auf #5 (upsert)
