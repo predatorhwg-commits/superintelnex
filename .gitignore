@@ -22,4 +22,8 @@ SuperIntelNex-Profilbild/
 token/wallets/
 token/result/
 
+# Publish-Sync-Working-Space (T5): Staging-Ordner gehoert nie in ein Repo
+# (Publish-Sync nutzt inzwischen mktemp auferhalb des Worktrees).
+.publish/
+
 
