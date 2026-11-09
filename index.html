@@ -230,8 +230,8 @@
     'wormhole', 'eye', 'mobius', 'comet', 'crystal', 'butterfly'
   ];
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
-  let shape = Math.floor(Math.random() * shapeOrder.length), shapeAgeMs = 0;
   let shapeQueue = [];
+  let shape = nextShape(), shapeAgeMs = 0;
   let width = 0, height = 0, cx = 0, cy = 0, scale = 0, count = 0, skyCount = 0;
   const pointer = {x:0, y:0, targetX:0, targetY:0, inside:false, strength:0};
   let morph = 1, from = null;
@@ -732,6 +732,21 @@
       shape = index;
     }
   }
+  function nextShape(current = -1) {
+    if (shapeQueue.length === 1 && shapeQueue[0] === current) shapeQueue.pop();
+    if (!shapeQueue.length) {
+      shapeQueue = shapeOrder.map((_, index) => index);
+      for (let i = shapeQueue.length - 1; i > 0; i--) {
+        const other = Math.floor(Math.random() * (i + 1));
+        [shapeQueue[i], shapeQueue[other]] = [shapeQueue[other], shapeQueue[i]];
+      }
+    }
+    const lastIndex = shapeQueue.length - 1;
+    if (shapeQueue[lastIndex] === current) {
+      [shapeQueue[0], shapeQueue[lastIndex]] = [shapeQueue[lastIndex], shapeQueue[0]];
+    }
+    return shapeQueue.pop();
+  }
   function animate(now) {
     frame = 0;
     const elapsedMs = last === null ? 0 : now - last;
@@ -740,16 +755,7 @@
     shapeAgeMs += elapsedMs;
     morph = Math.min(1, morph + dt / shapeTransitionSeconds);
     if (shapeAgeMs >= shapeIntervalMs) {
-      // Shuffle a full round so every shape gets its turn.
-      if (shapeQueue.at(-1) === shape) shapeQueue.pop();
-      if (!shapeQueue.length) {
-        shapeQueue = shapeOrder.map((_, index) => index).filter(index => index !== shape);
-        for (let i = shapeQueue.length - 1; i > 0; i--) {
-          const other = Math.floor(Math.random() * (i + 1));
-          [shapeQueue[i], shapeQueue[other]] = [shapeQueue[other], shapeQueue[i]];
-        }
-      }
-      selectShape(shapeQueue.pop());
+      selectShape(nextShape(shape));
     }
     const follow = 1 - Math.exp(-dt * 20);
     pointer.x += (pointer.targetX - pointer.x) * follow;
