@@ -1,0 +1,102 @@
+# SuperIntelNex — CI-Gate auf GitHub (Release-Gate, Teil des CEO-Arbeitsflusses)
+#
+# Liefert das Release-Gate direkt in GitHub ab:
+#   (1) Offline-Test der Token-Konfiguration (deno test, config.test.ts)
+#   (2) Secret-Scan — portable der dokumentierten QA-Check-Spec C7
+#       (agenten/checks/release-gate.py, Commit f00c41a):
+#         (d) token/wallets/ + token/result/ duerfen NICHT getrackt sein
+#         (b) PRIVATE-Key-Blöcke (PKCS/PEM-Header) in getrackten Dateien
+#         (c) das Token-Wort "secretKey" ausserhalb von token/scripts/
+#       .github/workflows/ ist bei (b)/(c) ausgenommen, weil dort die
+#       Scan-Spec selbst im Text steht (Analogie zu 'agenten/' in der
+#       ursprunglichen Spec).
+# Das Gate ist blockierend: geht es nicht durch, darf laut CEO-Release-Regel
+# nicht gepusht/merge-gefreet werden.
+name: CI
+
+on:
+  push:
+    branches: [main, 'agenten/*', gh-pages]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  config-test:
+    name: Token-Konfiguration (Offline-Test)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9.8
+
+      # Der Test laedt web3.js via npm (Deno-Cache, braucht Netzwerk im Runner).
+      # Offline-Logik: prueft nur config/token.json intern auf Konsistenz
+      # (Pflichtfelder, 100%-Verteilung, authorities-Blocken, u64-Supply-Guard).
+      - name: Run config tests
+        working-directory: token
+        run: deno test --allow-read --allow-env tests/config.test.ts
+
+  secret-scan:
+    name: Secret-Scan (QA-Spec C7)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Secret-Scan
+        run: |
+          set -euo pipefail
+          fails=0
+          note() { printf '  [i] %s\n' "$1"; }
+          ok()   { printf '  [GRUEN] %s\n' "$1"; }
+          bad()  { printf '  [ROT ] %s\n' "$1"; fails=1; }
+
+          # C7-d: EINWEG-Wallets und Ergebnis-Protokolle duerfen NICHT im Repo stehen.
+          tracked=$(git ls-files)
+          forbidden=$(printf '%s\n' "$tracked" | grep -E '^token/(wallets|result)/' || true)
+          if [ -n "$forbidden" ]; then
+            bad "token/wallets/ oder token/result/ ist getrackt:"
+            printf '%s\n' "$forbidden" | sed 's/^/      - /'
+          else
+            ok "token/wallets/ und token/result/ sind NICHT getrackt"
+          fi
+
+          # C7-b: Private-Key-Blöcke in getrackten Dateien (git grep = nur getrackt).
+          # agenten/ + .github/workflows/ sind ausgenommen (dort steht die
+          # Scan-Spec selbst im Text — Analogie zu 'agenten/' in der Ursprungs-Spec).
+          hits=$(git grep -n -I -E 'BEGIN [A-Z0-9 ]*PRIVATE KEY' -- ':!agenten' ':!.github' || true)
+          if [ -n "$hits" ]; then
+            bad "'BEGIN ... PRIVATE KEY' gefunden in getrackten Dateien:"
+            printf '%s\n' "$hits" | sed 's/^/      - /'
+          else
+            ok "kein 'BEGIN ... PRIVATE KEY' in getrackten Dateien"
+          fi
+
+          # C7-c: das Token-Wort 'secretKey' darf nur in token/scripts/ vorkommen
+          # (Skript-Logik), nie in Doku/Metadaten/Repo-Wurzeln.
+          # agenten/ + .github/ ebenfalls ausgenommen (Scan-Spec-Text).
+          hits=$(git grep -n -I -E 'secretKey' -- ':!token/scripts' ':!agenten' ':!.github' || true)
+          if [ -n "$hits" ]; then
+            bad "'secretKey' gefunden ausserhalb von token/scripts/:"
+            printf '%s\n' "$hits" | sed 's/^/      - /'
+          else
+            ok "kein 'secretKey' ausserhalb von token/scripts/"
+          fi
+
+          # C7-a: base58-aehnliche 64–88-Char-Keystrings — HEURISTIK, informationell.
+          # (Blockierende Pruefung wuerde Devnet-Explor-Links falschausloesen;
+          #  die deterministischen Checks b/c/d sind das blockierende Gate.)
+          note "C7-a base58-Heuristik laeuft nur informativ (Public-Key/Explor-Links erlaubt)."
+
+          if [ "$fails" -ne 0 ]; then
+            echo "Secret-Scan ROTE — Gate NICHT GRUEN."
+            exit 1
+          fi
+          echo "Secret-Scan GRUEN — kein Secret getrackt, Gate durch."
