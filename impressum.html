@@ -15,9 +15,9 @@
 <link rel="canonical" href="https://superintelnex.com/impressum.html">
 <title data-de="SuperIntelNex | Impressum">SuperIntelNex | Imprint</title>
 <style>
-  :root{color-scheme:dark;--bg:#000;--ink:#f0f0f0;--muted:#a5a5a5;--line:#ffffff21;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--edge:clamp(20px,5vw,84px)}
+  :root{color-scheme:dark;--bg:#000;--ink:#f0f0f0;--muted:#a5a5a5;--line:#ffffff21;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--serif:Georgia,"Times New Roman","Noto Serif",serif;--edge:clamp(20px,5vw,84px)}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif)}
   a{-webkit-tap-highlight-color:transparent}
   a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
   .site{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;isolation:isolate}
@@ -34,16 +34,16 @@
   .languages button:hover{color:var(--ink)}
   .languages button[aria-pressed="true"]{color:var(--bg);background:var(--ink)}
   .content{padding:64px var(--edge) 72px}
-  .eyebrow{display:flex;align-items:center;gap:13px;margin:0 0 27px;font:11px var(--mono);letter-spacing:.21em;text-transform:uppercase;color:var(--ink)}
+  .eyebrow{display:flex;align-items:center;gap:13px;justify-content:center;margin:0 auto 27px;font:11px var(--mono);letter-spacing:.21em;text-transform:uppercase;color:var(--ink)}
   .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
-  h1{margin:0;font-size:clamp(34px,4.5vw,56px);line-height:1.05;letter-spacing:-.05em;font-weight:750}
-  h2{margin:46px 0 14px;font-size:15px;font-weight:750}
-  p,li{color:#c4c4c4;font-size:15px;line-height:1.65;max-width:640px;text-wrap:pretty}
+  h1{margin:0 auto;font-size:clamp(34px,4.5vw,56px);line-height:1.05;letter-spacing:-.02em;font-weight:600;text-align:center}
+  h2{margin:46px auto 14px;font-size:17px;font-weight:600;letter-spacing:-.01em;text-align:center}
+  p,li{color:#c4c4c4;font-size:16px;line-height:1.75;max-width:640px;margin:0 auto;text-wrap:pretty;text-align:center}
   p{margin:0}
-  ul{margin:0;padding-left:18px}
+  ul{margin:0 auto;padding-left:18px;max-width:640px;text-align:center}
   li{margin:6px 0}
   a{color:var(--ink)}
-  .details{max-width:640px;display:grid;margin:30px 0 0;border-top:1px solid var(--line)}
+  .details{max-width:640px;display:grid;margin:30px auto 0;border-top:1px solid var(--line)}
   .details div{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
   .details dt{color:var(--ink);font-size:13px;font-weight:700;line-height:1.5}
   .details dd{margin:0;display:flex;align-items:center;gap:12px}
