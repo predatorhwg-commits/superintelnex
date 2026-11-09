@@ -24,9 +24,9 @@
     --card:#FFFFFF;
     --ink:#111111;
     --body:#3D3D3D;
-    --muted:#787878;
+    --muted:#757575;
     --faint:#ADADAD;
-    --line:#E7E7E7;
+    --line:#909090;
     --code:#F5F5F2;
     --topbar-bg:rgba(255,255,255,.9);
     /* allocation chart (monochrome, dark-contrast-safe) */
@@ -139,8 +139,9 @@
   .card p{margin:0;font-size:14px;color:var(--muted)}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
-  @media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
-  @media(max-width:600px){.topbar .badge{display:none}}
+  @media(max-width:860px){.card .mono.nowrap{white-space:normal;overflow-wrap:anywhere}}
+  @media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}
+    .topbar .badge{display:none}}
 
   /* callouts — monochrome */
   .note{border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:4px;padding:20px 24px;margin:26px auto;max-width:620px;text-align:center}
@@ -150,7 +151,7 @@
 
   /* tables */
   .tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:4px;margin:24px 0}
-  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+  table{border-collapse:collapse;width:100%;font-size:14px}
   th{font:600 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 16px;border-bottom:1px solid var(--line)}
   td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--body)}
   tr:last-child td{border-bottom:0}

@@ -171,12 +171,24 @@ OVERFLOW_JS = """
   const vw = document.documentElement.clientWidth;
   const offenders = [];
   const all = document.body ? document.body.querySelectorAll('*') : [];
+  // Element ist in horizontalem Scroll-Container enthalten (overflow-x:auto/scroll/hidden)
+  // => verursacht KEIN Dokument-Overflow (das hScroll/docW-Mass darueber wacht),
+  // aber auch kein Layoutbruch: Standard-Muster (z.B. Whitepaper-Chapbar-Pills @390).
+  const inScrollContainer = (el) => {
+    let n = el.parentElement;
+    while (n && n.tagName !== 'HTML') {
+      const ox = getComputedStyle(n).overflowX;
+      if (ox === 'auto' || ox === 'scroll' || ox === 'hidden') return true;
+      n = n.parentElement;
+    }
+    return false;
+  };
   for (const el of all) {
     const r = el.getBoundingClientRect();
     // Breite UND Position: ein schmales Element kann rechts *vor* vw
     // anfangen und ueberlaufen (Flex-Kinder mit min-width:auto) — der
     // Positions-Check (r.right > vw+1) faengt solche False-Gruen-Faelle.
-    if (r.width > 0 && (r.width > vw + 4 || r.right > vw + 1 || r.left < -1)) {
+    if (r.width > 0 && !inScrollContainer(el) && (r.width > vw + 4 || r.right > vw + 1 || r.left < -1)) {
       const cls = (el.className && typeof el.className === 'string') ? '.' + el.className.trim().split(/\\s+/).join('.') : '';
       offenders.push(el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + cls +
         ' [L=' + Math.round(r.left) + ' R=' + Math.round(r.right) + ']');
