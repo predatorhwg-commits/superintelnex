@@ -60,6 +60,12 @@
   .scene.enter{animation:enter .55s cubic-bezier(.22,.7,.2,1) both}
   @keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
   footer{min-height:83px;border-top:1px solid var(--line)}
+  .risk{max-width:510px;margin-top:24px;border:1px dashed #ffffff40;background:#ffffff08;padding:13px 16px}
+  .risk p{margin:0;max-width:none}
+  .risk .risk-tag{display:block;font:10px var(--mono);letter-spacing:.21em;text-transform:uppercase;color:#a5a5a5;margin-bottom:8px}
+  .risk p{font-size:13px;line-height:1.6;color:#bdbdbd;text-wrap:pretty}
+  .legal-link{color:var(--muted);text-decoration:none}
+  .legal-link:hover{color:var(--ink)}
   .caption{display:flex;align-items:center;gap:10px;color:var(--muted);font:10px var(--mono);letter-spacing:.15em}
   .caption svg{width:15px;color:var(--ink)}
   .pager{display:flex;align-items:center;gap:13px}
@@ -151,6 +157,10 @@
           <div><dt>Mainnet</dt><dd>Noch kein Mainnet-Launch. Nächste Schritte: Metadaten auf IPFS/Arweave, Emissionsverteuerung mit Plan 55/20/15/10, Prüfung der Rechtslage.</dd></div>
           <div><dt>Projektangaben</dt><dd>Partnerschaften, Audits, Teamangaben und offizielle Social-Media-Links sind bisher nicht bestätigt.</dd></div>
         </dl>
+        <div class="risk">
+          <span class="risk-tag">Risikohinweis</span>
+          <p>SuperIntelNex ist ein Projekt im Aufbau. Diese Website ist keine Anlageberatung und kein Erwerbsangebot. Digital Token können einen Totalverlust bedeuten — jede Entscheidung ist eigenverantwortlich zu treffen. Devnet-Testtoken sind reiner Testwert. <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></p>
+        </div>
         <div class="actions">
           <button class="pill secondary" type="button" data-go="0">Zur Startseite <span aria-hidden="true">↖</span></button>
         </div>
@@ -158,7 +168,7 @@
     </div>
   </main>
   <footer>
-    <div class="caption"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m10 2 8 8-8 8-8-8 8-8Z" stroke="currentColor"/></svg> superintelnex.com<span class="caption-note">— Projekt im Aufbau, keine Anlageberatung</span></div>
+    <div class="caption"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m10 2 8 8-8 8-8-8 8-8Z" stroke="currentColor"/></svg> <a class="legal-link" href="impressum.html">Impressum</a><span aria-hidden="true"> · </span><a class="legal-link" href="datenschutz.html">Datenschutz</a><span class="caption-domain">superintelnex.com</span><span class="caption-note">— Projekt im Aufbau, keine Anlageberatung</span></div>
     <div class="pager" role="group" aria-label="Bereich wechseln">
       <button type="button" class="arrow" id="prev" aria-label="Vorheriger Bereich" disabled>←</button>
       <span class="count" role="status" aria-label="Aktueller Bereich"><strong id="current">01</strong> / 03</span>
