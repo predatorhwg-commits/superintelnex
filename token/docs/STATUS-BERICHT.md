@@ -64,54 +64,52 @@ Devnet-Ergebnis** — er taucht in keinem öffentlichen Index auf.
 
 ## 3) Tatsächlich auf Devnet erstellter Token?
 
-**Nein.** Es existiert **kein** Devnet-Mint von SuperIntelNex.
+**JA — am 09.11.2026 wurde der SuperIntelNex-Testtoken (SIN) auf Solana
+Devnet erstellt.** (Zuvor in dieser Sitzung: Nein; die Blockade wurde
+überbrückt, nachdem der Betreiber per GitHub-Faucet ~0,5 Test-SOL an die
+einweg-Admin-Test-Wallet überwiesen hatte.)
 
-Blockade (geprüft in diesem Lauf):
-
-- Öffentlicher Devnet-Airdrop: `https://api.devnet.solana.com` →
-  HTTP 410 „The RPC faucet is closed on this cluster".
-- Testnet-Endpunkt: ebenfalls HTTP 410.
-- Public-RPCs mit Airdrop (Ankr, publicnode): 404 / 403.
-- Web-Faucets (`faucet.solana.com` etc.): CAPTCHA (Cloudflare Turnstile) —
-  wird aus Sicherheitsgründen in diesem Projekt **nicht** umgangen
-  (regel in `DEVNET-RUNBOOK.md`).
-
-**Damit Devnet wirklich läuft, braucht es einen einzigen manuellen
-Schritt von Ihnen** (Test-SOL ist wertlos, es geht nichts Reales):
-
-- **Wege A (empfohlen):** `https://faucet.solana.com/` im eigenen Browser,
-  Pubkey der einweg-Test-Wallet eintragen: **`FoJ8tLtyPfPMR3ni1wESJVWTCdE8RBeSaazYMPUSy6F4`**
-  (~0,5 Test-SOL). Den Inhalt der Wallet-Datei selbst niemals in fremde
-  Felder kopieren — nur den Pubkey.
-- **Wege B:** einen RPC mit aktivem Airdrop (QuickNode/Alchemy-Devnet-URL,
-  eigener Account) als `SIN_RPC` bereitstellen.
-- **Wege C:** ~0,05–0,1 Test-SOL von einer Ihrer Devnet-Tester-Wallets
-  per `solana transfer FoJ8tLtyPfPMR3ni1wESJVWTCdE8RBeSaazYMPUSy6F4 0.1`
-  senden.
-
-Sobald die Wallet finanziert ist (und die Parameter in `FRAGENLISTE.md`
-bestätigt sind), laufen die 5 Befehle aus `DEVNET-RUNBOOK.md` §3 —
-jede Signatur wird im Ergebnis-Protokoll als **DEVNET-TESTTOKEN**
-dokumentiert mit Mint-Adresse, Signaturen und
-`?cluster=devnet`-Explorer-Links. Sie können jede Transaktion vor dem
-Abschluss in Ihrer Wallet prüfen; signiert wird ausschließlich mit den
-einweg-Test-Wallets. **Ihre Seed Phrase / Ihr privater Schlüssel werden
-niemals abgefragt.**
-
-**Wichtig (Pubkey-Kopplung):** Die Test-Wallet-Dateien liegen lokal
-(gitignoriert) und sind je Projektordner eigenständig. Da im
-Hauptprojekt-Ordner `main.json` aus dem Localnet-Lauf archiviert ist,
-erzeugt das Skript dort bei Bedarf eine **frische** einweg-Admin-Wallet.
-Deshalb: `devnet-prefund.ts` in dem Ordner ausführen, in dem der
-Devnet-Lauf stattfinden soll, und **den dort angezeigten Pubkey**
-finanzieren (nicht zwingend die oben historischen Adressen). Der
-genannte `FoJ8tLty...` gilt nur für den aktuellen Arbeits-Worktree.
+- Mint: `CyEcfZw2FogCrehQqkWxksKtsndNwrtKHQqDfPdHCLLf`
+- Supply: 10^19 smallest units = 100.000.000.000.000 SIN (10^14 @ 5 Dez.)
+- 1.000.000 SIN an die einweg-Empfänger-Test-Wallet
+  (`2hsXa6fvkns9869eyvorvieEQ2i41M2WwJrp1y2GMpxe`, ATA
+  `BPen7C9U3wwkJjsQHURvC6qWDjzTNJSg7YM55pxG5bMJ`) übertragen.
+- Mint- und Freeze-Vollmacht **unwiderruflich entzogen** — im Explorer:
+  `mintAuthority = (none)`, `freezeAuthority = (none)`.
+- Vollständiges Signatur-Protokoll + `?cluster=devnet`-Links:
+  `token/docs/DEVNET-TESTTOKEN-BERICHT.md` (Kopie; lokale Quelle in
+  `token/result/`, gitignoriert). Alle Einträge als **DEVNET-TESTTOKEN**
+  gekennzeichnet — kein Mainnet-Ergebnis.
 
 **Wichtige Korrektur aus diesem Lauf:** Die Metadaten-URI zeigte auf
-`superintelnex.com/solana-token/...`, aber der Repo-Ordner heißt `token/`
-→ die URI war tot. Korrigiert auf `/token/metadata/...` (Commit
-`66b02ee`). **Deshalb muss der Devnet-Lauf erst nach diesem Fix erfolgen
-** — die On-Chain-Metadaten sind mit `isMutable: false` unwandelbar.
+`superintelnex.com/...`, aber die Custom-Domain lag in der
+GitHub-„Verification of Contact Information"-Phase (nicht aktiv) und
+`token/` existierte erst auf der Feature-Branche (nicht `main`) → die URI
+war tot. Vor dem (unwiderruflichen) Devnet-Mint umgestellt auf die
+stabile Raw-URL der Feature-Branche (HTTP 200 geprüft, Commit `22bddbd`)
+— diese URI ist jetzt On-Chain fixiert (`isMutable: false`).
+
+**Blockade-Protokoll (überwunden, 09.11.2026):** Zuvor waren alle
+offentlichen Wege tot (RPC-Faucet HTTP 410, Ankr/publicnode 404/403,
+QuickNode-Faucet verlangt Mainnet-Saldo, Solana-Faucet: frischer
+GitHub-Account abgewiesen). Gelöst über `faucet.solana.com` mit einem
+älteren GitHub-Konto des Betreibers: 0,5 Test-SOL per Airdrop an die
+einweg-Admin-Test-Wallet (Signatur im Bericht oben). Die drei Wege
+A/B/C aus `DEVNET-RUNBOOK.md` gelten weiterhin für künftige
+Finanzierungen — für diesen Lauf war nur Weg A nötig.
+
+**Sicherheitslage des Laufs:** Signiert wurde ausschließlich mit den
+einweg-Test-Wallets; jede Transaktion ist im Explorer nachvollziehbar
+(`?cluster=devnet`). Die Seed Phrase / der private Schlüssel des
+Betreibers wurden **nie** abgefragt. Nach dem Lauf ist die
+Admin-Test-Wallet lokal gesperrt (`main.json` archiviert) —
+Minten/Freezen ist On-Chain unmöglich (Vollmachten entzogen).
+
+**Wichtig (Pubkey-Kopplung):** Die Test-Wallet-Dateien liegen lokal
+(gitignoriert) und sind je Projektordner eigenständig. `devnet-prefund.ts`
+immer in dem Ordner ausführen, in dem der Lauf stattfinden soll, und
+**den dort angezeigten Pubkey** finanzieren. Der genannte
+`FoJ8tLty...` galt für diesen Worktree.
 
 ## 4) Noch offene Arbeiten
 
@@ -126,21 +124,34 @@ genannte `FoJ8tLty...` gilt nur für den aktuellen Arbeits-Worktree.
 | Q5 | Verteilung | 55 % Community / 20 % Gründer / 15 % Entwicklung / 10 % Liquidität (Planwert; Multi-Adress-Emission erst für den Mainnet-Launch, Devnet-Lauf mintet die Gesamtmenge an die einweg-Admin-ATA) |
 | Q6 | Vollmachten | **beide nach Emission unwiderruflich entziehen** (Mint: sonst unbegrenzte Ausweitung der Supply; Freeze: einzige Sperrmöglichkeit im SPL — Beibehaltung = dauerhafte Macht über fremde Konten; Entzug = kein Rekorrigieren, kein Thawen mehr). On-Chain sichtbar: `mintAuthority = (none)` |
 | Q7 | URI-Speicher | Devnet: GitHub Pages (provisorisch); für Mainnet: IPFS (Pinata/Web3Storage) oder Arweave (content-addressed, manipulationsresistent) |
-| Q8 | Devnet-Lauf | **nach Test-SOL-Finanzierung** (Wege A/B/C oben) — Q1–Q7 sind bestätigt |
+| Q8 | Devnet-Lauf | **abgeschlossen am 09.11.2026** — Devnet-Mint, Emission, Transfer-Test, 1 Mio. SIN an die Empfänger-Test-Wallet, Vollmachten entzogen (Bericht: `DEVNET-TESTTOKEN-BERICHT.md`) |
 
-### B) Technische Restarbeiten (nach Ihren Entscheidungen)
+### B) Technische Restarbeiten
 
-1. Devnet-Erstellung der 5 Schritte (Mint → Emission → Transfer →
-   Verify → [Vollmachten entziehen]) — ~0,5 Test-SOL, keine echten Kosten.
-2. Falls Q5 bestätigt wird: Emissions-Skript für 4 Verteilungsadressen
-   (Community/Gründer/Dev/Liquidität) — aktuell ist das bewusst nicht
-   implementiert (`mint-initial.ts` mintet die Gesamtmenge an die
-   einweg-Admin-ATA).
-3. Metadaten-URI live erreichbar machen: `token/` muss via Merge nach
-   `main` deployed (GitHub Pages). Vor dem Devnet-Lauf prüfen:
-   `curl -I https://superintelnex.com/token/metadata/superintelnex-token.json`.
-4. Ergebnis-Protokoll: Mint, Signaturen, `?cluster=devnet`-Explorer-Links,
-   als **DEVNET-TESTTOKEN** markiert (`token/result/`).
+Erledigt (Devnet, 09.11.2026):
+
+- Devnet-Erstellung der 5 Schritte (Mint → Emission → Transfer → Verify →
+  Vollmachten entziehen) — abgeschlossen, ~0,5 Test-SOL, keine echten Kosten.
+- Ergebnis-Protokoll mit Mint, Signaturen und `?cluster=devnet`-Links als
+  **DEVNET-TESTTOKEN** — `token/docs/DEVNET-TESTTOKEN-BERICHT.md`
+  (Kopie; lokale Quelle `token/result/`).
+
+Für Mainnet (offen, erst nach erneuter Bestätigung):
+
+1. Falls die Q5-Verteilung final wird: Emissions-Skript für 4
+   Verteilungsadressen (Community/Gründer/Dev/Liquidität) — aktuell ist
+   das bewusst nicht implementiert (`mint-initial.ts` mintet die
+   Gesamtmenge an die einweg-Admin-ATA).
+2. Metadaten-URI aktuell On-Chain fixiert auf die Raw-URL der
+   Feature-Branche (`isMutable: false` → für diesen Mint dauerhaft). Für
+   Mainnet: IPFS/Arweave (content-addressed) + Config-Update +
+   `verify.ts` vor dem Mint.
+3. Custom-Domain `superintelnex.com` aus der GitHub-Verification-Phase
+   bringen (Repository-Settings → Pages), falls die Website-URI künftig
+   genutzt werden soll.
+4. Neue Devnet-Läufe (Tests, Distributionssimulation) brauchen eine
+   **frische** einweg-Admin-Wallet (`main.json` ist lokal gesperrt;
+   Weg A/B/C aus `DEVNET-RUNBOOK.md` erneut finanzieren).
 
 ### C) Späterer öffentlicher Launch (Mainnet) — kurz
 
