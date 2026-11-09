@@ -11,6 +11,7 @@ on:
       - 'datenschutz.html'
       - 'whitepaper.html'
       - 'vendor/three.min.js'
+      - 'token/assets/superintelnex-logo-512.png'
       - 'og-image.png'
       - 'apple-touch-icon.png'
       - 'icon-192.png'
@@ -42,6 +43,7 @@ jobs:
           TMP="$(mktemp -d)"
           for f in index.html 404.html impressum.html datenschutz.html \
                    whitepaper.html vendor/three.min.js \
+                   token/assets/superintelnex-logo-512.png \
                    og-image.png apple-touch-icon.png icon-192.png icon-512.png \
                    robots.txt sitemap.xml manifest.webmanifest \
                    superintelnex-sn-anthrazit.svg CNAME; do
