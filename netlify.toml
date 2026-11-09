@@ -1,5 +1,0 @@
-# Netlify: statische Site, kein Build-Schritt.
-# Publish-Verzeichnis ist `site/` — der Coin-Ordner (token/)
-# wird dadurch nie woerkentlich veroeffentlicht.
-[build]
-  publish = "site"
