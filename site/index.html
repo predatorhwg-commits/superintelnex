@@ -407,7 +407,21 @@
   const releasePointer = () => {pointer.inside = false;};
   stage.addEventListener('pointerleave', releasePointer);
   stage.addEventListener('pointercancel', releasePointer);
-  new ResizeObserver(size).observe(stage);
+  // Guard gegen einen Resize-Loop: size() darf Layout auslösen, das den
+  // ResizeObserver erneut triggert. Deshalb erst im nächsten Animation-Frame
+  // prüfen und nur neu ausmessen, wenn sich die Box wirklich geändert hat.
+  let resizeGuard = false;
+  function onResize() {
+    if (resizeGuard) return;
+    resizeGuard = true;
+    size();
+    requestAnimationFrame(() => {
+      resizeGuard = false;
+      const r = canvas.getBoundingClientRect();
+      if (r.width !== width || r.height !== height) onResize();
+    });
+  }
+  new ResizeObserver(onResize).observe(stage);
   show(sceneFromHash(), {initial:true, writeHash:false});
   size();
   syncMotion();
