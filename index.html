@@ -224,7 +224,7 @@
   let language = 'en';
   const shapeIntervalMs = 7000;
   const shapeTransitionSeconds = 3.6;
-  const shapeOrder = ['galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere', 'phyllo', 'atom', 'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit'];
+  const shapeOrder = ['galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere', 'atom', 'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit'];
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
   let shape = 0, shapeAgeMs = 0;
   let width = 0, height = 0, cx = 0, cy = 0, scale = 0, count = 0, skyCount = 0;
@@ -242,8 +242,6 @@
     const radius = index % 2 === 0 ? 1 : .43;
     return [radius * Math.cos(angle), radius * Math.sin(angle)];
   });
-  // Phyllotaxis (sunflower seed spiral): every seed sits at the golden angle from the last.
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   // Constellation: 12 anchor stars, connected by faint traces.
   const constNodes = [
     [-1.08,.62],[-.52,.82],[.12,.70],[.64,.92],[1.05,.48],[.42,.08],
@@ -363,15 +361,6 @@
     const sphereRadius = .78 + .16 * d;
     const equator = sphereRadius * Math.sqrt(1 - latitude * latitude);
     const sphere = [equator * Math.cos(a), sphereRadius * latitude, equator * Math.sin(a)];
-    // Phyllotaxis: golden-angle spiral, radius grows with sqrt of index.
-    const phylloIndex = (i * 4.6) % total;
-    const phylloRadius = 1.28 * Math.sqrt(phylloIndex / total) + .05 * Math.sin(b) * spread;
-    const phylloAngle = phylloIndex * goldenAngle;
-    const phyllo = [
-      phylloRadius * Math.cos(phylloAngle),
-      phylloRadius * Math.sin(phylloAngle),
-      (e - .5) * .03 + .05 * Math.sin(b)
-    ];
     // Atom: three tilted electron orbits + a dense core cluster.
     const atomSpec = atomOrbits[i % 3];
     const atomCore = i % 16 === 0;
@@ -441,7 +430,7 @@
       orbitPos = [rr, rz * .44 + (e - .5) * .03, rz];
     }
     const orbit = orbitPos;
-    return {shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, phyllo, atom, vortex, knot, circuit, ekg, constellation, orbit], size:e, phase:b, scatter};
+    return {shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, atom, vortex, knot, circuit, ekg, constellation, orbit], size:e, phase:b, scatter, atomCore, atomSpec:i % 3, atomAngle:a};
   });
   const sky = Array.from({length:1350}, () => {
     const x = random(), y = random(), brightness = random();
@@ -512,6 +501,7 @@
     for (let i = 0; i < count; i++) {
       const p = points[i], v = p.shapes[shape], j = i * 3;
       let x = v[0], y = v[1], z = v[2];
+      let boost = 0;
       if (mode === 'galaxy') {
         const angle = spin * .42 + .026 * Math.sin(time * .7 + p.phase);
         const u = x * Math.cos(angle) - y * Math.sin(angle);
@@ -537,21 +527,29 @@
         const horizontal = x * Math.cos(lean) - z * Math.sin(lean);
         z = x * Math.sin(lean) + z * Math.cos(lean);
         x = horizontal;
-      } else if (mode === 'phyllo') {
-        // slow spiral rotation, plus a subtle breathing scale
-        const breathe = 1 + .02 * Math.sin(time * .5 + p.phase);
-        const angle = time * .10 * (p.scatter ? 1.4 : 1);
-        const u = x * Math.cos(angle) - y * Math.sin(angle);
-        const w = x * Math.sin(angle) + y * Math.cos(angle);
-        x = u * breathe; y = w * breathe;
       } else if (mode === 'atom') {
-        // orbits slowly precess while electrons drift along the rings
-        const precess = time * .22;
-        const u = x * Math.cos(precess) - z * Math.sin(precess);
-        z = x * Math.sin(precess) + z * Math.cos(precess);
-        x = u;
-        const drift = .06 * Math.sin(time * 1.4 + p.phase * 3);
-        x *= 1 + drift; y *= 1 + drift;
+        // electrons orbit the nucleus: inner ring fastest, outer slowest (Kepler-ish).
+        // The orbit frame stays put — only the particles travel along their ring.
+        const spec = atomOrbits[p.atomSpec];
+        if (!p.atomCore) {
+          const speed = [.46, .28, .18][p.atomSpec];
+          const ang = p.atomAngle + time * speed * (p.scatter ? .6 : 1);
+          const ex = spec[0] * Math.cos(ang) * .92;
+          const ey = spec[1] * Math.sin(ang) * .92;
+          x = ex * Math.cos(spec[3]) - ey * Math.sin(spec[3]);
+          y = (ex * Math.sin(spec[3]) + ey * Math.cos(spec[3])) * .8;
+          // three bright electrons per ring, each with a trailing glow
+          const lane = i % 3;
+          const head = (time * speed + lane * (tau / 3)) % tau;
+          const dAng = ang - head;
+          if (dAng > 0) boost = .38 * Math.exp(-dAng * 1.9) * (1 + .45 * Math.exp(-((dAng - tau) ** 2) / .5));
+        } else {
+          // nucleus core: breathing pulse with a bright glow center
+          const pulse = 1 + .05 * Math.sin(time * 1.1 + p.phase);
+          x *= pulse; y *= pulse;
+          const core = Math.sqrt(x * x + y * y);
+          if (core < .12) boost = .30 * (1 - core / .12) * (.75 + .25 * Math.sin(time * 1.3));
+        }
       } else if (mode === 'vortex') {
         // differential rotation: deep particles spin faster (funnel shear)
         const nx = x * cz + z * sz;
@@ -598,8 +596,8 @@
       const px = cx + x * scale * persp, py = cy + y * scale * persp;
       const featured = mode === 'star' || (mode === 'token' && v[2] >= .06);
       const light = .24 + .27 * z + p.size * .43 + .10 * Math.sin(time * 1.7 + p.phase)
-        + (featured ? .18 : 0) - (p.scatter ? .25 : 0);
-      const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1) * (featured ? 1.15 : 1);
+        + (featured ? .18 : 0) - (p.scatter ? .25 : 0) + boost;
+      const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1) * (featured ? 1.15 : 1) * (1 + boost * 1.6);
       addStar(px, py, radius, light, p.phase, pullScaleSquared);
     }
     ctx.fillStyle = '#fff';
