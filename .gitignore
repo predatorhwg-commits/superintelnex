@@ -23,8 +23,4 @@ site/.netlify/
 token/wallets/
 token/result/
 
-# Agenten-Worktrees (git worktree add) sind laeufzeit-Verzeichnisse,
-# keine Repo-Inhalte. Die Prompt-/Berichtsdateien in agenten/*.md
-# werden getrackt, die Worktrees selbst nicht.
-agenten/worktree-*/
 
