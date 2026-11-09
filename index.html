@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="SuperIntelNex is a community token project in development with a long-term vision for AI, superintelligence, and digital payments.">
+<title data-de="SuperIntelNex | Community-Token-Projekt im Aufbau">SuperIntelNex | Community token project in development</title>
+<link rel="icon" href="superintelnex-sn-anthrazit.svg" type="image/svg+xml">
+<style>
+  :root{color-scheme:dark;--bg:#000;--ink:#f0f0f0;--muted:#a5a5a5;--line:#ffffff21;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--edge:clamp(20px,5vw,84px)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+  button,a{-webkit-tap-highlight-color:transparent}
+  button{font:inherit;color:inherit;cursor:pointer}
+  button:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+  .site{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;isolation:isolate;position:relative;overflow:hidden}
+  header,footer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-inline:var(--edge);position:relative;z-index:2}
+  header{height:82px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:750;font-size:18px;letter-spacing:-.025em;white-space:nowrap}
+  .brand img{width:40px;height:40px;flex:none;background:var(--ink);border-radius:9px}
+  nav{display:flex;gap:clamp(13px,3vw,42px);align-items:center}
+  nav button{background:none;border:0;padding:12px 0;color:var(--muted);font-size:13px;white-space:nowrap}
+  nav button:hover,nav button[aria-current]{color:var(--ink)}
+  nav button[aria-current]::after{content:"";display:block;width:100%;height:1px;background:var(--ink);transform:translateY(8px)}
+  .languages{display:flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:99px}
+  .languages button{border:0;border-radius:99px;background:transparent;color:var(--muted);padding:5px 8px;font:11px var(--mono)}
+  .languages button:hover{color:var(--ink)}
+  .languages button[aria-pressed="true"]{color:var(--bg);background:var(--ink)}
+  .secondary:hover,.arrow:hover:not(:disabled){border-color:#ffffff66;color:var(--ink)}
+  main{position:relative;display:grid;align-items:center;min-height:555px}
+  .art{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
+  canvas{display:block;width:100%;height:100%}
+  .art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0009,transparent 58%)}
+  .content{position:relative;padding:70px var(--edge);max-width:100%}
+  .scene{text-shadow:0 1px 8px #000,0 0 22px #000}
+  .eyebrow{display:flex;align-items:center;gap:13px;margin:0 0 27px;font:11px var(--mono);letter-spacing:.21em;text-transform:uppercase;color:var(--ink)}
+  .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
+  h1,h2{margin:0;font-size:clamp(48px,7.3vw,120px);line-height:.91;letter-spacing:-.082em;font-weight:750}
+  .headline-accent{color:#b0b0b0}
+  #start h1{font-size:clamp(39px,6.3vw,100px)}
+  #status h2{font-size:clamp(43px,5.7vw,84px)}
+  .desc{max-width:430px;color:#bdbdbd;font-size:clamp(15px,1.35vw,19px);line-height:1.6;margin:28px 0 0;text-wrap:pretty}
+  .details{max-width:510px;display:grid;gap:0;margin:24px 0 0;background:#000c;border-top:1px solid var(--line)}
+  .details div{display:grid;grid-template-columns:115px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .details dt{color:var(--ink);font-size:13px;font-weight:700;line-height:1.5}
+  .details dd{margin:0;color:#bdbdbd;font-size:14px;line-height:1.5;text-wrap:pretty}
+  .actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-top:30px}
+  .pill{display:inline-flex;align-items:center;gap:18px;border:1px solid transparent;border-radius:99px;padding:13px 19px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s}
+  .primary{color:var(--ink);background:#000;border-color:#ffffff66}
+  .primary:hover{border-color:var(--ink)}
+  .secondary{background:#000;border-color:var(--line);color:var(--ink)}
+  .scene.enter{animation:enter .55s cubic-bezier(.22,.7,.2,1) both}
+  @keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  footer{min-height:83px;border-top:1px solid var(--line)}
+  .caption{display:flex;align-items:center;gap:10px;color:var(--muted);font:10px var(--mono);letter-spacing:.15em}
+  .pager{display:flex;align-items:center;gap:13px}
+  .count{color:var(--muted);font:11px var(--mono);letter-spacing:.14em;min-width:67px;text-align:center}
+  .count strong{color:var(--ink);font-weight:500}
+  .arrow{width:39px;height:39px;border-radius:50%;border:1px solid var(--line);background:#000;font-size:17px}
+  .arrow.next{border-color:#ffffff66}
+  .arrow.next:hover:not(:disabled){border-color:var(--ink)}
+  .arrow:disabled{opacity:.3;cursor:default}
+  @media(max-width:780px){
+    header{height:69px}
+    main{min-height:560px}
+    h1,h2{font-size:clamp(55px,10vw,79px)}
+  }
+  @media(max-width:560px){
+    header,footer{gap:10px}
+    header{height:auto;min-height:94px;display:grid;grid-template-columns:1fr auto;align-content:center;row-gap:0}
+    .brand{font-size:16px;gap:8px}.brand img{width:30px;height:30px;border-radius:7px}
+    .languages{grid-column:2;grid-row:1}
+    nav{grid-row:2;grid-column:1/-1;gap:24px}
+    nav button{padding:9px 0;font-size:12px}
+    nav button[aria-current]::after{transform:translateY(5px)}
+    main{min-height:590px;align-items:end}
+    .content{padding-top:155px;padding-bottom:43px}
+    .art::after{background:linear-gradient(0deg,#0007,transparent 74%)}
+    .eyebrow{margin-bottom:19px;font-size:10px}
+    h1,h2{font-size:clamp(44px,12vw,63px)}
+    #start h1{font-size:clamp(32px,9.8vw,53px)}
+    .details div{grid-template-columns:1fr;gap:3px;padding:9px 0}
+    .desc{margin-top:19px}
+    .actions{margin-top:22px}
+    .pill{padding:11px 14px;gap:10px}
+    footer{min-height:67px}
+    .caption{letter-spacing:.05em;font-size:9px}
+    .pager{gap:7px}.count{min-width:61px}
+    .arrow{width:34px;height:34px}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="site">
+  <div class="art" aria-hidden="true"><canvas id="dust"></canvas></div>
+  <header>
+    <a class="brand" href="#start" aria-label="SuperIntelNex, home" data-de-label="SuperIntelNex, Startseite">
+      <img src="superintelnex-sn-anthrazit.svg" width="40" height="40" alt="">
+      SuperIntelNex
+    </a>
+    <nav aria-label="Main navigation" data-de-label="Hauptnavigation">
+      <button type="button" data-go="0" aria-current="page" data-de="Start">Home</button>
+      <button type="button" data-go="1">Vision</button>
+      <button type="button" data-go="2" data-de="Projektstatus">Project status</button>
+    </nav>
+    <div class="languages" role="group" aria-label="Language" data-de-label="Sprache">
+      <button type="button" lang="en" data-lang="en" aria-label="English" aria-pressed="true">EN</button>
+      <button type="button" lang="de" data-lang="de" aria-label="Deutsch" aria-pressed="false">DE</button>
+    </div>
+  </header>
+  <main>
+    <div class="content">
+      <section class="scene" id="start" aria-labelledby="title-1">
+        <p class="eyebrow" data-de="Community-Token-Projekt im Aufbau">Community token project in development</p>
+        <h1 id="title-1"><span data-de="KI und digitale">AI and digital</span><br><span class="headline-accent" data-de="Zahlungen.">payments.</span></h1>
+        <p class="desc" data-de="SuperIntelNex ist ein Community-Token-Projekt mit einer langfristigen Vision für KI, Superintelligenz und digitale Zahlungen.">SuperIntelNex is a community token project with a long-term vision for AI, superintelligence, and digital payments.</p>
+        <div class="actions">
+          <button class="pill primary" type="button" data-go="1"><span data-de="Vision entdecken">Explore the vision</span> <span aria-hidden="true">↗</span></button>
+          <button class="pill secondary" type="button" data-go="2" data-de="Projektstatus">Project status</button>
+        </div>
+      </section>
+      <section class="scene" id="vision" aria-labelledby="title-2" hidden>
+        <p class="eyebrow" data-de="02 / Die Vision">02 / The vision</p>
+        <h2 id="title-2"><span data-de="Was wir">What we</span><br><span class="headline-accent" data-de="vorhaben.">plan to build.</span></h2>
+        <dl class="details">
+          <div><dt data-de="Übertragen">Transfers</dt><dd data-de="Wir planen Übertragungen zwischen Wallets.">We plan to support transfers between wallets.</dd></div>
+          <div><dt data-de="Handeln">Trading</dt><dd data-de="Später soll der Token auf unterstützten Plattformen handelbar sein.">We aim to make the token tradable on supported platforms at a later stage.</dd></div>
+          <div><dt data-de="Bezahlen und KI">Payments and AI</dt><dd data-de="Zahlungen bei teilnehmenden Anbietern sind vorgesehen. Händlerakzeptanz und KI-Anwendungen sind langfristige Ziele.">We plan to enable payments with participating providers. Merchant adoption and AI applications are long-term goals.</dd></div>
+        </dl>
+        <div class="actions">
+          <button class="pill primary" type="button" data-go="2"><span data-de="Projektstatus ansehen">See project status</span> <span aria-hidden="true">↗</span></button>
+        </div>
+      </section>
+      <section class="scene" id="status" aria-labelledby="title-3" hidden>
+        <p class="eyebrow" data-de="03 / Projektstatus">03 / Project status</p>
+        <h2 id="title-3" data-de="Im Aufbau.">In development.</h2>
+        <dl class="details">
+          <div><dt data-de="Token-Details">Token details</dt><dd data-de="Blockchain, Token-Kürzel, Gesamtmenge, Verteilung und Ausgaberechte sind noch offen.">The blockchain, token symbol, total supply, distribution, and issuance rights are still undecided.</dd></div>
+          <div><dt data-de="Veröffentlichung">Launch</dt><dd data-de="Eine Token-Veröffentlichung, eine Contract-Adresse und Börsenlistings sind bisher nicht bestätigt.">The token launch, contract address, and exchange listings are unconfirmed.</dd></div>
+          <div><dt data-de="Projektangaben">Project details</dt><dd data-de="Partnerschaften, Audits, Teamangaben und offizielle Social-Media-Links sind bisher nicht bestätigt.">Partnerships, audits, team details, and official social links are unconfirmed.</dd></div>
+        </dl>
+        <div class="actions">
+          <button class="pill secondary" type="button" data-go="0"><span data-de="Zur Startseite">Back to home</span> <span aria-hidden="true">↖</span></button>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <div class="caption">superintelnex.com</div>
+    <div class="pager" role="group" aria-label="Section navigation" data-de-label="Bereich wechseln">
+      <button type="button" class="arrow" id="prev" aria-label="Previous section" data-de-label="Vorheriger Bereich" disabled>←</button>
+      <span class="count" role="status" aria-label="Current section" data-de-label="Aktueller Bereich"><strong id="current">01</strong> / 03</span>
+      <button type="button" class="arrow next" id="next" aria-label="Next section" data-de-label="Nächster Bereich">→</button>
+    </div>
+  </footer>
+</div>
+<script>
+(() => {
+  'use strict';
+  const site = document.querySelector('.site');
+  const canvas = document.querySelector('#dust');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const scenes = [...document.querySelectorAll('.scene')];
+  const nav = [...document.querySelectorAll('nav [data-go]')];
+  const prev = document.querySelector('#prev');
+  const next = document.querySelector('#next');
+  const preference = matchMedia('(prefers-reduced-motion: reduce)');
+  const languageButtons = [...document.querySelectorAll('[data-lang]')];
+  const translatedText = [...document.querySelectorAll('[data-de]')].map(element => ({
+    element, english: element.textContent, german: element.dataset.de
+  }));
+  const translatedLabels = [...document.querySelectorAll('[data-de-label]')].map(element => ({
+    element, english: element.getAttribute('aria-label'), german: element.dataset.deLabel
+  }));
+  const languageKey = 'superintelnex-language';
+  let language = 'en';
+  const shapeIntervalMs = 7000;
+  const shapeTransitionSeconds = 3.6;
+  const shapeOrder = ['galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere'];
+  let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
+  let shape = 0, shapeAgeMs = 0;
+  let width = 0, height = 0, cx = 0, cy = 0, scale = 0, count = 0, skyCount = 0;
+  const pointer = {x:0, y:0, targetX:0, targetY:0, inside:false, strength:0};
+  let morph = 1, from = null;
+  const tau = Math.PI * 2, total = 7400;
+  const coords = new Float32Array(total * 3);
+  let seed = 349112;
+  function random() {
+    seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
+    return seed / 4294967296;
+  }
+  const starCorners = Array.from({length:10}, (_, index) => {
+    const angle = index * tau / 10 - Math.PI / 2;
+    const radius = index % 2 === 0 ? 1 : .43;
+    return [radius * Math.cos(angle), radius * Math.sin(angle)];
+  });
+  const networkNodes = [
+    [-1.15,-.16,.16], [-.86,-.59,-.20], [-.59,.14,-.09], [-.93,.56,.19],
+    [-.35,.64,-.04], [-.36,-.32,.33], [-.12,-.70,-.13], [.02,.05,.25],
+    [.26,.61,-.20], [.38,-.38,-.08], [.70,.07,.30], [.90,-.62,.16],
+    [1.12,-.13,-.12], [.93,.55,.08]
+  ];
+  const networkEdges = [
+    [0,1],[0,2],[0,3],[1,2],[1,5],[1,6],[2,3],[2,4],[2,5],[2,7],
+    [3,4],[4,7],[4,8],[5,6],[5,7],[5,9],[6,9],[7,8],[7,9],[7,10],
+    [8,10],[8,13],[9,10],[9,11],[10,11],[10,12],[10,13],[11,12],[12,13]
+  ];
+  // Rasterize the ribbon paths from the supplied SN logo into a small particle mask.
+  const tokenPaths = [
+    "M222 685L454 817L318 878Q284 894 263 881C232 864 217 842 217 811V690Q217 681 222 685Z",
+    "M740 707L941 905L664 1061C638 1077 611 1079 586 1065L479 1006Q474 1003 480 1001L732 885Q740 881 740 873Z",
+    "M615 368L880 534L883 345L796 292C778 282 762 285 744 297Z",
+    "M449 721L609 606L620 612L542 678L621 745L605 753L540 780Z",
+    "M598 220C622 205 648 204 674 219L795 291C777 283 762 286 744 298L364 507Q357 511 364 515L552 614L608 607L449 722L263 622C233 605 215 580 215 548V494C215 460 233 432 264 412Z",
+    "M263 881C282 891 297 887 318 878L605 753Q620 747 632 737L699 679L740 717V766C724 792 705 823 686 844Q678 853 663 862L459 983Q449 990 438 983Z",
+    "M559 428C670 499 779 583 880 681V349Q879 340 886 345L990 408C1016 424 1029 448 1029 479V811C1029 842 1015 866 989 881L941 906L620 613Q612 605 607 609L552 650V432Q552 423 559 428Z"
+  ];
+  const tokenMaskSize = 144;
+  const tokenMask = document.createElement('canvas');
+  tokenMask.width = tokenMask.height = tokenMaskSize;
+  const tokenContext = tokenMask.getContext('2d');
+  const tokenCells = [];
+  if (tokenContext && typeof Path2D === 'function') {
+    const ratio = tokenMaskSize / 1254;
+    tokenContext.scale(ratio, ratio);
+    for (const path of tokenPaths) tokenContext.fill(new Path2D(path));
+    const pixels = tokenContext.getImageData(0, 0, tokenMaskSize, tokenMaskSize).data;
+    for (let row = 0; row < tokenMaskSize; row++) {
+      for (let col = 0; col < tokenMaskSize; col++) {
+        if (pixels[(row * tokenMaskSize + col) * 4 + 3] > 128) tokenCells.push([col, row]);
+      }
+    }
+  }
+  // Each particle keeps its identity as the field morphs between shapes.
+  const points = Array.from({length: total}, (_, i) => {
+    const a = random() * tau, b = random() * tau, c = random(), d = random(), e = random();
+    const scatter = c > .93, spread = scatter ? 1.12 + d * 1.4 : Math.sqrt(d);
+    const sector = Math.floor(i / 4) % starCorners.length;
+    const [starX, starY] = starCorners[sector];
+    const [nextX, nextY] = starCorners[(sector + 1) % starCorners.length];
+    const starRadius = i % 4 === 0 ? .985 + d * .018 : Math.sqrt(c);
+    const star = [
+      (starX + (nextX - starX) * e) * starRadius,
+      (starY + (nextY - starY) * e) * starRadius,
+      Math.sin(b) * .025
+    ];
+    const x = (a / tau - .5) * 2.38;
+    const wave = [x, .31 * Math.sin(x * 2.9) + Math.cos(b) * spread * .15, Math.sin(b) * spread * .31 + .14 * Math.sin(x * 4)];
+    const isRung = i % 5 === 0 || i % 5 === 1;
+    const dnaY = isRung ? (i % 23 / 22 - .5) * 2 : (a / tau - .5) * 2.10;
+    const turn = dnaY * 5.2;
+    const strand = isRung ? 2 * d - 1 : i % 2 === 0 ? -1 : 1;
+    const thickness = (isRung ? .011 : .045) * spread;
+    const dna = [
+      .43 * strand * Math.cos(turn) + Math.cos(b) * thickness,
+      dnaY + (e - .5) * thickness * 2,
+      .43 * strand * Math.sin(turn) + Math.sin(b) * thickness
+    ];
+    const edge = networkEdges[i % networkEdges.length];
+    const startNode = networkNodes[i % 4 === 0 ? Math.floor(i / 4) % networkNodes.length : edge[0]];
+    const endNode = i % 4 === 0 ? startNode : networkNodes[edge[1]];
+    const networkSpread = (startNode === endNode ? .075 : .021) * spread;
+    const network = [
+      startNode[0] + (endNode[0] - startNode[0]) * c + Math.cos(b) * networkSpread,
+      startNode[1] + (endNode[1] - startNode[1]) * c + Math.sin(b) * networkSpread,
+      startNode[2] + (endNode[2] - startNode[2]) * c + (e - .5) * networkSpread
+    ];
+    const rimRadius = (i % 5 === 0 ? .87 : .92) + (d - .5) * .024;
+    const token = [rimRadius * Math.cos(a), rimRadius * Math.sin(a), (e - .5) * .10];
+    if (i % 5 > 1 && tokenCells.length) {
+      const [col, row] = tokenCells[Math.floor(c * tokenCells.length)];
+      token[0] = ((col + d) / tokenMaskSize - .5) * 1.84;
+      token[1] = ((row + e) / tokenMaskSize - .512) * 1.84;
+      token[2] = .078 + Math.sin(b) * .018;
+    }
+    const galaxyRadius = 1.38 * Math.pow(c, 1.42);
+    const armAngle = i % 3 * tau / 3 + 4.7 * galaxyRadius;
+    const armWidth = .19 + galaxyRadius * .20;
+    const galaxyAngle = i % 7 === 0 ? a : armAngle + (d - .5) * 2 * armWidth;
+    const galaxyDepth = Math.sin(b) * (.02 + .18 * Math.exp(-galaxyRadius * 4)) * spread;
+    const galaxy = [galaxyRadius * Math.cos(galaxyAngle), galaxyRadius * Math.sin(galaxyAngle), galaxyDepth];
+    const nebulaX = (c - .5) * 2.48;
+    const cloudWidth = .11 + .33 * Math.pow(Math.cos(nebulaX * 2.7 + .6), 2);
+    const nebulaY = .38 * Math.sin(nebulaX * 2.6) + Math.cos(b) * cloudWidth * spread;
+    const nebula = [nebulaX, nebulaY, Math.sin(b) * cloudWidth * spread];
+    const latitude = 2 * c - 1;
+    const sphereRadius = .78 + .16 * d;
+    const equator = sphereRadius * Math.sqrt(1 - latitude * latitude);
+    const sphere = [equator * Math.cos(a), sphereRadius * latitude, equator * Math.sin(a)];
+    return {shapes:[galaxy, star, dna, network, token, wave, nebula, sphere], size:e, phase:b, scatter};
+  });
+  const sky = Array.from({length:1350}, () => {
+    const x = random(), y = random(), brightness = random();
+    return {x, y, size:.53 + 1.2 * brightness ** 5, light:.08 + .55 * brightness ** 3, phase:random() * tau};
+  });
+  const paths = Array.from({length:8}, () => []);
+  const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
+
+  function setLanguage(nextLanguage) {
+    language = nextLanguage === 'de' ? 'de' : 'en';
+    document.documentElement.lang = language;
+    const translation = language === 'de' ? 'german' : 'english';
+    for (const item of translatedText) item.element.textContent = item[translation];
+    for (const item of translatedLabels) item.element.setAttribute('aria-label', item[translation]);
+    for (const button of languageButtons) {
+      button.setAttribute('aria-pressed', String(button.dataset.lang === language));
+    }
+  }
+  for (const button of languageButtons) {
+    button.addEventListener('click', () => {
+      setLanguage(button.dataset.lang);
+      try { localStorage.setItem(languageKey, language); } catch {}
+    });
+  }
+  try { setLanguage(localStorage.getItem(languageKey)); } catch { setLanguage('en'); }
+
+  function addStar(x, y, size, light, phase, pullScaleSquared) {
+    if (pointer.strength > 0) {
+      const dx = x - pointer.x, dy = y - pointer.y;
+      const distanceSquared = dx * dx + dy * dy;
+      const falloff = Math.exp(-distanceSquared / pullScaleSquared);
+      const pull = pointer.strength * (falloff - .012) / .988;
+      if (pull > 0) {
+        // Stagger each pass so stars keep streaming even when the mouse stops.
+        const cycle = (time * .70 + phase / tau) % 1;
+        const travel = cycle * (.48 + .72 * cycle) * pull * .56;
+        const distanceFactor = Math.max(0, 1 - 1.85 * travel);
+        const angle = .75 * travel;
+        const sin = Math.sin(angle), cos = Math.cos(angle);
+        x = pointer.x + (dx * cos - dy * sin) * distanceFactor;
+        y = pointer.y + (dx * sin + dy * cos) * distanceFactor;
+        const passVisibility = Math.min(1, cycle / .15, (1 - cycle) / .18);
+        size *= 1 - Math.min(1, 2.5 * pull) * (1 - passVisibility);
+        size *= Math.min(1, distanceFactor * 4);
+      }
+    }
+    const bin = Math.floor(clamp(light, .07, .99) * paths.length);
+    paths[bin].push(x, y, size);
+  }
+
+  function draw() {
+    if (!ctx || !width || !height) return;
+    ctx.clearRect(0, 0, width, height);
+    for (const path of paths) path.length = 0;
+    const t = morph * morph * (3 - 2 * morph);
+    const spin = time * .16;
+    const mode = shapeOrder[shape];
+    const xAngle = .70, zAngle = -.39;
+    const sx = Math.sin(xAngle), ax = Math.cos(xAngle), sz = Math.sin(zAngle), az = Math.cos(zAngle);
+    const sway = mode === 'star' ? 0 : Math.sin(time * .38) * .19;
+    const ys = Math.sin(sway), yc = Math.cos(sway);
+    const pullScaleSquared = clamp(width * .15, 90, 165) ** 2;
+    for (let i = 0; i < skyCount; i++) {
+      const star = sky[i];
+      const twinkle = .035 * Math.sin(time * 1.35 + star.phase);
+      addStar(star.x * width, star.y * height, star.size, star.light + twinkle, star.phase, pullScaleSquared);
+    }
+    for (let i = 0; i < count; i++) {
+      const p = points[i], v = p.shapes[shape], j = i * 3;
+      let x = v[0], y = v[1], z = v[2];
+      if (mode === 'galaxy') {
+        const angle = spin * .42 + .026 * Math.sin(time * .7 + p.phase);
+        const u = x * Math.cos(angle) - y * Math.sin(angle);
+        const w = x * Math.sin(angle) + y * Math.cos(angle);
+        const q = w * ax - z * sx;
+        z = w * sx + z * ax; x = u * az - q * sz; y = u * sz + q * az;
+      } else if (mode === 'wave' || mode === 'nebula') {
+        y += .16 * Math.sin(x * 3.8 - time * 1.1 + z * 1.8);
+        z += .09 * Math.sin(x * 4 + time * .7);
+        x += .09 * Math.sin(p.phase + time * .5);
+        y += x * .08;
+      } else if (mode === 'dna') {
+        const theta = spin * 2;
+        const horizontal = x * Math.cos(theta) - z * Math.sin(theta);
+        z = x * Math.sin(theta) + z * Math.cos(theta);
+        x = horizontal * .96 + y * .28;
+        y = y * .96 - horizontal * .28;
+      } else if (mode === 'star') {
+        x += (width / 2 - cx) / scale;
+        y += (height / 2 - cy) / scale;
+      } else if (mode === 'token') {
+        const lean = .16 * Math.sin(time * .64);
+        const horizontal = x * Math.cos(lean) - z * Math.sin(lean);
+        z = x * Math.sin(lean) + z * Math.cos(lean);
+        x = horizontal;
+      }
+      const xx = x * yc - z * ys;
+      z = x * ys + z * yc; x = xx;
+      if (t < 1 && from) {
+        x = from[j] + (x - from[j]) * t;
+        y = from[j+1] + (y - from[j+1]) * t;
+        z = from[j+2] + (z - from[j+2]) * t;
+      }
+      coords[j] = x; coords[j+1] = y; coords[j+2] = z;
+      const persp = 3.35 / (3.35 - z);
+      const px = cx + x * scale * persp, py = cy + y * scale * persp;
+      const featured = mode === 'star' || (mode === 'token' && v[2] >= .06);
+      const light = .24 + .27 * z + p.size * .43 + .10 * Math.sin(time * 1.7 + p.phase)
+        + (featured ? .18 : 0) - (p.scatter ? .25 : 0);
+      const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1) * (featured ? 1.15 : 1);
+      addStar(px, py, radius, light, p.phase, pullScaleSquared);
+    }
+    ctx.fillStyle = '#fff';
+    for (let k = 0; k < paths.length; k++) {
+      const data = paths[k];
+      if (!data.length) continue;
+      ctx.globalAlpha = .12 + k * .125;
+      ctx.beginPath();
+      for (let j = 0; j < data.length; j += 3) {
+        const r = data[j+2];
+        ctx.rect(data[j]-r/2, data[j+1]-r/2, r, r);
+      }
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (pointer.strength > 0) {
+      const {x, y, strength} = pointer;
+      const edge = 21 * strength;
+      const shadow = ctx.createRadialGradient(x, y, 14 * strength, x, y, edge);
+      shadow.addColorStop(0, '#000');
+      shadow.addColorStop(.45, '#0009');
+      shadow.addColorStop(1, '#0000');
+      ctx.fillStyle = shadow;
+      ctx.fillRect(x - edge, y - edge, 2 * edge, 2 * edge);
+    }
+  }
+  function size() {
+    if (!ctx) return;
+    const r = canvas.getBoundingClientRect();
+    width = r.width; height = r.height;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const narrow = width <= 560;
+    count = narrow ? 4500 : width < 850 ? 5800 : total;
+    skyCount = Math.round(clamp(width * height / 1000, 350, sky.length));
+    cx = width * (narrow ? .52 : .61); cy = height * (narrow ? .34 : .50);
+    scale = narrow ? Math.min(width * .44, height * .34) : Math.min(width * .43, height * .48, 610);
+    draw();
+  }
+  function selectShape(index, instant = false) {
+    shapeAgeMs = 0;
+    if (index !== shape) {
+      from = instant ? null : coords.slice();
+      morph = instant ? 1 : 0;
+      shape = index;
+    }
+  }
+  function animate(now) {
+    frame = 0;
+    const elapsedMs = last === null ? 0 : now - last;
+    const dt = Math.min(elapsedMs / 1000, .05);
+    last = now; time += dt;
+    shapeAgeMs += elapsedMs;
+    morph = Math.min(1, morph + dt / shapeTransitionSeconds);
+    if (shapeAgeMs >= shapeIntervalMs) {
+      selectShape((shape + 1) % shapeOrder.length);
+    }
+    const follow = 1 - Math.exp(-dt * 20);
+    pointer.x += (pointer.targetX - pointer.x) * follow;
+    pointer.y += (pointer.targetY - pointer.y) * follow;
+    const targetStrength = pointer.inside ? 1 : 0;
+    pointer.strength += (targetStrength - pointer.strength) * (1 - Math.exp(-dt * 12));
+    if (pointer.strength < .001) pointer.strength = 0;
+    draw();
+    if (running && !document.hidden) frame = requestAnimationFrame(animate);
+  }
+  function syncMotion() {
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0; last = null;
+    if (running && ctx && !document.hidden) frame = requestAnimationFrame(animate);
+    else if (!running) { morph = 1; pointer.strength = 0; draw(); }
+  }
+  function show(i, {writeHash = true, focus = null, initial = false} = {}) {
+    if (!Number.isInteger(i) || i < 0 || i >= scenes.length) return;
+    selectShape(initial ? 0 : i, initial || !running);
+    if (i === active && !initial) { draw(); return; }
+    active = i;
+    scenes.forEach((scene, index) => {
+      scene.hidden = index !== i;
+      scene.classList.toggle('enter', index === i && !initial && running);
+    });
+    nav.forEach((button, index) => index === i ? button.setAttribute('aria-current','page') : button.removeAttribute('aria-current'));
+    prev.disabled = i === 0;
+    next.disabled = i === scenes.length - 1;
+    const number = String(i + 1).padStart(2, '0');
+    document.querySelector('#current').textContent = number;
+    if (writeHash && location.hash !== '#' + scenes[i].id) {
+      try { history.pushState(null, '', '#' + scenes[i].id); }
+      catch { location.hash = scenes[i].id; }
+    }
+    if (focus === 'title') {
+      const heading = scenes[i].querySelector('h1,h2');
+      heading.tabIndex = -1;
+      heading.focus({preventScroll:true});
+    } else if (focus?.disabled) (i === 0 ? next : prev).focus({preventScroll:true});
+    draw();
+  }
+  const sceneFromHash = () => Math.max(0, scenes.findIndex(scene => '#' + scene.id === location.hash));
+  document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => show(Number(button.dataset.go), {focus: button.closest('.scene') ? 'title' : null})));
+  document.querySelector('.brand').addEventListener('click', event => {event.preventDefault(); show(0);});
+  prev.addEventListener('click', () => show(active - 1, {focus:prev}));
+  next.addEventListener('click', () => show(active + 1, {focus:next}));
+  document.addEventListener('keydown', event => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      const destination = active + (event.key === 'ArrowRight' ? 1 : -1);
+      if (destination < 0 || destination >= scenes.length) return;
+      event.preventDefault(); show(destination, {focus:event.target});
+    }
+  });
+  addEventListener('hashchange', () => show(sceneFromHash(), {writeHash:false}));
+  preference.addEventListener('change', () => {running = !preference.matches; syncMotion();});
+  document.addEventListener('visibilitychange', syncMotion);
+  site.addEventListener('pointermove', event => {
+    if (event.pointerType !== 'mouse') return;
+    const r = canvas.getBoundingClientRect();
+    pointer.targetX = event.clientX - r.left;
+    pointer.targetY = event.clientY - r.top;
+    if (!pointer.inside && pointer.strength === 0) {
+      pointer.x = pointer.targetX;
+      pointer.y = pointer.targetY;
+    }
+    pointer.inside = true;
+  });
+  const releasePointer = () => {pointer.inside = false;};
+  site.addEventListener('pointerleave', releasePointer);
+  site.addEventListener('pointercancel', releasePointer);
+  new ResizeObserver(size).observe(canvas);
+  show(sceneFromHash(), {initial:true, writeHash:false});
+  size();
+  syncMotion();
+})();
+</script>
+</body>
+</html>
