@@ -87,17 +87,17 @@
     <div class="content">
       <p class="eyebrow" data-de="Kontakt">Contact</p>
       <h1 data-de="Kontakt">Contact</h1>
-      <p class="lede" data-de="Anfrage senden: Name, E-Mail und Grund. Die Nachricht öffnet Ihr E-Mail-Programm — es werden keine Daten an Server übertragen und nichts protokolliert.">Send a message: name, email, and reason. Your email app opens with the message ready to send — no data is transmitted to any server and nothing is logged.</p>
+      <p class="lede" data-de="Anfrage senden: Name, E-Mail und Grund. Die E-Mail-Kontaktadresse ist noch nicht veröffentlicht (PLATZHALTER — folgt mit den Betreiber-Daten, siehe Impressum).">Send a message: name, email, and reason. The email contact address has not been published yet (placeholder — it will follow with the operator details, see imprint).</p>
       <form id="contact-form" novalidate>
         <label for="f-name"><span class="label" data-de="Ihr Name">Your name</span> <span class="req" aria-hidden="true">*</span><input id="f-name" name="name" type="text" autocomplete="name" required data-de-ph="Ihr Name" placeholder="Your name"></label>
         <label for="f-email"><span class="label" data-de="Ihre E-Mail">Your email</span> <span class="req" aria-hidden="true">*</span><input id="f-email" name="email" type="email" autocomplete="email" required data-de-ph="ihre@adresse.com" placeholder="you@example.com"></label>
         <label for="f-topic"><span class="label" data-de="Grund">Reason</span> <span class="req" aria-hidden="true">*</span><textarea id="f-topic" name="topic" required data-de-ph="Worum geht es?" placeholder="What is this about?"></textarea></label>
         <button type="submit" class="submit" data-de="Nachricht vorbereiten">Prepare message</button>
       </form>
-      <p class="note" data-de="Hinweis: Über diese Seite werden keine personenbezogenen Daten erhoben oder gespeichert — die Nachricht wird ausschließlich lokal in Ihrem E-Mail-Programm aufbereitet.">Note: No personal data is collected or stored through this page — the message is prepared exclusively in your own email app.</p>
+      <p class="note" data-de="Hinweis: Über diese Seite werden keine personenbezogenen Daten erhoben oder gespeichert.">Note: No personal data is collected or stored through this page.</p>
       <div class="done" role="status">
-        <h2 data-de="Nachricht vorbereitet">Message prepared</h2>
-        <p data-de="Ihr E-Mail-Programm hat sich geöffnet. Bitte die Nachricht prüfen und absenden.">Your email app has opened. Please review and send the message.</p>
+        <h2 data-de="Kontakt-Adresse folgt">Contact address to follow</h2>
+        <p data-de="Die E-Mail-Kontaktadresse ist noch nicht veröffentlicht (PLATZHALTER — folgt mit den Betreiber-Daten, siehe Impressum). Bitte erneut versuchen, sobald sie dort hinterlegt ist.">The email contact address has not been published yet (placeholder — it will follow with the operator details, see imprint). Please try again once it has been listed there.</p>
       </div>
     </div>
   </main>
@@ -131,24 +131,15 @@
     });
   }
   try { setLanguage(localStorage.getItem(languageKey)); } catch { setLanguage('en'); }
-  // Kontakt-Submit: E-Mail-Ziel ausschließlich Base64-codiert (kein Klartext im HTML)
-  const TO_B64 = 'c3VwZXJpbnRlbG5leEBnbWFpbC5jb20=';
+  // Kontakt-PLATZHALTER: die Betreiber-E-Mail ist noch nicht freigegeben (#2) —
+  // es gibt daher keinen mailto-/Server-Endpunkt. Formular-Eingaben werden
+  // ausschließlich lokal geprüft und nicht irgendwohin gesendet.
   const form = document.getElementById('contact-form');
   const done = document.querySelector('.done');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!form.checkValidity()) { form.reportValidity(); return; }
-    const data = new FormData(form);
-    const name = String(data.get('name') || '').trim();
-    const email = String(data.get('email') || '').trim();
-    const topic = String(data.get('topic') || '').trim();
-    const lang = language === 'de' ? 'DE' : 'EN';
-    const subject = lang === 'DE' ? 'Kontaktanfrage — SuperIntelNex' : 'Contact inquiry — SuperIntelNex';
-    const body = ['Name: ' + name, 'E-Mail: ' + email, '', topic, '', 'Via superintelnex.com/kontakt.html'].join('\n');
-    const target = atob(TO_B64);
-    window.location.href = 'mailto:' + target + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     done.classList.add('show');
-    form.reset();
     done.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 })();
