@@ -372,7 +372,7 @@
     document.querySelector('#current').textContent = number;
     document.title = TITLES[scenes[i].id] || 'SuperIntelNex';
     // Screenreader-Ankündigung: #current steht in einem role="status"-Bereich —
-    // der Zähler-Wechsel wird daher automatisch polit-live gemeldet.
+    // der Zähler-Wechsel wird daher automatisch (polite live region) gemeldet.
     if (writeHash && location.hash !== '#' + scenes[i].id) {
       try { history.pushState(null, '', '#' + scenes[i].id); }
       catch { location.hash = scenes[i].id; }
