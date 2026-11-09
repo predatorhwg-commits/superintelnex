@@ -224,9 +224,17 @@
   let language = 'en';
   const shapeIntervalMs = 7000;
   const shapeTransitionSeconds = 3.6;
-  const shapeOrder = ['galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere', 'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit'];
+  const shapeOrder = [
+    'galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere',
+    'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit',
+    'wormhole', 'eye', 'mobius', 'comet', 'crystal', 'butterfly',
+    'jellyfish', 'aurora', 'hourglass', 'binary', 'supernova',
+    'candlesticks', 'orderbook', 'depth-chart', 'volume-profile', 'bollinger',
+    'triangle', 'double-bottom', 'fibonacci-fan', 'trade-ticker', 'portfolio-rings'
+  ];
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
-  let shape = 0, shapeAgeMs = 0;
+  let shapeQueue = [];
+  let shape = nextShape(), shapeAgeMs = 0;
   let width = 0, height = 0, cx = 0, cy = 0, scale = 0, count = 0, skyCount = 0;
   const pointer = {x:0, y:0, targetX:0, targetY:0, inside:false, strength:0};
   let morph = 1, from = null;
@@ -236,6 +244,31 @@
   function random() {
     seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
     return seed / 4294967296;
+  }
+  const candleBars = [
+    [.38,.20,.10,.49], [.22,.32,.13,.40], [.34,.08,-.03,.42], [.10,-.13,-.24,.21],
+    [-.12,.02,-.21,.16], [.04,.19,-.04,.28], [.18,-.05,-.14,.27], [-.03,-.29,-.39,.08],
+    [-.27,-.46,-.57,-.15], [-.44,-.32,-.54,-.22], [-.34,-.56,-.68,-.25]
+  ];
+  const orderSteps = [0,.20,.34,.44,.63,.76,1];
+  const depthLevels = [.02,.10,.21,.29,.43,.53,.67,.73,.84];
+  const volumeBars = [.23,.35,.53,.74,1.04,1.42,1.82,1.55,1.22,.91,.67,.49,.29,.20];
+  const doubleBottomPath = [
+    [-1.04,-.47],[-.91,-.29],[-.80,-.34],[-.69,.02],[-.53,.40],[-.42,.52],
+    [-.32,.43],[-.24,.19],[-.10,-.10],[.00,-.23],[.10,-.10],[.22,.19],
+    [.33,.44],[.44,.53],[.55,.42],[.63,.16],[.76,-.19],[.86,-.16],[1.04,-.54]
+  ];
+  const fanRatios = [0,.236,.382,.50,.618,.786,1];
+  const portfolioCuts = [0,.18,.51,.78,1];
+  function tracePoint(path, progress) {
+    const position = progress * (path.length - 1);
+    const segment = Math.floor(position);
+    const fraction = position - segment;
+    const start = path[segment], end = path[segment + 1];
+    return [start[0] + (end[0] - start[0]) * fraction, start[1] + (end[1] - start[1]) * fraction];
+  }
+  function bandCenter(x) {
+    return .19 * Math.sin(x * 5.7) - x * .21 + .052 * Math.sin(x * 13);
   }
   const starCorners = Array.from({length:10}, (_, index) => {
     const angle = index * tau / 10 - Math.PI / 2;
@@ -252,6 +285,10 @@
   ];
   // Torus knot (2,3) parameters.
   const knotP = 2, knotQ = 3, knotRadius = .72;
+  const crystalRing = Array.from({length:6}, (_, i) => {
+    const angle = i * tau / 6 + Math.PI / 6;
+    return [Math.cos(angle), Math.sin(angle)];
+  });
   // One ECG beat spans ekgPeriod units of x: P wave, Q dip, R spike, T wave.
   const ekgPeriod = 1.3;
   function ekgY(x) {
@@ -413,7 +450,260 @@
       orbitPos = [rr, rz * .44 + (e - .5) * .03, rz];
     }
     const orbit = orbitPos;
-    return {shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, vortex, knot, circuit, ekg, constellation, orbit], size:e, phase:b, scatter};
+    // Wurmloch: feine Gewinde und Ringe auf zwei zur Mitte verengten Trichtern.
+    const ring = i % 4 === 0;
+    const tunnelLane = ring ? Math.floor(i / 4) : i;
+    const tunnelDepth = ring ? (tunnelLane % 11 + .45 * c) / 11 : c;
+    const tunnelAngle = ring ? a : (i % 9) * tau / 9 + 4.6 * tunnelDepth + (d - .5) * .25;
+    const tunnelRadius = .10 + .53 * tunnelDepth ** 1.68 + (e - .5) * .025;
+    const tunnelSide = tunnelLane % 2 === 0 ? -1 : 1;
+    const wormhole = [tunnelSide * 1.1 * tunnelDepth,
+      Math.cos(tunnelAngle) * tunnelRadius, Math.sin(tunnelAngle) * tunnelRadius];
+
+    // KI-Auge: doppelte Lidlinie, unterbrochener Irisrand und radiale Fasern.
+    let eye;
+    if (i % 5 < 2) {
+      const lid = (i % 5 === 0 ? -1 : 1) * .53 * Math.sin(Math.PI * c) ** .84;
+      const rim = i % 13 < 3 ? 1.13 : 1;
+      eye = [(2 * c - 1) * 1.20, lid * rim + (d - .5) * .042, .10 + (e - .5) * .09];
+    } else {
+      const irisRadius = i % 7 === 0 ? .402 + (d - .5) * .026 : .137 + .254 * c;
+      const irisAngle = i % 7 === 0 ? a : (i % 53) * tau / 53 + (d - .5) * .047 + irisRadius * 1.5;
+      eye = [Math.cos(irisAngle) * irisRadius, Math.sin(irisAngle) * irisRadius,
+        .13 + .25 * (1 - irisRadius) + (e - .5) * .045];
+    }
+
+    // Möbiusband: gestreifte Fläche mit durchgehenden, einmal verdrehten Kanten.
+    const band = i % 5;
+    const across = band < 2 ? (band === 0 ? -.31 : .31) + (d - .5) * .018
+      : ((i % 9) - 4) * .069 + (d - .5) * .038;
+    const bandRadius = .79 + across * Math.cos(a * .5);
+    const mobius = [Math.cos(a) * bandRadius, Math.sin(a) * bandRadius, across * Math.sin(a * .5)];
+
+    // Komet: kompakter Kopf, schmale Fäden und ein aufgefächerter Staubschweif.
+    let comet;
+    if (i % 5 === 0) {
+      const head = .21 * c ** .73;
+      comet = [.66 + Math.cos(a) * head, -.17 + Math.sin(a) * head, Math.sin(b) * head * .8];
+    } else {
+      const tailWidth = .023 + .34 * c ** 1.36;
+      const filament = i % 3 === 0 ? (i % 7 - 3) / 3 + (d - .5) * .18 : Math.sin(b) * Math.sqrt(d);
+      comet = [.66 - 1.94 * c, -.17 + .49 * c * c + filament * tailWidth,
+        Math.cos(b) * tailWidth * .56];
+    }
+
+    // Kristall: sechs Facetten, scharfe Längskanten und zwei kleine Splitter.
+    const face = Math.floor(a * 6 / tau);
+    const faceStart = crystalRing[face], faceEnd = crystalRing[(face + 1) % 6];
+    const faceWidth = i % 5 < 2 ? .021 * d : d;
+    const crystalY = i % 11 === 0 ? (i % 2 ? -.51 : .51) : 2.06 * (c - .5);
+    const facetRadius = .57 * Math.min(1, (1.04 - Math.abs(crystalY)) / .53);
+    const shard = i % 10;
+    const shardScale = shard < 2 ? .33 : 1;
+    const shardX = shard === 0 ? -.90 : shard === 1 ? .82 : 0;
+    const crystal = [
+      shardX + shardScale * facetRadius * (faceStart[0] + faceWidth * (faceEnd[0] - faceStart[0])),
+      crystalY * shardScale + (shard === 0 ? .26 : shard === 1 ? -.23 : 0),
+      shardScale * facetRadius * (faceStart[1] + faceWidth * (faceEnd[1] - faceStart[1]))
+    ];
+
+    // Schmetterlingsnebel: asymmetrische Flügelpaare, Staubadern und heller Kern.
+    let butterfly;
+    if (i % 9 === 0) {
+      butterfly = [Math.cos(b) * .072 * Math.sqrt(d), (c - .5) * .62, Math.sin(b) * .088];
+    } else {
+      const upper = i % 4 < 2;
+      const wingSide = i % 2 ? -1 : 1;
+      const wingWidth = Math.sin(Math.PI * c) ** .79;
+      const vein = i % 3 === 0 ? ((i % 7) / 3 - 1) + (d - .5) * .07 : 2 * d - 1;
+      const wingY = upper ? -.08 - .64 * c : .14 + .36 * c;
+      butterfly = [wingSide * (.06 + (upper ? 1.14 : .84) * c),
+        wingY + vein * wingWidth * (upper ? .34 : .32),
+        Math.sin(b) * (.035 + .17 * wingWidth) * Math.sqrt(e)];
+    }
+
+    // Jellyfish: radial ribs on the bell, inner mantle and staggered tentacles.
+    let jellyfish;
+    if (i % 10 < 6) {
+      const rim = i % 7 === 0;
+      const arch = rim ? 1.57 - .07 * c : Math.asin(Math.sqrt(c));
+      const rib = i % 4 === 0 ? (i % 29) * tau / 29 + (d - .5) * .06 : a;
+      const bellRadius = (.69 + (e - .5) * .045) * Math.sin(arch);
+      jellyfish = [Math.cos(rib) * bellRadius, -.24 - .53 * Math.cos(arch),
+        Math.sin(rib) * bellRadius * .71];
+    } else {
+      const lane = i % 11 / 10 - .5;
+      const length = .61 + .54 * (1 - 1.6 * Math.abs(lane)) + .09 * Math.sin(lane * 18);
+      jellyfish = [lane * (1.19 - .09 * c) + Math.sin(b) * .016,
+        -.22 + c * length, (d - .5) * .09 + .13 * Math.cos(lane * tau)];
+    }
+
+    // Aurora: three folded curtains with luminous edges and vertical striations.
+    const curtain = i % 3;
+    const pleat = i % 5 < 2 ? (Math.floor(c * 88) + .22 * e) / 88 : c;
+    const curtainX = (pleat - .5) * 2.28;
+    const curtainHeight = i % 9 < 3 ? .12 * d : .79 * d ** 1.7;
+    const aurora = [curtainX, .24 + curtain * .16 + .20 * Math.sin(curtainX * 3 + curtain)
+      - curtainHeight, .24 * (curtain - 1) + .26 * Math.sin(curtainX * 3.9 + curtain) + (e - .5) * .06];
+
+    // Hourglass: two glass chambers, circular lips, piles and the falling stream.
+    const glassLane = i % 10;
+    let hourglass;
+    if (glassLane < 6) {
+      const glassY = glassLane === 0 ? (i % 20 === 0 ? -.88 : .88) + (d - .5) * .023 : (2 * c - 1) * .88;
+      const glassRadius = .087 + .54 * Math.sin(Math.abs(glassY) / .88 * Math.PI / 2) ** 1.7;
+      hourglass = [Math.cos(a) * glassRadius, glassY, Math.sin(a) * glassRadius * .66];
+    } else if (glassLane < 9) {
+      const sandRadius = .52 * Math.sqrt(c);
+      hourglass = [Math.cos(a) * sandRadius, 0, Math.sin(a) * sandRadius * .66];
+    } else {
+      hourglass = [(e - .5) * .048, c, (d - .5) * .046];
+    }
+
+    // Binary system: unequal stellar cores, a bridge and diffuse outer arcs.
+    const binaryLane = i % 10;
+    let binary;
+    if (binaryLane < 5) {
+      const primary = binaryLane < 3;
+      const starRadius = (primary ? .28 : .21) * c ** .65;
+      binary = [(primary ? -.61 : .61) + Math.cos(a) * starRadius, Math.sin(a) * starRadius,
+        Math.sin(b) * starRadius * .82];
+    } else if (binaryLane < 8) {
+      const bridge = (c - .5) * 1.19;
+      binary = [bridge, .18 * Math.sin(bridge * 5.25) + (d - .5) * .11,
+        .15 * Math.cos(bridge * 4.5) + (e - .5) * .10];
+    } else {
+      const orbitRadius = .88 + .27 * d;
+      binary = [Math.cos(a) * orbitRadius, Math.sin(a) * orbitRadius * .47,
+        Math.sin(a) * orbitRadius * .53 + (e - .5) * .075];
+    }
+
+    // Supernova: a stellar core, braided shock fronts and faint radial ejecta.
+    const burstLane = i % 12;
+    const rayAngle = (i % 73) * tau / 73 + (d - .5) * .12;
+    const burstAngle = burstLane < 7 ? a : rayAngle;
+    const burstRadius = burstLane < 2 ? .19 * Math.sqrt(c)
+      : burstLane < 7 ? .56 + (burstLane - 2) * .105 + (d - .5) * .045 : .27 + .77 * c;
+    const corrugation = 1 + .08 * Math.sin(burstAngle * 11 + c * 6);
+    const supernova = [Math.cos(burstAngle) * burstRadius * corrugation,
+      Math.sin(burstAngle) * burstRadius * corrugation * .78,
+      Math.sin(b) * burstRadius * .35];
+
+    const lane = i % 10;
+    const noise = (d - .5) * .022;
+    const chartZ = (e - .5) * .045;
+
+    // Candlesticks: hollow and filled bodies, fine wicks, and volume at the baseline.
+    const candleIndex = Math.floor(i / 10) % candleBars.length;
+    const candleX = -.99 + candleIndex * .198;
+    const [open, close, high, low] = candleBars[candleIndex];
+    const top = Math.min(open, close), bottom = Math.max(open, close);
+    const bodyX = lane < 2 ? (lane === 0 ? -.057 : .057) + noise : (d - .5) * .114;
+    let candlesticks;
+    if (lane < 6) {
+      const bodyY = lane === 2 ? top + noise : lane === 3 ? bottom + noise : top + (bottom - top) * c;
+      const hollowDepth = lane >= 4 && close > open ? -.20 : chartZ;
+      candlesticks = [candleX + bodyX, bodyY, hollowDepth];
+    } else if (lane < 8) {
+      const wickY = lane === 6 ? high + (top - high) * c : bottom + (low - bottom) * c;
+      candlesticks = [candleX + noise, wickY, chartZ];
+    } else {
+      candlesticks = [candleX + (d - .5) * .108, .73 - c * (.085 + 1.1 * Math.abs(close - open)), chartZ];
+    }
+
+    // Order book: interlocking stairs and resting orders flowing toward the gap.
+    const orderSide = Math.floor(i / 10) % 2 === 0 ? -1 : 1;
+    const orderLevel = Math.floor(i / 20) % 6;
+    const orderY = -.54 + orderLevel * .202;
+    const orderInner = .14 + orderSteps[orderLevel] * .88;
+    const orderOuter = .14 + orderSteps[orderLevel + 1] * .88;
+    const orderX = lane < 4 ? orderInner + c * (orderOuter - orderInner) : orderOuter;
+    const orderbook = lane < 8
+      ? [orderSide * (orderX + noise), orderSide * (orderY + (lane < 4 ? 0 : c * .202)) + noise, chartZ]
+      : lane === 9 && orderLevel === 2
+        ? [Math.cos(a) * .11 * c, Math.sin(a) * .11 * c, chartZ]
+        : [orderSide * (.18 + c * .86), orderSide * orderY + noise, chartZ];
+
+    // Market depth: the bids and asks build two filled terraces around the spread.
+    const depthSide = Math.floor(i / 10) % 2 === 0 ? -1 : 1;
+    const depthLevel = Math.floor(i / 20) % depthLevels.length;
+    const depthX = .095 + depthLevel * .108;
+    const depthY = .58 - depthLevels[depthLevel] * (depthSide < 0 ? 1.22 : 1.36);
+    const nextDepthY = .58 - depthLevels[Math.min(depthLevel + 1, depthLevels.length - 1)]
+      * (depthSide < 0 ? 1.22 : 1.36);
+    const depthSampleX = depthX + (lane === 3 ? .108 : c * .108);
+    const depthSampleY = lane < 3 ? depthY : lane === 3 ? depthY + (nextDepthY - depthY) * c
+      : depthY + (.61 - depthY) * c;
+    const depthChart = [depthSide * (depthSampleX + noise), depthSampleY + noise, chartZ];
+
+    // Volume profile: a bright point-of-control row and thinner outer rows.
+    const volumeIndex = Math.floor(i / 10) % volumeBars.length;
+    const volumeLength = volumeBars[volumeIndex];
+    const volumeY = -.64 + volumeIndex * .097;
+    const volumeProfile = lane === 0
+      ? [-.91 + noise, (c - .5) * 1.48, chartZ]
+      : [-.91 + (lane === 1 ? volumeLength + noise : c * volumeLength),
+        volumeY + (lane === 2 ? -.025 + noise : lane === 3 ? .025 + noise : (d - .5) * .061), chartZ];
+
+    // Bollinger bands: the middle average meanders between two breathing bands.
+    const bandX = (c - .5) * 2.10;
+    const bandMid = bandCenter(bandX);
+    const bandwidth = .20 + .105 * (1 + Math.sin(bandX * 3 - .65));
+    const bandOffset = lane < 3 ? -bandwidth : lane < 6 ? bandwidth : lane < 8 ? 0 : (d - .5) * 2 * bandwidth;
+    const bollinger = [bandX, bandMid + bandOffset + noise, chartZ];
+
+    // Triangle: two converging trend lines, a bouncing price, and breakout dust.
+    const triangleX = -1.03 + c * 1.93;
+    const triangleHeight = .58 - c * .55;
+    const bounce = 2 / Math.PI * Math.asin(Math.sin(c * tau * 2.45 + .36));
+    const triangle = lane < 8
+      ? [triangleX, (lane < 2 ? -triangleHeight : lane < 4 ? triangleHeight : triangleHeight * bounce)
+        - .08 * c + noise, chartZ]
+      : [.65 + c * .42 + noise, -.09 - c * .32 + (d - .5) * .17 * c, chartZ];
+
+    // Double bottom: two highlighted lows and a dotted neckline.
+    const [bottomX, bottomY] = tracePoint(doubleBottomPath, c);
+    const lowX = lane % 2 === 0 ? -.42 : .44;
+    const lowY = lane % 2 === 0 ? .52 : .53;
+    const doubleBottom = lane < 7 ? [bottomX + noise, bottomY + (e - .5) * .033, chartZ]
+      : lane === 7 ? [((Math.floor(c * 23) + d * .53) / 23 - .5) * 1.54, -.23 + noise, chartZ]
+      : [lowX + Math.cos(a) * (.048 + .083 * c), lowY + Math.sin(a) * (.048 + .083 * c), chartZ];
+
+    // Fibonacci fan: seven rays from one pivot with dotted measuring arcs.
+    const fanIndex = Math.floor(i / 10) % fanRatios.length;
+    const fanX = c * 1.95;
+    const fanSlope = .54 - 1.27 * fanRatios[fanIndex];
+    const guideRadius = .47 + (i % 3) * .39;
+    const guideAngle = -.62 + (Math.floor(c * 22) + d * .45) / 22 * 1.12;
+    const fibonacciFan = lane < 8 ? [-.94 + fanX, .21 + fanSlope * fanX * .60 + noise, chartZ]
+      : [-.94 + Math.cos(guideAngle) * guideRadius, .21 + Math.sin(guideAngle) * guideRadius, chartZ];
+
+    // Ticker: staggered trade packets with individual cores and short wakes.
+    const tickerRow = Math.floor(i / 10) % 4;
+    const tickerPacket = Math.floor(i / 40) % 6;
+    const tickerSize = .022 + .035 * ((tickerPacket * 3 + tickerRow * 5) % 7) / 6;
+    const tickerCenter = -.97 + tickerPacket * .39 + tickerRow * .064;
+    const tradeTicker = lane < 8
+      ? [tickerCenter + Math.cos(a) * tickerSize * c + (lane < 5 ? 0 : c * .15),
+        (tickerRow - 1.5) * .28 + Math.sin(a) * tickerSize * Math.sqrt(c), chartZ]
+      : [(c - .5) * 2.08, (tickerRow - 1.5) * .28 + noise * .42, chartZ];
+
+    // Portfolio: three ring planes with gaps between their weighted segments.
+    const portfolioRing = Math.floor(i / 10) % 3;
+    const portfolioSector = Math.floor(i / 30) % 4;
+    const sectorStart = portfolioCuts[portfolioSector], sectorEnd = portfolioCuts[portfolioSector + 1];
+    const sectorAngle = (sectorStart + .012 + c * (sectorEnd - sectorStart - .024)) * tau;
+    const ringRadius = .46 + portfolioRing * .22 + (d - .5) * (lane < 3 ? .032 : .095);
+    const portfolioRings = [Math.cos(sectorAngle) * ringRadius,
+      Math.sin(sectorAngle) * ringRadius, (e - .5) * .055];
+
+    return {
+      shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, vortex, knot,
+        circuit, ekg, constellation, orbit, wormhole, eye, mobius, comet, crystal, butterfly,
+        jellyfish, aurora, hourglass, binary, supernova, candlesticks, orderbook, depthChart,
+        volumeProfile, bollinger, triangle, doubleBottom, fibonacciFan, tradeTicker, portfolioRings],
+      size:e, phase:b, scatter
+    };
   });
   const sky = Array.from({length:1350}, () => {
     const x = random(), y = random(), brightness = random();
@@ -475,6 +765,36 @@
     const sx = Math.sin(xAngle), ax = Math.cos(xAngle), sz = Math.sin(zAngle), az = Math.cos(zAngle);
     const sway = mode === 'star' ? 0 : Math.sin(time * .38) * .19;
     const ys = Math.sin(sway), yc = Math.cos(sway);
+    const turnAngle = mode === 'mobius' ? time * .32 : time * .46;
+    const turnSin = Math.sin(turnAngle), turnCos = Math.cos(turnAngle);
+    const blink = 1 - .82 * Math.max(0, Math.cos(time * .78)) ** 26;
+    const flap = .34 * Math.sin(time * 1.42);
+    const jellyPulse = Math.sin(time * 1.75);
+    const jellyDrift = .055 * Math.sin(time * .9);
+    const binaryAngle = time * .69;
+    const binarySin = Math.sin(binaryAngle), binaryCos = Math.cos(binaryAngle);
+    const glassTime = time * .16;
+    const glassTurn = Math.floor(glassTime);
+    const glassCycle = glassTime % 1;
+    const glassDrain = Math.min(1, glassCycle / .76);
+    const glassFlip = clamp((glassCycle - .77) / .23, 0, 1);
+    const glassAngle = Math.PI * (glassTurn + glassFlip * glassFlip * (3 - 2 * glassFlip));
+    const glassSin = Math.sin(glassAngle), glassCos = Math.cos(glassAngle);
+    const glassDirection = glassTurn % 2 ? -1 : 1;
+    const shock = (time * .24) % 1;
+    const shockExpansion = .45 + .72 * shock ** .6;
+    const shockFade = Math.min(1, shock * 9, (1 - shock) * 8);
+    const chartSweep = -1.12 + (time * .23 % 1) * 2.24;
+    const candleGrowth = .45 + .55 * (.5 - .5 * Math.cos(time * 1.05));
+    const bandBreath = 1 + .23 * Math.sin(time * 1.04);
+    const bookFlow = time * .19 % 1;
+    const bookMatch = Math.max(0, Math.sin(time * 1.75)) ** 6;
+    const tickerShift = time * .31 % 2.18;
+    const ringRotations = mode === 'portfolio-rings' && [.31, -.24, .17].map((speed, ring) => {
+      const spin = time * speed;
+      const tilt = (ring - 1) * .48 + .17 * Math.sin(time * .46 + ring);
+      return [Math.sin(spin), Math.cos(spin), Math.sin(tilt), Math.cos(tilt)];
+    });
     const pullScaleSquared = clamp(width * .15, 90, 165) ** 2;
     for (let i = 0; i < skyCount; i++) {
       const star = sky[i];
@@ -484,6 +804,8 @@
     for (let i = 0; i < count; i++) {
       const p = points[i], v = p.shapes[shape], j = i * 3;
       let x = v[0], y = v[1], z = v[2];
+      let detailLight = 0;
+      let detailSize = 1;
       if (mode === 'galaxy') {
         const angle = spin * .42 + .026 * Math.sin(time * .7 + p.phase);
         const u = x * Math.cos(angle) - y * Math.sin(angle);
@@ -545,6 +867,208 @@
         x = u2;
         const wobble = .10 * Math.sin(time * .4);
         y += z * wobble * .3;
+      } else if (mode === 'wormhole') {
+        const tunnelY = y * turnCos - z * turnSin;
+        z = y * turnSin + z * turnCos;
+        y = tunnelY + x * .20;
+        detailLight = .16 * Math.sin(Math.abs(x) * 23 + time * 2.8)
+          + (i % 4 === 0 ? .10 : -.06);
+        x += z * .40;
+      } else if (mode === 'eye') {
+        y *= blink;
+        const scan = .37 * Math.sin(time * 1.3);
+        detailLight = i % 5 < 2 ? .13
+          : .14 * Math.exp(-((x - scan) ** 2) / .026) - .04;
+      } else if (mode === 'mobius' || mode === 'crystal') {
+        const originalX = x;
+        x = x * turnCos - z * turnSin;
+        z = originalX * turnSin + z * turnCos;
+        if (mode === 'mobius') {
+          y = .86 * y + .38 * z;
+          detailLight = (i % 5 < 2 ? .19 : -.16) + .09 * Math.sin(p.phase + time * 1.8);
+        } else {
+          detailLight = (i % 5 < 2 || i % 11 === 0 ? .22 : -.23)
+            + .13 * Math.sin(y * 12 - time * 2.6);
+        }
+      } else if (mode === 'comet') {
+        const tail = clamp((.66 - x) / 1.94, 0, 1);
+        x += .15 * Math.sin(time * .62);
+        y += .08 * Math.cos(time * .62) + .11 * tail * Math.sin(time * 1.5 - tail * 5);
+        detailLight = (i % 5 === 0 ? .30 : .06 - .40 * tail)
+          + .09 * Math.sin(tail * 15 + time * 3.6);
+      } else if (mode === 'butterfly') {
+        z += Math.abs(x) * flap;
+        x *= Math.cos(flap);
+        detailLight = i % 9 === 0 ? .23
+          : (i % 3 === 0 ? .04 : -.16) + .09 * Math.sin(Math.abs(x) * 15 - time * 2);
+      } else if (mode === 'jellyfish') {
+        if (i % 10 < 6) {
+          x *= 1 + .075 * jellyPulse;
+          z *= 1 + .075 * jellyPulse;
+          y = (y + .24) * (1 - .10 * jellyPulse) - .24;
+          detailLight = (i % 7 === 0 ? .22 : -.05) + .10 * Math.sin(y * 17 + time * 1.75);
+        } else {
+          const length = y + .22;
+          const ripple = y * 8 - time * 1.7 + (i % 11) * .14;
+          x += length * (.17 * Math.sin(ripple) + .04 * Math.sin(ripple * 1.8));
+          z += length * .11 * Math.cos(ripple);
+          detailLight = (i % 13 === 0 ? .24 : -.02) + .13 * Math.sin(ripple * 2);
+          detailSize = .85;
+        }
+        y += jellyDrift;
+      } else if (mode === 'aurora') {
+        const ripple = x * 4 - time * 1.2 + (i % 3) * .9;
+        y += .10 * Math.sin(ripple);
+        z += .16 * Math.cos(ripple);
+        detailLight = (i % 9 < 3 ? .21 : -.14) + .19 * Math.sin(ripple + y * 6);
+      } else if (mode === 'hourglass') {
+        const lane = i % 10;
+        if (lane < 6) {
+          detailLight = (lane === 0 ? .20 : -.16) + .11 * Math.sin(y * 8 + z * 5);
+        } else if (lane < 9) {
+          const upper = i % 2 === 0;
+          const amount = upper ? 1 - glassDrain : glassDrain;
+          const pile = .34 * amount * (1 - Math.hypot(x, z) / .54) * (.35 + .65 * p.size);
+          y = (upper ? -1 : 1) * (.81 - pile) * glassDirection;
+          const spread = Math.sqrt(amount);
+          x *= spread;
+          z *= spread;
+          detailSize = Math.min(1, amount * 4);
+          detailLight = .12;
+        } else {
+          const grain = (v[1] + time * .70) % 1;
+          y = (grain * 1.15 - .55) * glassDirection;
+          x *= 1 + grain ** 3 * 2;
+          detailSize = Math.min(1, glassDrain * 8, (1 - glassDrain) * 8);
+          detailLight = .24;
+        }
+        y += z * .12;
+        const glassX = x * glassCos - y * glassSin;
+        y = x * glassSin + y * glassCos;
+        x = glassX;
+      } else if (mode === 'binary') {
+        const lane = i % 10;
+        if (lane < 5) {
+          detailLight = .23 + .12 * Math.sin(time * 2.4 + (lane < 3 ? 0 : Math.PI));
+        } else if (lane < 8) {
+          const pulse = x * 8 - time * 2.6;
+          y += .065 * Math.sin(pulse);
+          detailLight = -.07 + .23 * Math.sin(pulse);
+        } else {
+          detailLight = -.24 + .10 * Math.sin(p.phase - time * 1.8);
+        }
+        const orbitX = x * binaryCos - y * binarySin;
+        const orbitY = x * binarySin + y * binaryCos;
+        x = orbitX;
+        y = orbitY * .81 + z * .31;
+        z = z * .81 - orbitY * .31;
+      } else if (mode === 'supernova') {
+        const lane = i % 12;
+        if (lane < 2) {
+          const corePulse = 1.12 - .34 * shockFade;
+          x *= corePulse;
+          y *= corePulse;
+          detailLight = .31 - .16 * shockFade;
+        } else {
+          x *= shockExpansion;
+          y *= shockExpansion;
+          z *= shockExpansion;
+          detailSize = shockFade;
+          detailLight = (lane < 7 ? .22 : -.12) - .31 * shock
+            + .12 * Math.sin(p.phase * 3 - shock * 12);
+        }
+      } else if (mode === 'candlesticks') {
+        const lane = i % 10;
+        detailLight = lane >= 8 ? -.23 : z === -.20 ? -.41 : .14;
+        if (Math.floor(i / 10) % candleBars.length === candleBars.length - 1) {
+          if (lane < 8) {
+            const open = candleBars[candleBars.length - 1][0];
+            y = open + (y - open) * candleGrowth;
+            detailLight += .18 * candleGrowth;
+          } else {
+            y = .73 + (y - .73) * candleGrowth;
+          }
+        }
+      } else if (mode === 'orderbook') {
+        const lane = i % 10;
+        const side = Math.sign(x);
+        const breathe = 1 + .065 * Math.sin(time * .95 + side * 1.7);
+        if (lane === 9 && Math.abs(x) < .14) {
+          x *= .50 + bookMatch;
+          y *= .50 + bookMatch;
+          detailSize = .30 + .70 * bookMatch;
+          detailLight = -.22 + .54 * bookMatch;
+        } else if (lane >= 8) {
+          const progress = ((Math.abs(x) - .18) / .86 + 1 - bookFlow) % 1;
+          x = side * (.15 + progress * .88);
+          detailSize = Math.min(1, progress * 7, (1 - progress) * 7);
+          detailLight = -.21 + .25 * (1 - progress);
+        } else {
+          x = side * (.13 + (Math.abs(x) - .13) * breathe);
+          detailLight = .07 + .15 * Math.sin(y * 6 - time * 2);
+        }
+      } else if (mode === 'depth-chart') {
+        const lane = i % 10;
+        y = .61 + (y - .61) * (1 + .075 * Math.sin(time * .96 + Math.sign(x) + Math.abs(x) * 3));
+        detailLight = lane < 4 ? .17 : -.27;
+        detailLight += .13 * Math.sin(Math.abs(x) * 12 - time * 2);
+      } else if (mode === 'volume-profile') {
+        const lane = i % 10;
+        const row = Math.floor(i / 10) % volumeBars.length;
+        x = -.91 + (x + .91) * (1 + .06 * Math.sin(time * 1.12 + row * .55));
+        detailLight = lane === 0 ? -.20 : row === 6 ? .31 + .11 * Math.sin(time * 1.7)
+          : lane < 4 ? .02 : -.15;
+      } else if (mode === 'bollinger') {
+        const lane = i % 10;
+        const center = bandCenter(x);
+        y = center + (y - center) * bandBreath + .046 * Math.sin(x * 4 - time * 1.2);
+        const shine = Math.max(0, 1 - 4 * Math.abs(x - chartSweep));
+        detailLight = (lane < 6 ? .13 : lane < 8 ? .19 : -.34) + .16 * shine;
+      } else if (mode === 'triangle') {
+        const lane = i % 10;
+        if (lane >= 8) {
+          const progress = clamp((x - .65) / .42, 0, 1);
+          y += .05 * progress * Math.sin(time * 1.5 - progress * 6);
+          detailLight = -.22 + .24 * Math.max(0, Math.cos(time * 1.9 - progress * 4));
+        } else {
+          y += .034 * (1 - x) * Math.sin(time * .9 + x * 2);
+          detailLight = lane < 4 ? .07 : .16 + .21 * Math.max(0, 1 - 5 * Math.abs(x - chartSweep));
+        }
+      } else if (mode === 'double-bottom') {
+        const lane = i % 10;
+        if (lane >= 8) {
+          const lowX = lane === 8 ? -.42 : .44, lowY = lane === 8 ? .52 : .53;
+          const pulse = Math.sin(time * 1.7 - (lane - 8) * 1.2);
+          x = lowX + (x - lowX) * (1 + .18 * pulse);
+          y = lowY + (y - lowY) * (1 + .18 * pulse);
+          detailLight = -.17 + .14 * pulse;
+        } else {
+          detailLight = lane === 7 ? -.21 : .17 + .21 * Math.max(0, 1 - 4 * Math.abs(x - chartSweep));
+        }
+      } else if (mode === 'fibonacci-fan') {
+        const travel = x + .94;
+        y = .21 + (y - .21) * (1 + .19 * Math.sin(time * 1.1));
+        const shine = .16 * Math.max(0, Math.sin(travel * 8 - time * 2.5)) ** 3;
+        detailLight = i % 10 < 8 ? .01 + shine : -.22 + shine;
+      } else if (mode === 'trade-ticker') {
+        const lane = i % 10;
+        if (lane < 8) {
+          x = ((x - tickerShift + 3.27) % 2.18) - 1.09;
+          detailSize = Math.min(1, (1.09 - Math.abs(x)) * 7);
+          detailLight = lane < 5 ? .19 + .16 * Math.sin(p.phase + time * 2) : -.19;
+        } else {
+          detailLight = -.38;
+        }
+      } else if (mode === 'portfolio-rings') {
+        const ring = Math.floor(i / 10) % 3;
+        const sector = Math.floor(i / 30) % 4;
+        const [spinSin, spinCos, tiltSin, tiltCos] = ringRotations[ring];
+        const ringX = x * spinCos - y * spinSin;
+        const ringY = (x * spinSin + y * spinCos) * (.62 + ring * .10);
+        x = ringX * tiltCos - ringY * tiltSin;
+        y = ringX * tiltSin + ringY * tiltCos;
+        z += .21 * ringY;
+        detailLight = .12 - sector * .085 + .12 * Math.sin(time * 1.45 + sector * 1.55);
       }
       const xx = x * yc - z * ys;
       z = x * ys + z * yc; x = xx;
@@ -558,8 +1082,9 @@
       const px = cx + x * scale * persp, py = cy + y * scale * persp;
       const featured = mode === 'star' || (mode === 'token' && v[2] >= .06);
       const light = .24 + .27 * z + p.size * .43 + .10 * Math.sin(time * 1.7 + p.phase)
-        + (featured ? .18 : 0) - (p.scatter ? .25 : 0);
-      const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1) * (featured ? 1.15 : 1);
+        + (featured ? .18 : 0) - (p.scatter ? .25 : 0) + detailLight;
+      const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1) * (featured ? 1.15 : 1)
+        * (1 + (detailSize - 1) * t);
       addStar(px, py, radius, light, p.phase, pullScaleSquared);
     }
     ctx.fillStyle = '#fff';
@@ -609,6 +1134,21 @@
       shape = index;
     }
   }
+  function nextShape(current = -1) {
+    if (shapeQueue.length === 1 && shapeQueue[0] === current) shapeQueue.pop();
+    if (!shapeQueue.length) {
+      shapeQueue = shapeOrder.map((_, index) => index);
+      for (let i = shapeQueue.length - 1; i > 0; i--) {
+        const other = Math.floor(Math.random() * (i + 1));
+        [shapeQueue[i], shapeQueue[other]] = [shapeQueue[other], shapeQueue[i]];
+      }
+    }
+    const lastIndex = shapeQueue.length - 1;
+    if (shapeQueue[lastIndex] === current) {
+      [shapeQueue[0], shapeQueue[lastIndex]] = [shapeQueue[lastIndex], shapeQueue[0]];
+    }
+    return shapeQueue.pop();
+  }
   function animate(now) {
     frame = 0;
     const elapsedMs = last === null ? 0 : now - last;
@@ -617,11 +1157,7 @@
     shapeAgeMs += elapsedMs;
     morph = Math.min(1, morph + dt / shapeTransitionSeconds);
     if (shapeAgeMs >= shapeIntervalMs) {
-      // Random next shape, never the same one twice in a row.
-      const length = shapeOrder.length;
-      let candidate = Math.floor(Math.random() * (length - 1));
-      if (candidate >= shape) candidate++;
-      selectShape(candidate);
+      selectShape(nextShape(shape));
     }
     const follow = 1 - Math.exp(-dt * 20);
     pointer.x += (pointer.targetX - pointer.x) * follow;
@@ -640,7 +1176,7 @@
   }
   function show(i, {writeHash = true, focus = null, initial = false} = {}) {
     if (!Number.isInteger(i) || i < 0 || i >= scenes.length) return;
-    selectShape(initial ? 0 : i, initial || !running);
+    selectShape(initial ? shape : i, initial || !running);
     if (i === active && !initial) { draw(); return; }
     active = i;
     scenes.forEach((scene, index) => {

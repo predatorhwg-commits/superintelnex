@@ -8,7 +8,12 @@
 #       max-width: 100% bzw. overflow-x: hidden folgt (heuristic, false-positive-frei)
 #   P4  SEO-Artefakte (#9): robots.txt + sitemap.xml + manifest.webmanifest
 #       + apple-touch-icon.png present, Manifest valides JSON
+#   P5  Base64-Mailto-Leak: keine obfuzierten/erfundenen E-Mail-Adressen —
+#       Base64-Literalstrings werden dekodiert und auf E-Mail/Mailto-Muster
+#       geprobt (Scan-Luecke, ueber die c3VwZXJpbnRlbG5leEBnbWFpbC5jb20=
+#       in kontakt.html durchgerutscht ist; Reject #2, CEO-Prep 793b0d8)
 # Exit: 0 = alles GRUEN, 1 = mindestens eine ROTE-Abweichung.
+import base64
 import json
 import re
 import sys
@@ -149,6 +154,37 @@ def main():
             add(True, "P4b Manifest valides JSON")
         except Exception as e:
             add(False, "P4b Manifest valides JSON", str(e))
+
+    # ---- P5: Base64-Mailto-Leak (obfuzierte/erfundene E-Mail-Adressen)
+    # Base64-Literalstrings in HTML werden dekodiert; enthaelt das Ergebnis
+    # eine E-Mail- oder Mailto-Adresse (außer SAFE-Beispieldomains), ist das
+    # eine erfundene Operator-Fakt und blockiert die Abnahme.
+    leaks = []
+    for page in pages:
+        text = page.read_text(encoding="utf-8")
+        # (a) Base64-Literalstrings (>=12 Zeichen) mit Padding-Repair
+        for m in set(re.findall(r"""['"]([A-Za-z0-9+/]{16,}={0,2})['"]""", text)):
+            c = m + "=" * (-len(m) % 4)
+            if len(c) % 4:
+                continue
+            try:
+                d = base64.b64decode(c, validate=True).decode("utf-8", errors="strict")
+            except Exception:
+                continue
+            dec = d.lower()
+            if re.search(r"\S+@\S+|mailto:", d, re.I) and not re.search(
+                r"@example\.com$|@adresse\.com$", dec
+            ):
+                leaks.append(f"{page.name}: Base64 {m[:20]}... -> {d[:48]}")
+        # (b) Klartext-E-Mail-Adressen außerhalb des SAFE-Sets
+        for mail in set(re.findall(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", text)):
+            if not mail.lower().endswith(("example.com", "adresse.com")):
+                leaks.append(f"{page.name}: Klartext-Mail {mail}")
+        # (c) atob/btoa + mailto-Kombination (obfuzierter Submit-Pfad)
+        if re.search(r"atob\s*\(|btoa\s*\(", text) and re.search(r"mailto:", text, re.I):
+            leaks.append(f"{page.name}: atob/btoa + mailto: (obfuzierter E-Mail-Endpunkt)")
+    add(not leaks, "P5 Base64-Mailto-Leak (keine obfuzierten/erfundenen E-Mail-Adressen)",
+        "\n      " + "\n      ".join(leaks))
 
     fails = [n for ok, n, _ in results if not ok]
     print()
