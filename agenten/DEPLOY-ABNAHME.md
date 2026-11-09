@@ -16,6 +16,18 @@ zeigt noch einen voralten Stand, weil (a) die Netlify-Subdomain `gleaming-meerka
 offensichtlich nicht (mehr) existiert und (b) die Domain-Namensauflösung noch auf den
 alten Deploy zeigt.
 
+## ZIP-Abnahme (Kurzweg, geprüft 12:25)
+
+`sni-deploy.zip` (Repo-Root, untracked, erzeugt 12:16) ist **byte-identisch mit
+`site/` @ `75d71e5`** verifiziert (diff aller 5 Dateien: index.html inkl.
+Test-Hebel `__sinxPointer`, impressum.html, datenschutz.html, 404.html,
+og-image.png). Damit gilt: Unabhängig von den Netlify-Reconnect-Schritten
+(unten) kann das ZIP sofort per **Netlify-Dashboard → „Drag & Drop" (manueller
+Deploy)** hochgeladen werden — der Abnahme-Check (Schritt 3) lässt sich danach
+schon auf der Subdomain testen. Das ZIP ist **deploy-fertig**, kein Rebuild,
+kein erneutes Packen nötig. (Empfohlen bleibt: Schritt 1–2 (Repo-Connect +
+DNS), damit zukünftige Pushes automatisch deployen.)
+
 ## Was zu tun ist (User/CEO, <5 min pro Schritt)
 
 ### Schritt 1 — Netlify klären (Dashboard, Login)
