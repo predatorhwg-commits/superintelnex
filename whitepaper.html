@@ -3,164 +3,182 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="SuperIntelNex (SIN) Whitepaper — bilingual (EN/DE) technical and planning document. Draft v1.0, 09 Nov 2026: standard SPL token, fixed 10^14 supply, revocable authorities, Devnet prototype, roadmap.">
+<meta name="description" content="SuperIntelNex (SIN) Whitepaper — bilingual (EN/DE) technical and planning document. Draft v1.1, 09 Nov 2026: standard SPL token, fixed 10^14 supply, revoked authorities, Devnet prototype, roadmap.">
 <meta property="og:title" content="SuperIntelNex (SIN) — Whitepaper">
 <meta property="og:description" content="A transparent, fully auditable community token: standard SPL on Solana, fixed supply, revoked authorities. EN/DE.">
 <meta property="og:image" content="https://superintelnex.com/og-image.png">
 <meta property="og:url" content="https://superintelnex.com/whitepaper.html">
 <title>SuperIntelNex (SIN) — Whitepaper</title>
 <link rel="icon" href="superintelnex-sn-anthrazit.svg" type="image/svg+xml">
-<script type="importmap">
-{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+<script>
+/* theme first, before first paint */
+(function(){
+  var t='light';
+  try{ t = localStorage.getItem('sni-theme') || 'light'; }catch(e){}
+  document.documentElement.setAttribute('data-theme', t==='dark' ? 'dark' : 'light');
+})();
 </script>
 <style>
   :root{
-    --bg:#F5F4EF;
+    --bg:#FFFFFF;
     --card:#FFFFFF;
-    --ink:#141414;
-    --body:#4A4842;
-    --muted:#6A6862;
-    --faint:#9B988F;
-    --line:#E4E1D8;
-    --line-strong:#D6D2C6;
-    --coral:#C4553B;
-    --coral-soft:#FAF0EB;
-    --clay:#B08968;
-    --stone:#8A817C;
-    --sage:#5F7E6D;
-    --green:#2F7D5B;
-    --green-soft:#EAF3EE;
-    --amber:#B07A3A;
-    --amber-soft:#FBF4E8;
+    --ink:#111111;
+    --body:#3D3D3D;
+    --muted:#787878;
+    --faint:#ADADAD;
+    --line:#E7E7E7;
+    --code:#F5F5F2;
+    --topbar-bg:rgba(255,255,255,.9);
+    /* allocation chart (monochrome, dark-contrast-safe) */
+    --d1:#111111;
+    --d2:#8A8A8A;
+    --d3:#C9C9C9;
+    --d4:#E4E4E4;
     --serif:Georgia,"Times New Roman","Noto Serif",serif;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
     --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+    color-scheme:light;
+  }
+  html[data-theme="dark"]{
+    --bg:#0A0A0A;
+    --card:#0A0A0A;
+    --ink:#F5F5F5;
+    --body:#B8B8B8;
+    --muted:#8C8C8C;
+    --faint:#5C5C5C;
+    --line:#242424;
+    --code:#161616;
+    --topbar-bg:rgba(10,10,10,.9);
+    --d1:#F5F5F5;
+    --d2:#9A9A9A;
+    --d3:#4F4F4F;
+    --d4:#2A2A2A;
+    color-scheme:dark;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;font-size:16.5px}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.75;font-size:16px;transition:background .25s ease,color .25s ease}
   [data-lang="en"] .t-de{display:none}
   [data-lang="de"] .t-en{display:none}
-  .wrap{max-width:880px;margin:0 auto;padding:0 24px}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
 
   /* ── topbar ── */
-  .topbar{position:sticky;top:0;z-index:20;background:rgba(245,244,239,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .topbar .wrap{display:flex;align-items:center;gap:14px;min-height:64px}
+  .topbar{position:sticky;top:0;z-index:20;background:var(--topbar-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:14px;min-height:60px}
   .mark{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
-  .mark img{width:28px;height:28px}
-  .mark b{font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:-.01em}
-  .mark small{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:.08em}
+  .mark img{width:24px;height:24px}
+  html[data-theme="dark"] .mark img{filter:invert(1)}
+  .mark b{font-family:var(--serif);font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .mark small{font-size:9.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.14em}
   .topbar .spacer{flex:1}
-  .badge{font:10px var(--mono);letter-spacing:.1em;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:99px;padding:5px 11px;white-space:nowrap}
-  .badge.hot{color:var(--coral);border-color:#C4553B2E;background:var(--coral-soft)}
-  .lang{display:flex;gap:2px;padding:2px;border:1px solid var(--line);border-radius:99px;background:var(--card)}
-  .lang button{border:0;border-radius:99px;background:transparent;color:var(--muted);padding:5px 11px;font:600 11px var(--mono);cursor:pointer}
-  .lang button[aria-pressed="true"]{color:var(--card);background:var(--ink)}
+  .badge{font:10px var(--mono);letter-spacing:.14em;border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .theme{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .theme:hover{border-color:var(--ink)}
+  .lang{display:flex;gap:4px}
+  .lang button{border:0;background:transparent;color:var(--faint);padding:5px 8px;font:600 11px var(--mono);letter-spacing:.08em;cursor:pointer;text-decoration:none}
+  .lang button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
 
   /* ── hero ── */
-  .hero{position:relative;padding:64px 0 44px;border-bottom:1px solid var(--line);overflow:hidden}
-  .hero .wrap{position:relative;z-index:2}
-  #coin{position:absolute;inset:0;z-index:1;pointer-events:none}
-  @media(max-width:820px){#coin{opacity:.35}}
-  .kicker{display:inline-flex;align-items:center;gap:9px;font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--coral)}
-  .kicker::before{content:"";width:26px;height:1px;background:var(--coral)}
-  h1{font-family:var(--serif);font-size:clamp(42px,6vw,68px);line-height:1.02;letter-spacing:-.022em;font-weight:600;margin:20px 0 16px}
-  h1 em{font-style:normal;color:var(--coral)}
-  .lede{max-width:600px;color:var(--body);font-size:17.5px;margin:0}
-  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
-  .meta span{font:11px var(--mono);letter-spacing:.05em;color:var(--muted);border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 13px}
-  .meta span.hot{color:var(--coral);border-color:#C4553B2E;background:var(--coral-soft)}
-  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
-  .toc a{font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:7px 14px;transition:border-color .15s,color .15s,transform .15s}
-  .toc a:hover{border-color:var(--coral);color:var(--coral);transform:translateY(-1px)}
+  .hero{padding:80px 0 56px}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .coinbox{height:440px;min-height:300px}
+  #coin{display:block;width:100%;height:100%}
+  @media(max-width:860px){
+    .hero .wrap{grid-template-columns:1fr;gap:24px}
+    .coinbox{height:280px;min-height:280px}
+  }
+  .kicker{display:inline-flex;align-items:center;gap:10px;font:600 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .kicker::before{content:"";width:28px;height:1px;background:var(--ink)}
+  h1{font-family:var(--serif);font-size:clamp(40px,5.5vw,62px);line-height:1.05;letter-spacing:-.02em;font-weight:600;margin:22px 0 18px;color:var(--ink)}
+  h1 em{font-style:normal;font-weight:400;color:var(--muted)}
+  .lede{max-width:560px;color:var(--body);font-size:16.5px;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+  .meta span{font:10.5px var(--mono);letter-spacing:.06em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 13px}
+  .meta span.hot{color:var(--ink);border-color:var(--ink)}
+  .toc{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:32px}
+  .toc a{font-size:13px;color:var(--muted);text-decoration:none}
+  .toc a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 
   /* ── sections ── */
-  section{padding:64px 0;border-bottom:1px solid var(--line)}
-  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:10px}
-  .sec-head .num{font:600 12px var(--mono);color:var(--coral);letter-spacing:.14em}
-  h2{font-family:var(--serif);font-size:clamp(28px,3.6vw,38px);font-weight:600;letter-spacing:-.015em;margin:0;line-height:1.15}
-  h3{font-family:var(--serif);font-size:21px;font-weight:700;margin:40px 0 10px;letter-spacing:-.01em}
-  h3 .n{font:600 11px var(--mono);color:var(--coral);letter-spacing:.14em;margin-right:10px}
+  section{padding:72px 0;border-top:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px}
+  .sec-head .num{font:600 11px var(--mono);color:var(--muted);letter-spacing:.2em}
+  h2{font-family:var(--serif);font-size:clamp(28px,3.4vw,36px);font-weight:600;letter-spacing:-.015em;margin:0;line-height:1.15}
+  h3{font-family:var(--serif);font-size:20px;font-weight:700;margin:44px 0 12px;letter-spacing:-.01em}
+  h3 .n{font:600 10px var(--mono);color:var(--muted);letter-spacing:.2em;margin-right:10px}
   p{margin:14px 0;color:var(--body)}
   strong{font-weight:650;color:var(--ink)}
-  .lead{font-size:18px}
-  a{color:var(--coral)}
+  .lead{font-size:17.5px}
+  a{color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+  a:hover{text-decoration-color:var(--ink)}
   .small{font-size:13.5px;color:var(--muted)}
   .mono{font-family:var(--mono);font-size:13px}
-  code{font:12.5px var(--mono);background:#F0EEE6;border:1px solid var(--line);border-radius:5px;padding:1.5px 6px}
+  code{font:12.5px var(--mono);background:var(--code);border:1px solid var(--line);border-radius:3px;padding:1.5px 6px;color:var(--ink)}
   .nowrap{white-space:nowrap}
 
   /* cards */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px}
-  .card + .card{margin-top:16px}
-  .card h4{font-family:var(--serif);font-size:17px;font-weight:700;margin:0 0 6px}
-  .card p{margin:0;font-size:14.5px;color:var(--muted)}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:24px 26px}
+  .card + .card{margin-top:14px}
+  .card h4{font-family:var(--serif);font-size:16px;font-weight:700;margin:0 0 6px}
+  .card p{margin:0;font-size:14px;color:var(--muted)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
   @media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
 
-  /* callouts */
-  .note{border-radius:16px;padding:20px 24px;margin:24px 0}
-  .note p{margin:8px 0 0;font-size:14.5px;color:var(--body)}
-  .note p:first-of-type{margin-top:2px}
-  .note .tag{display:inline-block;font:600 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
-  .note.warn{background:var(--coral-soft);border:1px solid #C4553B26}
-  .note.warn .tag{color:var(--coral)}
-  .note.info{background:var(--card);border:1px solid var(--line)}
-  .note.info .tag{color:var(--amber)}
-  .note.ok{background:var(--green-soft);border:1px solid #2F7D5B22}
-  .note.ok .tag{color:var(--green)}
-  .note.simple{background:#F3F1EA;border:1px solid var(--line);border-left:3px solid var(--coral)}
-  .note.simple .tag{color:var(--coral)}
+  /* callouts — monochrome */
+  .note{border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:4px;padding:20px 24px;margin:26px 0}
+  .note p{margin:8px 0 0;font-size:14px;color:var(--body)}
+  .note p:first-of-type{margin-top:4px}
+  .note .tag{display:inline-block;font:600 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 
   /* tables */
-  .tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;margin:22px 0}
-  table{border-collapse:collapse;width:100%;font-size:14px;min-width:540px}
-  th{font:600 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);text-align:left;padding:13px 16px;border-bottom:1px solid var(--line);background:#FBFAF6}
+  .tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:4px;margin:24px 0}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+  th{font:600 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 16px;border-bottom:1px solid var(--line)}
   td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--body)}
   tr:last-child td{border-bottom:0}
   td strong{color:var(--ink)}
-  td .key{font-family:var(--mono);font-size:12.5px;color:var(--coral)}
+  td .key{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
 
   /* figures */
-  figure{margin:28px 0}
-  .fig{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px}
-  figcaption{font:12px var(--mono);color:var(--faint);letter-spacing:.03em;margin-top:16px;line-height:1.6}
+  figure{margin:30px 0}
+  .fig{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:28px}
+  figcaption{font:11.5px var(--mono);color:var(--faint);letter-spacing:.03em;margin-top:18px;line-height:1.7}
   figcaption b{color:var(--muted);font-weight:600}
   .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;justify-content:center}
-  .flow .step{flex:1 1 130px;min-width:118px;background:#FBFAF6;border:1px solid var(--line);border-radius:12px;padding:15px 12px;text-align:center}
-  .flow .step.final{border-color:var(--coral);background:var(--coral-soft)}
-  .flow .step b{display:block;font-size:13.5px;font-weight:700;margin-bottom:3px}
-  .flow .step p{font-size:12px;color:var(--muted);margin:7px 0 0;line-height:1.5}
-  .flow .arr{align-self:center;color:var(--faint);font-size:15px;flex:0 0 auto}
+  .flow .step{flex:1 1 128px;min-width:116px;border:1px solid var(--line);border-radius:4px;padding:15px 12px;text-align:center}
+  .flow .step.final{border-color:var(--ink)}
+  .flow .step b{display:block;font-size:13px;font-weight:700;margin-bottom:3px;color:var(--ink)}
+  .flow .step p{font-size:11.5px;color:var(--muted);margin:7px 0 0;line-height:1.55}
+  .flow .arr{align-self:center;color:var(--faint);font-size:14px;flex:0 0 auto}
   @media(max-width:640px){.flow{flex-direction:column}.flow .arr{transform:rotate(90deg);align-self:center}}
-  .legend{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:18px;font-size:13.5px}
+  .legend{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:20px;font-size:13.5px}
   .legend>span{display:inline-flex;align-items:center;gap:8px;color:var(--muted)}
-  .dot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
-  .checks{list-style:none;padding:0;margin:20px 0;display:grid;gap:10px}
-  .checks li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-size:14.5px;color:var(--body);display:flex;gap:12px;align-items:flex-start}
-  .checks li::before{content:"✕";color:var(--coral);font-weight:700;flex:0 0 auto;font-size:15px}
-  .checks li.yes::before{content:"✓";color:var(--green)}
+  .dot{width:10px;height:10px;border-radius:2px;flex:0 0 auto}
+  .checks{list-style:none;padding:0;margin:22px 0;display:grid;gap:10px}
+  .checks li{border:1px solid var(--line);border-radius:4px;padding:14px 18px;font-size:14px;color:var(--body);display:flex;gap:12px;align-items:flex-start}
+  .checks li::before{content:"✕";color:var(--muted);font-weight:700;flex:0 0 auto;font-size:14px}
+  .checks li.yes::before{content:"✓";color:var(--ink)}
   .checks li b{color:var(--ink)}
-  .phase{display:grid;grid-template-columns:46px 1fr;gap:0 18px;margin:0}
-  .phase .n{font:700 13px var(--mono);color:var(--coral);border:1.5px solid var(--coral);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:4px}
-  .phase .c{padding:0 0 30px}
+  .phase{display:grid;grid-template-columns:44px 1fr;gap:0 18px;margin:0}
+  .phase .n{font:700 12px var(--mono);color:var(--ink);border:1px solid var(--ink);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:4px}
+  .phase .c{padding:0 0 32px}
   .phase:last-of-type .c{padding-bottom:0}
-  .phase h4{font-family:var(--serif);font-size:18px;margin:8px 0 4px}
-  .phase p{font-size:14px;margin:6px 0}
-  .phase ul{margin:10px 0 0;padding-left:19px;font-size:14px;color:var(--muted)}
-  .phase ul li{margin:6px 0}
+  .phase h4{font-family:var(--serif);font-size:17px;margin:8px 0 4px}
+  .phase p{font-size:13.5px;margin:6px 0}
+  .phase ul{margin:10px 0 0;padding-left:19px;font-size:13.5px;color:var(--muted)}
+  .phase ul li{margin:7px 0}
 
   /* pull quote */
-  .pull{font-family:var(--serif);font-size:clamp(19px,2.4vw,25px);line-height:1.45;font-weight:500;letter-spacing:-.01em;color:var(--ink);border-left:3px solid var(--coral);padding:6px 0 6px 24px;margin:30px 0}
+  .pull{font-family:var(--serif);font-size:clamp(19px,2.4vw,24px);line-height:1.45;font-weight:500;letter-spacing:-.01em;color:var(--ink);border-left:2px solid var(--ink);padding:8px 0 8px 24px;margin:34px 0}
 
   /* footer */
-  footer{padding:48px 0 64px}
-  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;font:11.5px var(--mono);color:var(--faint)}
+  footer{padding:48px 0 64px;border-top:1px solid var(--line)}
+  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;font:11px var(--mono);color:var(--faint)}
   .foot a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
-  .foot a:hover{color:var(--coral);border-color:var(--coral)}
+  .foot a:hover{border-color:var(--ink)}
   @media print{
-    .topbar,.toc,#coin,.lang{display:none}
+    .topbar,.toc,.coinbox,.theme,.lang{display:none}
     body{background:#fff;font-size:12px}
     section{padding:26px 0}
     .card,.fig,.note,.tblwrap{break-inside:avoid}
@@ -173,11 +191,12 @@
 <nav class="topbar" aria-label="Whitepaper navigation">
   <div class="wrap">
     <a class="mark" href="index.html">
-      <img src="superintelnex-sn-anthrazit.svg" alt="" width="28" height="28">
+      <img src="superintelnex-sn-anthrazit.svg" alt="" width="24" height="24">
       <span><b>SuperIntelNex</b> <small>WHITEPAPER</small></span>
     </a>
     <span class="spacer"></span>
-    <span class="badge hot">DRAFT · V1.0</span>
+    <span class="badge">DRAFT · V1.1</span>
+    <button type="button" class="theme" id="themeBtn" aria-label="Toggle dark mode / Dark-Modus umschalten"><span id="themeIcon">☾</span></button>
     <div class="lang" role="group" aria-label="Language / Sprache">
       <button type="button" data-lang="en" aria-pressed="true">EN</button>
       <button type="button" data-lang="de" aria-pressed="false">DE</button>
@@ -186,43 +205,47 @@
 </nav>
 
 <header class="hero">
-  <canvas id="coin" aria-hidden="true"></canvas>
   <div class="wrap">
-    <span class="kicker">
-      <span class="t-en">Community token project · Solana</span>
-      <span class="t-de">Community-Token-Projekt · Solana</span>
-    </span>
-    <h1>
-      <span class="t-en">SuperIntelNex <em>(SIN)</em><br>The Whitepaper</span>
-      <span class="t-de">SuperIntelNex <em>(SIN)</em><br>Das Whitepaper</span>
-    </h1>
-    <p class="lede">
-      <span class="t-en">A transparent, fully auditable community token built on Solana: a standard SPL token with a fixed supply of 100 trillion, administration rights revoked irreversibly — no custom program, no hidden fees, no freeze or blacklist logic. This document explains every design decision in plain language, shows the audited Devnet prototype, and maps the roadmap to mainnet.</span>
-      <span class="t-de">Ein transparenter, vollständig nachvollziehbarer Community-Token auf Solana: ein Standard-SPL-Token mit fixer Gesamtmenge von 100 Billion, unwiderruflich entzogenen Verwaltungsrechten — kein eigenes Programm, keine versteckten Gebühren, keine Freeze- oder Blacklist-Logik. Dieses Dokument erklärt jede Design-Entscheidung in verständlicher Sprache, zeigt den geprüften Devnet-Prototypen und skizziert den Weg zum Mainnet.</span>
-    </p>
-    <div class="meta">
-      <span class="hot"><span class="t-en">Draft · v1.0</span><span class="t-de">Entwurf · v1.0</span></span>
-      <span>09.11.2026</span>
-      <span>SIN · 100,000,000,000,000 (10¹⁴) · 5 <span class="t-en">decimals</span><span class="t-de">Dezimalstellen</span></span>
-      <span><span class="t-en">No investment · no sale</span><span class="t-de">Keine Anlage · kein Verkauf</span></span>
+    <div>
+      <span class="kicker">
+        <span class="t-en">Community token · Solana</span>
+        <span class="t-de">Community-Token · Solana</span>
+      </span>
+      <h1>
+        <span class="t-en">SuperIntelNex <em>(SIN)</em><br>The Whitepaper</span>
+        <span class="t-de">SuperIntelNex <em>(SIN)</em><br>Das Whitepaper</span>
+      </h1>
+      <p class="lede">
+        <span class="t-en">A transparent, fully auditable community token built on Solana: a standard SPL token with a fixed supply of 100 trillion, administration rights revoked irreversibly — no custom program, no hidden fees, no freeze or blacklist logic. This document explains every design decision in plain language, shows the audited Devnet prototype, and maps the roadmap to mainnet.</span>
+        <span class="t-de">Ein transparenter, vollständig nachvollziehbarer Community-Token auf Solana: ein Standard-SPL-Token mit fixer Gesamtmenge von 100 Billion, unwiderruflich entzogenen Verwaltungsrechten — kein eigenes Programm, keine versteckten Gebühren, keine Freeze- oder Blacklist-Logik. Dieses Dokument erklärt jede Design-Entscheidung in verständlicher Sprache, zeigt den geprüften Devnet-Prototypen und skizziert den Weg zum Mainnet.</span>
+      </p>
+      <div class="meta">
+        <span class="hot"><span class="t-en">Draft · v1.1</span><span class="t-de">Entwurf · v1.1</span></span>
+        <span>09.11.2026</span>
+        <span>SIN · 100,000,000,000,000 (10¹⁴) · 5 <span class="t-en">decimals</span><span class="t-de">Dezimalstellen</span></span>
+        <span><span class="t-en">No investment · no sale</span><span class="t-de">Keine Anlage · kein Verkauf</span></span>
+      </div>
+      <div class="toc">
+        <a href="#summary"><span class="t-en">01 Summary</span><span class="t-de">01 Zusammenfassung</span></a>
+        <a href="#vision"><span class="t-en">02 Vision</span><span class="t-de">02 Vision</span></a>
+        <a href="#architecture"><span class="t-en">03 Architecture</span><span class="t-de">03 Architektur</span></a>
+        <a href="#design"><span class="t-en">04 Token design</span><span class="t-de">04 Token-Design</span></a>
+        <a href="#devnet"><span class="t-en">05 Devnet prototype</span><span class="t-de">05 Devnet-Prototyp</span></a>
+        <a href="#roadmap"><span class="t-en">06 Roadmap</span><span class="t-de">06 Roadmap</span></a>
+        <a href="#risks"><span class="t-en">07 Risks &amp; legal</span><span class="t-de">07 Risiken &amp; Recht</span></a>
+        <a href="#glossary"><span class="t-en">08 Glossary</span><span class="t-de">08 Glossar</span></a>
+        <a href="#sources"><span class="t-en">09 Sources</span><span class="t-de">09 Quellen</span></a>
+      </div>
     </div>
-    <div class="toc">
-      <a href="#summary"><span class="t-en">01 Summary</span><span class="t-de">01 Zusammenfassung</span></a>
-      <a href="#vision"><span class="t-en">02 Vision</span><span class="t-de">02 Vision</span></a>
-      <a href="#architecture"><span class="t-en">03 Architecture</span><span class="t-de">03 Architektur</span></a>
-      <a href="#design"><span class="t-en">04 Token design</span><span class="t-de">04 Token-Design</span></a>
-      <a href="#devnet"><span class="t-en">05 Devnet prototype</span><span class="t-de">05 Devnet-Prototyp</span></a>
-      <a href="#roadmap"><span class="t-en">06 Roadmap</span><span class="t-de">06 Roadmap</span></a>
-      <a href="#risks"><span class="t-en">07 Risks &amp; legal</span><span class="t-de">07 Risiken &amp; Recht</span></a>
-      <a href="#glossary"><span class="t-en">08 Glossary</span><span class="t-de">08 Glossar</span></a>
-      <a href="#sources"><span class="t-en">09 Sources</span><span class="t-de">09 Quellen</span></a>
+    <div class="coinbox" aria-hidden="true">
+      <canvas id="coin"></canvas>
     </div>
   </div>
 </header>
 
 <div class="wrap">
 
-  <div class="note warn" role="alert">
+  <div class="note" role="alert">
     <span class="tag"><span class="t-en">Important notice — please read first</span><span class="t-de">Wichtiger Hinweis — bitte zuerst lesen</span></span>
     <p>
       <span class="t-en">SuperIntelNex is a community token project <strong>in development</strong>. There is no mainnet launch, no sale and no live token with real value — the token that currently exists is a <strong>Devnet test token</strong> on Solana's test network, with zero economic value. This document is not investment, tax or legal advice and makes no promises about prices, yields or gains. All parameters are confirmed for the Devnet test token only; they apply to a mainnet launch solely after re-confirmation (see the <a href="#roadmap">Roadmap</a>).</span>
@@ -247,11 +270,11 @@
       <li><span class="t-en"><b>Mainnet launch: prepared, not executed.</b> Open decisions, legal review, audit and permanent metadata storage are planned in the <a href="#roadmap">Roadmap</a>. Nothing in phase 1–3 has happened yet.</span><span class="t-de"><b>Mainnet-Launch: vorbereitet, nicht ausgeführt.</b> Offene Entscheidungen, Rechtsprüfung, Audit und permanenter Metadaten-Speicher stehen in der <a href="#roadmap">Roadmap</a>. Nichts aus Phase 1–3 ist erfolgt.</span></li>
     </ul>
 
-    <div class="note simple">
+    <div class="note">
       <span class="tag"><span class="t-en">In one sentence</span><span class="t-de">In einem Satz</span></span>
       <p>
         <span class="t-en">SuperIntelNex is a community-owned standard SPL token on Solana with a fixed supply of 100 trillion, whose creation rights were permanently and verifiably handed over — currently as a fully documented Devnet prototype, with mainnet launch as a defined roadmap.</span>
-        <span class="t-de">SuperIntelNex ist ein community-geprägter Standard-SPL-Token auf Solana mit fester Gesamtmenge von 100 Billion, dessen Erstellungsrechte dauerhaft und nachweisbar abegeben wurden — aktuell als vollständig dokumentierter Devnet-Prototyp, mit dem Mainnet-Launch als definierte Roadmap.</span>
+        <span class="t-de">SuperIntelNex ist ein community-geprägter Standard-SPL-Token auf Solana mit fester Gesamtmenge von 100 Billion, dessen Erstellungsrechte dauerhaft und nachweisbar abgeben wurden — aktuell als vollständig dokumentierter Devnet-Prototyp, mit dem Mainnet-Launch als definierte Roadmap.</span>
       </p>
     </div>
 
@@ -304,7 +327,7 @@
         </tbody>
       </table>
     </div>
-    <div class="note simple">
+    <div class="note">
       <span class="tag"><span class="t-en">Why a token at all?</span><span class="t-de">Warum überhaupt ein Token?</span></span>
       <p>
         <span class="t-en">For this project the token is an alignment instrument: it gives the community a shared, permanent interest in the project's success. A fixed supply and revoked authorities mean that interest can't be diluted later by whoever controls the project — that's the technical core of this whitepaper.</span>
@@ -382,7 +405,7 @@
         </figcaption>
       </div>
     </figure>
-    <div class="note ok">
+    <div class="note">
       <span class="tag"><span class="t-en">Correctability by design</span><span class="t-de">Korrekturfähigkeit durch Design</span></span>
       <p>
         <span class="t-en">The order of the steps is intentional: verification (<code>verify.ts</code>) runs <em>before</em> the irreversible revocation. As long as step 5 has not happened, mistakes (e.g. a typo in the configuration) can still be fixed by repeating the earlier steps. After step 5, the state is final, public and provable — on purpose.</span>
@@ -400,15 +423,15 @@
     <h3><span class="n">4.1</span><span class="t-en">Core parameters (confirmed 09.11.2026, Devnet)</span><span class="t-de">Kernparameter (bestätigt 09.11.2026, Devnet)</span></h3>
     <div class="grid2">
       <div class="card" style="text-align:center;padding:30px">
-        <img src="token/assets/superintelnex-logo-512.png" alt="SuperIntelNex token icon" width="120" height="120" style="margin-bottom:16px">
-        <div style="font:700 24px var(--serif);letter-spacing:.02em">SIN</div>
-        <div class="small"><span class="t-en">SuperIntelNex token · Solana SPL</span><span class="t-de">SuperIntelNex-Token · Solana SPL</span></div>
+        <img src="token/assets/superintelnex-logo-512.png" alt="SuperIntelNex token icon" width="110" height="110" style="margin-bottom:16px;filter:grayscale(1)">
+        <div style="font:700 22px var(--serif);letter-spacing:.04em;color:var(--ink)">SIN</div>
+        <div class="small" style="margin-top:8px"><span class="t-en">SuperIntelNex token · Solana SPL</span><span class="t-de">SuperIntelNex-Token · Solana SPL</span></div>
       </div>
       <div class="card" style="display:flex;flex-direction:column;justify-content:center">
-        <div style="font:10.5px var(--mono);letter-spacing:.16em;color:var(--coral);text-transform:uppercase;margin-bottom:10px">
+        <div style="font:10px var(--mono);letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:12px">
           <span class="t-en">Total supply — fixed forever</span><span class="t-de">Gesamtmenge — für immer fix</span>
         </div>
-        <div style="font:600 30px var(--serif);letter-spacing:-.01em;line-height:1.15">100<span style="font-size:17px;color:var(--muted)">.000.000.000.000</span></div>
+        <div style="font:600 28px var(--serif);letter-spacing:-.01em;line-height:1.15;color:var(--ink)">100<span style="font-size:16px;color:var(--muted)">.000.000.000.000</span></div>
         <p class="small" style="margin-top:10px">
           <span class="t-en">100 trillion (10¹⁴, German counting) · 5 decimals · no further issuance (<code style="white-space:normal">FIXED-NO-FURTHER-ISSUANCE</code>)</span>
           <span class="t-de">100 Billion (10¹⁴, deutsche Zählung) · 5 Dezimalstellen · keine weiteren Emissionen (<code style="white-space:normal">FIXED-NO-FURTHER-ISSUANCE</code>)</span>
@@ -431,35 +454,34 @@
       </table>
     </div>
 
-    <div class="note simple">
-      <span class="tag"><span class="t-en">Explained — why 5 decimals?</span><span class="t-de">Erklärung — warum 5 Dezimalstellen?</span></span>
+    <div class="note">
+      <span class="tag"><span class="t-en">Explained — why 5 decimals?</span><span class="t-de">Erklärung — warum 5 Nachkommastellen?</span></span>
       <p>
         <span class="t-en">Blockchains don't store numbers with commas — everything is stored as an integer ("smallest units"). A token with 9 decimals multiplies every amount by 1,000,000,000. With a supply of 100 trillion that would be 10²³ smallest units. But Solana's SPL programs cap the supply at u64 (≈ 1.84 × 10¹⁹) — the maximum number a 64-bit counter can hold. 10¹⁴ × 10⁹ would overflow that counter. 10¹⁴ × 10⁵ = 10¹⁹ still fits: so 5 decimals is the technical maximum, and 1 SIN = 100,000 smallest units. The config test checks this automatically (the "u64 supply guard").</span>
-        <span class="t-de">Blockchainen speichern Zahlen nicht mit Kommas — alles wird als Ganzzahl („kleinste Einheiten") gespeichert. Ein Token mit 9 Dezimalstellen multipliziert jeden Betrag mit 1.000.000.000. Bei 100 Billionen Gesamtmenge wären das 10²³ kleinste Einheiten. Aber die SPL-Programme von Solana begrenzen die Supply auf u64 (≈ 1,84 × 10¹⁹) — die größte Zahl, die ein 64-Bit-Zähler halten kann. 10¹⁴ × 10⁹ würde diesen Zähler überlaufen. 10¹⁴ × 10⁵ = 10¹⁹ passt noch: 5 Dezimalstellen sind also das technische Maximum, und 1 SIN = 100.000 kleinste Einheiten. Der Konfig-Test prüft das automatisch (der „u64-Supply-Guard").</span>
+        <span class="t-de">Blockchainen speichern Zahlen nicht mit Kommas — alles wird als Ganzzahl („kleinste Einheiten") gespeichert. Ein Token mit 9 Nachkommestellen multipliziert jeden Betrag mit 1.000.000.000. Bei 100 Billionen Gesamtmenge wären das 10²³ kleinste Einheiten. Aber die SPL-Programme von Solana begrenzen die Supply auf u64 (≈ 1,84 × 10¹⁹) — die größte Zahl, die ein 64-Bit-Zähler halten kann. 10¹⁴ × 10⁹ würde diesen Zähler überlaufen. 10¹⁴ × 10⁵ = 10¹⁹ passt noch: 5 Nachkommastellen sind also das technische Maximum, und 1 SIN = 100.000 kleinste Einheiten. Der Konfig-Test prüft das automatisch (der „u64-Supply-Guard").</span>
       </p>
     </div>
 
     <h3><span class="n">4.2</span><span class="t-en">Allocation — community-first (planned for mainnet)</span><span class="t-de">Verteilung — Community-first (für Mainnet geplant)</span></h3>
     <figure>
       <div class="fig">
-        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:38px">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:40px">
           <svg width="200" height="200" viewBox="0 0 200 200" role="img" aria-label="Allocation donut chart: 81 percent community, 10 percent liquidity, 5 percent founder, 4 percent marketing team">
-            <circle cx="100" cy="100" r="72" fill="none" stroke="#F0EEE6" stroke-width="27"/>
             <g transform="rotate(-90 100 100)" fill="none" stroke-width="27">
-              <circle cx="100" cy="100" r="72" stroke="#C4553B" stroke-dasharray="367.6 82.3" stroke-dashoffset="0"/>
-              <circle cx="100" cy="100" r="72" stroke="#5F7E6D" stroke-dasharray="45.2 404.6" stroke-dashoffset="-367.6"/>
-              <circle cx="100" cy="100" r="72" stroke="#B08968" stroke-dasharray="22.6 427.3" stroke-dashoffset="-412.9"/>
-              <circle cx="100" cy="100" r="72" stroke="#8A817C" stroke-dasharray="18.1 431.7" stroke-dashoffset="-435.5"/>
+              <circle cx="100" cy="100" r="72" stroke="var(--d1)" stroke-dasharray="367.6 82.3" stroke-dashoffset="0"/>
+              <circle cx="100" cy="100" r="72" stroke="var(--d2)" stroke-dasharray="45.2 404.6" stroke-dashoffset="-367.6"/>
+              <circle cx="100" cy="100" r="72" stroke="var(--d3)" stroke-dasharray="22.6 427.3" stroke-dashoffset="-412.9"/>
+              <circle cx="100" cy="100" r="72" stroke="var(--d4)" stroke-dasharray="18.1 431.7" stroke-dashoffset="-435.5"/>
             </g>
-            <text x="100" y="94" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#141414">81%</text>
-            <text x="100" y="114" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" letter-spacing="1" fill="#6A6862">COMMUNITY</text>
+            <text x="100" y="94" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="700" fill="var(--ink)">81%</text>
+            <text x="100" y="114" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" letter-spacing="1" fill="var(--muted)">COMMUNITY</text>
           </svg>
           <div style="min-width:250px;max-width:320px">
-            <div class="legend" style="flex-direction:column;gap:11px;margin:0">
-              <span><i class="dot" style="background:#C4553B"></i><strong>81 %</strong> — <span class="t-en">Community — core of the project; the largest share of any category</span><span class="t-de">Community — Kern des Projekts; der größte Anteil aller Kategorien</span></span>
-              <span><i class="dot" style="background:#5F7E6D"></i><strong>10 %</strong> — <span class="t-en">Liquidity — initial trading pool once the mainnet launches</span><span class="t-de">Liquidität — Initial-Handelspool zum Mainnet-Launch</span></span>
-              <span><i class="dot" style="background:#B08968"></i><strong>5 %</strong> — <span class="t-en">Founder — deliberately small</span><span class="t-de">Gründer — bewusst klein</span></span>
-              <span><i class="dot" style="background:#8A817C"></i><strong>4 %</strong> — <span class="t-en">Marketing team</span><span class="t-de">Marketing-Team</span></span>
+            <div class="legend" style="flex-direction:column;gap:12px;margin:0">
+              <span><i class="dot" style="background:var(--d1)"></i><strong style="color:var(--ink)">81 %</strong> — <span class="t-en">Community — core of the project; the largest share of any category</span><span class="t-de">Community — Kern des Projekts; der größte Anteil aller Kategorien</span></span>
+              <span><i class="dot" style="background:var(--d2)"></i><strong style="color:var(--ink)">10 %</strong> — <span class="t-en">Liquidity — initial trading pool once the mainnet launches</span><span class="t-de">Liquidität — Initial-Handelspool zum Mainnet-Launch</span></span>
+              <span><i class="dot" style="background:var(--d3)"></i><strong style="color:var(--ink)">5 %</strong> — <span class="t-en">Founder — deliberately small</span><span class="t-de">Gründer — bewusst klein</span></span>
+              <span><i class="dot" style="background:var(--d4)"></i><strong style="color:var(--ink)">4 %</strong> — <span class="t-en">Marketing team</span><span class="t-de">Marketing-Team</span></span>
             </div>
           </div>
         </div>
@@ -470,7 +492,7 @@
         </figcaption>
       </div>
     </figure>
-    <div class="note simple">
+    <div class="note">
       <span class="tag"><span class="t-en">Explained — what does "allocation" mean?</span><span class="t-de">Erklärung — was bedeutet „Verteilung"?</span></span>
       <p>
         <span class="t-en">The total supply is created exactly once. Allocation defines which wallets receive which share at that moment: 81 % community (the project's core), 10 % seeded into a liquidity pool so the token can be traded from day one, 5 % for the founder(s), and 4 % reserved for the marketing team. Because the supply is fixed, these percentages are also a permanent guarantee: there is no back door where "the team" can mint more for itself later.</span>
@@ -484,22 +506,22 @@
       <span class="t-de">Jeder SPL-Mint trägt zwei optionale Schlüsselpaare: die <strong>Mint-Vollmacht</strong> (wer sie hält, kann neue Token erzeugen) und die <strong>Freeze-Vollmacht</strong> (wer sie hält, kann jedes Halterkonto sperren). Beide sind mächtig — und beide wurden <strong>unwiderruflich nach der Emission entzogen</strong> (bestätigt 09.11.2026). Der Zustand ist im Solana-Explorer öffentlich sichtbar als <code>mintAuthority = (none)</code> / <code>freezeAuthority = (none)</code>:</span>
     </p>
     <div class="grid2">
-      <div class="card" style="border-top:3px solid var(--green)">
+      <div class="card">
         <h4><span class="t-en">Mint authority — revoked</span><span class="t-de">Mint-Vollmacht — entzogen</span></h4>
         <p>
-          <span class="t-en"><b>What it means:</b> the total supply is permanently fixed at 100 trillion. No one can create tokens "from nothing" — not the project, not anyone else. A compromised key can no longer inflate the supply.</span>
-          <span class="t-de"><b>Was es bedeutet:</b> Die Gesamtmenge ist dauerhaft bei 100 Billion fixiert. Niemand kann Token „aus dem Nichts" erzeugen — weder das Projekt noch jemand anderes. Ein kompromittierter Schlüssel kann die Supply nicht mehr aufblähen.</span>
+          <span class="t-en"><b style="color:var(--ink)">What it means:</b> the total supply is permanently fixed at 100 trillion. No one can create tokens "from nothing" — not the project, not anyone else. A compromised key can no longer inflate the supply.</span>
+          <span class="t-de"><b style="color:var(--ink)">Was es bedeutet:</b> Die Gesamtmenge ist dauerhaft bei 100 Billion fixiert. Niemand kann Token „aus dem Nichts" erzeugen — weder das Projekt noch jemand anderes. Ein kompromittierter Schlüssel kann die Supply nicht mehr aufblähen.</span>
         </p>
       </div>
-      <div class="card" style="border-top:3px solid var(--green)">
+      <div class="card">
         <h4><span class="t-en">Freeze authority — revoked</span><span class="t-de">Freeze-Vollmacht — entzogen</span></h4>
         <p>
-          <span class="t-en"><b>What it means:</b> no token account can ever be locked again. Holders can transfer and sell at any time. There is no unilateral power instrument over any foreign wallet — standard SPL has no blacklist anyway; freeze was its only lock option.</span>
-          <span class="t-de"><b>Was es bedeutet:</b> Kein Token-Konto kann jemals wieder gesperrt werden. Halter können jederzeit übertragen und verkaufen. Es gibt kein einseitiges Machtinstrument über fremde Wallets — Standard-SPL kennt ohnehin keine Blacklist; Freeze war die einzige Sperrmöglichkeit.</span>
+          <span class="t-en"><b style="color:var(--ink)">What it means:</b> no token account can ever be locked again. Holders can transfer and sell at any time. There is no unilateral power instrument over any foreign wallet — standard SPL has no blacklist anyway; freeze was its only lock option.</span>
+          <span class="t-de"><b style="color:var(--ink)">Was es bedeutet:</b> Kein Token-Konto kann jemals wieder gesperrt werden. Halter können jederzeit übertragen und verkaufen. Es gibt kein einseitiges Machtinstrument über fremde Wallets — Standard-SPL kennt ohnehin keine Blacklist; Freeze war die einzige Sperrmöglichkeit.</span>
         </p>
       </div>
     </div>
-    <div class="note warn">
+    <div class="note">
       <span class="tag"><span class="t-en">Trade-off — openly disclosed</span><span class="t-de">Trade-off — offengelegt</span></span>
       <p>
         <span class="t-en">Irreversibility is a double-edged sword. After the revocation, no correction is possible: no late minting to fix a mistake, no thawing of an accidentally frozen account. That is exactly why the pipeline verifies everything (<code>verify.ts</code>) <em>before</em> step 5, and why the revocation is the last step — it is one-way on-chain, by design.</span>
@@ -526,27 +548,27 @@
         <tbody>
           <tr><td><span class="t-en">Mint address (Devnet)</span><span class="t-de">Mint-Adresse (Devnet)</span></td><td><span class="mono key nowrap">CyEcfZw2FogCrehQqkWxksKtsndNwrtKHQqDfPdHCLLf</span></td></tr>
           <tr><td><span class="t-en">Name / Symbol</span><span class="t-de">Name / Symbol</span></td><td><strong>SuperIntelNex / SIN</strong> · <span class="t-en">5 decimals</span><span class="t-de">5 Dezimalstellen</span></td></tr>
-          <tr><td><span class="t-en">Supply</span><span class="t-de">Supply</span></td><td>100,000,000,000,000 SIN <span class="small">(10¹⁹ <span class="t-en">smallest units</span><span class="t-de">kleinste Einheiten</span>)</span></td></tr>
-          <tr><td><span class="t-en">Test transfers</span><span class="t-de">Test-Transfers</span></td><td><span class="t-en">1,234 SIN (pipeline test) + 1,000,000 SIN to a one-way recipient test wallet</span><span class="t-de">1.234 SIN (Pipline-Test) + 1.000.000 SIN an eine einweg-Empfänger-Test-Wallet</span></td></tr>
-          <tr><td><span class="t-en">Authorities</span><span class="t-de">Vollmachten</span></td><td><span class="t-en">Mint &amp; freeze irreversibly revoked (visible in explorer as “(none)”) — <a href="https://explorer.solana.com/tx/4kGskHXLRV48b5AGfFJL4bZzV5JUzvGLUpfK96CyYE3N2n2sCMVFdJJB9myNCMstEquPbDnn31sPPCBqT53xjzpb?cluster=devnet" target="_blank" rel="noopener"><span class="t-en">mint revocation tx</span><span class="t-de">Mint-Entzug-Tx</span></a> / <a href="https://explorer.solana.com/tx/4rUFwheZM9g8xgyCBqwP2SYWdE1B361fkCPqydTrGECPpkSU7qse2baFtVGc5d9MEnrHs2N1wXxPHXUozz1ik2XQ?cluster=devnet" target="_blank" rel="noopener"><span class="t-en">freeze revocation tx</span><span class="t-de">Freeze-Entzug-Tx</span></a></span><span class="t-de">Mint &amp; Freeze unwiderruflich entzogen (im Explorer als „(none)" sichtbar) — <a href="https://explorer.solana.com/tx/4kGskHXLRV48b5AGfFJL4bZzV5JUzvGLUpfK96CyYE3N2n2sCMVFdJJB9myNCMstEquPbDnn31sPPCBqT53xjzpb?cluster=devnet" target="_blank" rel="noopener"><span class="t-en">Mint-Entzug-Tx</span><span class="t-de">Mint-Entzug-Tx</span></a> / <a href="https://explorer.solana.com/tx/4rUFwheZM9g8xgyCBqwP2SYWdE1B361fkCPqydTrGECPpkSU7qse2baFtVGc5d9MEnrHs2N1wXxPHXUozz1ik2XQ?cluster=devnet" target="_blank" rel="noopener"><span class="t-en">Freeze-Entzug-Tx</span><span class="t-de">Freeze-Entzug-Tx</span></a></td></tr>
+          <tr><td><span class="t-en">Supply</span><span class="t-de">Supply</span></td><td>100,000,000,000,000 SIN <span class="small">(<span class="t-en">10¹⁹ smallest units</span><span class="t-de">10¹⁹ kleinste Einheiten</span>)</span></td></tr>
+          <tr><td><span class="t-en">Test transfers</span><span class="t-de">Test-Transfers</span></td><td><span class="t-en">1,234 SIN (pipeline test) + 1,000,000 SIN to a one-way recipient test wallet</span><span class="t-de">1.234 SIN (Pipeline-Test) + 1.000.000 SIN an eine einweg-Empfänger-Test-Wallet</span></td></tr>
+          <tr><td><span class="t-en">Authorities</span><span class="t-de">Vollmachten</span></td><td><span class="t-en">Mint &amp; freeze irreversibly revoked (visible in explorer as “(none)”) — <a href="https://explorer.solana.com/tx/4kGskHXLRV48b5AGfFJL4bZzV5JUzvGLUpfK96CyYE3N2n2sCMVFdJJB9myNCMstEquPbDnn31sPPCBqT53xjzpb?cluster=devnet" target="_blank" rel="noopener"><span class="t-en">mint revocation tx</span><span class="t-de">Mint-Entzug-Tx</span></a> / <a href="https://explorer.solana.com/tx/4rUFwheZM9g8xgyCBqwP2SYWdE1B361fkCPqydTrGECPpkSU7qse2baFtVGc5d9MEnrHs2N1wXxPHXUozz1ik2XQ?cluster=devnet" target="_blank" rel="noopener"><span class="t-en">freeze revocation tx</span><span class="t-de">Freeze-Entzug-Tx</span></a></span><span class="t-de">Mint &amp; Freeze unwiderruflich entzogen (im Explorer als „(none)“ sichtbar) — <a href="https://explorer.solana.com/tx/4kGskHXLRV48b5AGfFJL4bZzV5JUzvGLUpfK96CyYE3N2n2sCMVFdJJB9myNCMstEquPbDnn31sPPCBqT53xjzpb?cluster=devnet" target="_blank" rel="noopener"><span class="t-en">Mint-Entzug-Tx</span><span class="t-de">Mint-Entzug-Tx</span></a> / <a href="https://explorer.solana.com/tx/4rUFwheZM9g8xgyCBqwP2SYWdE1B361fkCPqydTrGECPpkSU7qse2baFtVGc5d9MEnrHs2N1wXxPHXUozz1ik2XQ?cluster=devnet" target="_blank" rel="noopener"><span class="t-en">Freeze-Entzug-Tx</span><span class="t-de">Freeze-Entzug-Tx</span></a></td></tr>
           <tr><td><span class="t-en">Cost</span><span class="t-de">Kosten</span></td><td><span class="t-en">~0.5 test-SOL (public faucet) — no real costs</span><span class="t-de">~0,5 Test-SOL (öffentlicher Faucet) — keine echten Kosten</span></td></tr>
         </tbody>
       </table>
     </div>
-    <div class="note simple">
+    <div class="note">
       <span class="tag"><span class="t-en">Explained — what is Devnet?</span><span class="t-de">Erklärung — was ist Devnet?</span></span>
       <p>
         <span class="t-en">Blockchains like Solana run a "production network" (mainnet) with real value, plus test networks where the same software runs with worthless coins. Devnet is one of those: it has the identical program code, identical rules, and even its own block explorer — but everything on it has no money value. That makes Devnet the perfect proving ground: the project can run the <em>complete, identical</em> emission pipeline, verify every step, and document it publicly — without a single cent of real risk.</span>
-        <span class="t-de">Blockchainen wie Solana betreiben ein „Produktionsnetz" (Mainnet) mit echtem Wert plus Testnetze, auf denen dieselbe Software mit wertlosen Coins läuft. Devnet ist so ein Netz: identischer Programmcode, identische Regeln, sogar ein eigener Block-Explorer — aber alles ohne Geldwert. Das macht Devnet zum idealen Prüfgelände: Das Projekt kann die <em>kompakt identische</em> Emissions-Pipeline laufen lassen, jeden Schritt verifizieren und öffentlich dokumentieren — ohne einen einzigen Cent echtes Risiko.</span>
+        <span class="t-de">Blockchainen wie Solana betreiben ein „Produktionsnetz“ (Mainnet) mit echtem Wert plus Testnetze, auf denen dieselbe Software mit wertlosen Coins läuft. Devnet ist so ein Netz: identischer Programmcode, identische Regeln, sogar ein eigener Block-Explorer — aber alles ohne Geldwert. Das macht Devnet zum idealen Prüfgelände: Das Projekt kann die <em>komplett identische</em> Emissions-Pipeline laufen lassen, jeden Schritt verifizieren und öffentlich dokumentieren — ohne einen einzigen Cent echtes Risiko.</span>
       </p>
     </div>
     <div class="grid2">
       <div class="card">
         <h4><span class="t-en">Mint on Explorer</span><span class="t-de">Mint im Explorer</span></h4>
-        <p><a href="https://explorer.solana.com/address/CyEcfZw2FogCrehQqkWxksKtsndNwrtKHQqDfPdHCLLf?cluster=devnet" target="_blank" rel="noopener" style="color:var(--coral)">
+        <p><a href="https://explorer.solana.com/address/CyEcfZw2FogCrehQqkWxksKtsndNwrtKHQqDfPdHCLLf?cluster=devnet" target="_blank" rel="noopener" style="color:var(--ink)">
         <span class="t-en">View the mint account on the Solana Explorer (Devnet)</span>
         <span class="t-de">Mint-Konto im Solana-Explorer (Devnet) ansehen</span></a>
-        <br><span class="small"><span class="t-en">Anyone can verify supply, decimals and authorities here.</span><span class="t-de">Hier kann jeder Supply, Dezimalstellen und Vollmachten prüfen.</span></span></p>
+        <br><span class="small"><span class="t-en">Anyone can verify supply, decimals and authorities here.</span><span class="t-de">Hier kann jeder Supply, Nachkommestellen und Vollmachten prüfen.</span></span></p>
       </div>
       <div class="card">
         <h4><span class="t-en">Every signature is public</span><span class="t-de">Jede Signatur ist öffentlich</span></h4>
@@ -556,7 +578,7 @@
         </p>
       </div>
     </div>
-    <div class="note ok">
+    <div class="note">
       <span class="tag"><span class="t-en">Security posture of the run</span><span class="t-de">Sicherheitslage des Laufs</span></span>
       <p>
         <span class="t-en">Signing happened exclusively with local one-way test wallets — the operator's seed phrase or private keys were never requested or used. After the run, the admin test wallet was archived and locked locally. Minting and freezing are on-chain impossible anyway, because the authorities are revoked.</span>
@@ -581,7 +603,7 @@
           <h4><span class="t-en">Decisions (before mainnet)</span><span class="t-de">Entscheidungen (vor Mainnet)</span></h4>
           <p class="small"><span class="t-en">The governance step: everything that will be permanently fixed on mainnet is decided here, openly.</span><span class="t-de">Der Governance-Schritt: Alles, was auf Mainnet dauerhaft fixiert wird, wird hier offen entschieden.</span></p>
           <ul>
-            <li><span class="t-en">Final confirmation of all token parameters (ticker, 10¹⁴ supply, 5 decimals, allocation 81/10/5/4, both authorities revoked)</span><span class="t-de">Finale Bestätigung aller Token-Parameter (Kürzel, 10¹⁴-Supply, 5 Dezimalstellen, Verteilung 81/10/5/4, beide Vollmachten entzogen)</span></li>
+            <li><span class="t-en">Final confirmation of all token parameters (ticker, 10¹⁴ supply, 5 decimals, allocation 81/10/5/4, both authorities revoked)</span><span class="t-de">Finale Bestätigung aller Token-Parameter (Kürzel, 10¹⁴-Supply, 5 Nachkommastellen, Verteilung 81/10/5/4, beide Vollmachten entzogen)</span></li>
             <li><span class="t-en">Decide on vesting schedules for the founder (5 %) and marketing (4 %) shares</span><span class="t-de">Sperrfristen (Vesting) für die Gründer-Anteile (5 %) und Marketing-Anteile (4 %) festlegen</span></li>
             <li><span class="t-en">Move the metadata URI to content-addressed storage (IPFS, e.g. Pinata/Web3Storage, or Arweave) instead of the provisional GitHub URL</span><span class="t-de">Metadaten-URI auf content-addressed Speicher (IPFS, z. B. Pinata/Web3Storage, oder Arweave) umstellen statt der provisorischen GitHub-URL</span></li>
             <li><span class="t-en">Review of the legal situation for the target market (no legal status, no clearance yet)</span><span class="t-de">Prüfung der Rechtslage für den Startmarkt (kein Rechtsstand, keine Freigabe)</span></li>
@@ -626,15 +648,15 @@
       <h2><span class="t-en">Risks &amp; Legal Notice</span><span class="t-de">Risiken &amp; rechtlicher Hinweis</span></h2>
     </div>
     <ul class="checks">
-      <li style="border-left:3px solid var(--coral)"><span class="t-en"><b>Status:</b> project in development. There is <b>no mainnet token, no sale and no liquidity pool</b>. The Devnet token has no economic value.</span><span class="t-de"><b>Status:</b> Projekt im Aufbau. Es existiert <b>kein Mainnet-Token, kein Verkauf und kein Liquiditätspool</b>. Der Devnet-Token hat keinen wirtschaftlichen Wert.</span></li>
-      <li style="border-left:3px solid var(--coral)"><span class="t-en"><b>No investment advice.</b> This whitepaper is a technical and planning document. It contains no recommendation to buy or sell tokens, no price forecast and no profit promises.</span><span class="t-de"><b>Keine Anlageberatung.</b> Dieses Whitepaper ist ein technisches und planendes Dokument. Es enthält keine Empfehlung zum Erwerb oder Verkauf von Token, keine Kursprognose und keine Gewinnzusagen.</span></li>
-      <li style="border-left:3px solid var(--coral)"><span class="t-en"><b>No legal status.</b> Whether and under which conditions a mainnet launch is legally possible in a given market has not been reviewed yet. That review is part of roadmap phase 1.</span><span class="t-de"><b>Kein Rechtsstand.</b> Ob und unter welchen Bedingungen ein Mainnet-Start in einem bestimmten Markt rechtlich möglich ist, wurde noch nicht geprüft. Die Prüfung ist Teil der Roadmap-Phase 1.</span></li>
-      <li style="border-left:3px solid var(--coral)"><span class="t-en"><b>No promised features.</b> Tradability, merchant adoption and AI applications are long-term goals — not delivered functions.</span><span class="t-de"><b>Keine zugesagten Features.</b> Handelbarkeit, Händlerakzeptanz und KI-Anwendungen sind langfristige Ziele — keine umgesetzten Funktionen.</span></li>
-      <li style="border-left:3px solid var(--coral)"><span class="t-en"><b>Open items stay open.</b> Vesting, final allocation confirmation and the audit are not finished — this document discloses them instead of presenting them as done.</span><span class="t-de"><b>Offene Punkte bleiben offen.</b> Vesting, finale Verteilungsbestätigung und Audit sind nicht abgeschlossen — dieses Dokument legt sie offen statt sie als erledigt darzustellen.</span></li>
+      <li><span class="t-en"><b>Status:</b> project in development. There is <b>no mainnet token, no sale and no liquidity pool</b>. The Devnet token has no economic value.</span><span class="t-de"><b>Status:</b> Projekt im Aufbau. Es existiert <b>kein Mainnet-Token, kein Verkauf und kein Liquiditätspool</b>. Der Devnet-Token hat keinen wirtschaftlichen Wert.</span></li>
+      <li><span class="t-en"><b>No investment advice.</b> This whitepaper is a technical and planning document. It contains no recommendation to buy or sell tokens, no price forecast and no profit promises.</span><span class="t-de"><b>Keine Anlageberatung.</b> Dieses Whitepaper ist ein technisches und planendes Dokument. Es enthält keine Empfehlung zum Erwerb oder Verkauf von Token, keine Kursprognose und keine Gewinnzusagen.</span></li>
+      <li><span class="t-en"><b>No legal status.</b> Whether and under which conditions a mainnet launch is legally possible in a given market has not been reviewed yet. That review is part of roadmap phase 1.</span><span class="t-de"><b>Kein Rechtsstand.</b> Ob und unter welchen Bedingungen ein Mainnet-Start in einem bestimmten Markt rechtlich möglich ist, wurde noch nicht geprüft. Die Prüfung ist Teil der Roadmap-Phase 1.</span></li>
+      <li><span class="t-en"><b>No promised features.</b> Tradability, merchant adoption and AI applications are long-term goals — not delivered functions.</span><span class="t-de"><b>Keine zugesagten Features.</b> Handelbarkeit, Händlerakzeptanz und KI-Anwendungen sind langfristige Ziele — keine umgesetzten Funktionen.</span></li>
+      <li><span class="t-en"><b>Open items stay open.</b> Vesting, final allocation confirmation and the audit are not finished — this document discloses them instead of presenting them as done.</span><span class="t-de"><b>Offene Punkte bleiben offen.</b> Vesting, finale Verteilungsbestätigung und Audit sind nicht abgeschlossen — dieses Dokument legt sie offen statt sie als erledigt darzustellen.</span></li>
     </ul>
     <div class="pull">
       <span class="t-en">"A token that can be audited by anyone, at any time, with no code and no trust: that is the product. Everything else is roadmap."</span>
-      <span class="t-de">„Ein Token, den jeder jederzeit ohne Code und ohne Vertrauen prüfen kann — das ist das Produkt. Alles andere ist Roadmap."</span>
+      <span class="t-de">„Ein Token, den jeder jederzeit ohne Code und ohne Vertrauen prüfen kann — das ist das Produkt. Alles andere ist Roadmap.“</span>
     </div>
   </section>
 
@@ -654,16 +676,16 @@
           <th><span class="t-en">Plain explanation</span><span class="t-de">Einfache Erklärung</span></th>
         </tr></thead>
         <tbody>
-          <tr><td class="key">SPL Token</td><td><span class="t-en">The standard token standard of Solana ("SPL" = Serum Platform): defines how token accounts, transfers and minting work on Solana.</span><span class="t-de">Der Standard-Standard für Token auf Solana („SPL" = Serum Platform): Definiert, wie Token-Konten, Transfers und Emissionen auf Solana funktionieren.</span></td></tr>
-          <tr><td class="key">Mint / Mint authority</td><td><span class="t-en">The "mint" is the token itself (an account on-chain). The mint authority is the key that may create new tokens — once revoked, the supply is fixed forever.</span><span class="t-de">Der „Mint" ist der Token selbst (ein On-Chain-Konto). Die Mint-Vollmacht ist der Schlüssel, der neue Token erzeugen darf — nach dem Entzug ist die Supply für immer fix.</span></td></tr>
+          <tr><td class="key">SPL Token</td><td><span class="t-en">The standard token standard of Solana ("SPL" = Serum Platform): defines how token accounts, transfers and minting work on Solana.</span><span class="t-de">Der Standard für Token auf Solana („SPL" = Serum Platform): Definiert, wie Token-Konten, Transfers und Emissionen auf Solana funktionieren.</span></td></tr>
+          <tr><td class="key">Mint / Mint authority</td><td><span class="t-en">The "mint" is the token itself (an account on-chain). The mint authority is the key that may create new tokens — once revoked, the supply is fixed forever.</span><span class="t-de">Der „Mint“ ist der Token selbst (ein On-Chain-Konto). Die Mint-Vollmacht ist der Schlüssel, der neue Token erzeugen darf — nach dem Entzug ist die Supply für immer fix.</span></td></tr>
           <tr><td class="key">Freeze authority</td><td><span class="t-en">The key that can lock a token account (making it untransferable). Standard SPL's only lock mechanism; revoked here, so no account can ever be locked.</span><span class="t-de">Der Schlüssel, der ein Token-Konto sperren kann (übertragbar blockiert). Das einzige Sperr-Verfahren im Standard-SPL; hier entzogen, damit nie wieder ein Konto gesperrt werden kann.</span></td></tr>
-          <tr><td class="key">ATA</td><td><span class="t-en">Associated Token Account — the address where a wallet actually holds its SIN balance (analogous to a bank account number per wallet).</span><span class="t-de">Associated Token Account — die Adresse, an der eine Wallet ihren SIN-Saldo „parkt" (analog zur Kontonummer pro Wallet).</span></td></tr>
-          <tr><td class="key">Decimals</td><td><span class="t-en">How many decimal places a token has. Internally, the blockchain stores integers: 5 decimals means 1 SIN = 100,000 smallest units. (See 4.1 for why it's 5.)</span><span class="t-de">Wie viele Nachkommestellen ein Token hat. Intern speichert die Blockchain Ganzzahlen: 5 Dezimalstellen heißen, 1 SIN = 100.000 kleinste Einheiten. (Warum gerade 5, steht in 4.1.)</span></td></tr>
+          <tr><td class="key">ATA</td><td><span class="t-en">Associated Token Account — the address where a wallet actually holds its SIN balance (analogous to a bank account number per wallet).</span><span class="t-de">Associated Token Account — die Adresse, an der eine Wallet ihren SIN-Saldo „parkt“ (analog zur Kontonummer pro Wallet).</span></td></tr>
+          <tr><td class="key">Decimals</td><td><span class="t-en">How many decimal places a token has. Internally, the blockchain stores integers: 5 decimals means 1 SIN = 100,000 smallest units. (See 4.1 for why it's 5.)</span><span class="t-de">Wie viele Nachkommestellen ein Token hat. Intern speichert die Blockchain Ganzzahlen: 5 Nachkommestellen heißen, 1 SIN = 100.000 kleinste Einheiten. (Warum gerade 5, steht in 4.1.)</span></td></tr>
           <tr><td class="key">Supply</td><td><span class="t-en">The number of minted tokens. Here: 100 trillion exactly, fixed forever (no mint authority).</span><span class="t-de">Die Anzahl der emittierten Token. Hier: exakt 100 Billion, für immer fix (keine Mint-Vollmacht).</span></td></tr>
-          <tr><td class="key">u64</td><td><span class="t-en">A 64-bit counter — the maximum number Solana's SPL programs can store as supply (≈ 1.84 × 10¹⁹). That's why 10¹⁴ needs 5, not 9, decimals.</span><span class="t-de">Ein 64-Bit-Zähler — die größtmögliche Zahl, die die SPL-Programme von Solana als Supply speichern können (≈ 1,84 × 10¹⁹). Deshalb braucht 10¹⁴ fünf statt neun Dezimalstellen.</span></td></tr>
-          <tr><td class="key">isMutable</td><td><span class="t-en">A metadata flag. “false” = the name, symbol and URI of the token can never be changed again — permanently on-chain.</span><span class="t-de">Ein Metadaten-Flag. „false" = Name, Symbol und URI des Tokens können nie wieder geändert werden — dauerhaft On-Chain.</span></td></tr>
+          <tr><td class="key">u64</td><td><span class="t-en">A 64-bit counter — the maximum number Solana's SPL programs can store as supply (≈ 1.84 × 10¹⁹). That's why 10¹⁴ needs 5, not 9, decimals.</span><span class="t-de">Ein 64-Bit-Zähler — die größtmögliche Zahl, die die SPL-Programme von Solana als Supply speichern können (≈ 1,84 × 10¹⁹). Deshalb braucht 10¹⁴ fünf statt neun Nachkommestellen.</span></td></tr>
+          <tr><td class="key">isMutable</td><td><span class="t-en">A metadata flag. “false” = the name, symbol and URI of the token can never be changed again — permanently on-chain.</span><span class="t-de">Ein Metadaten-Flag. „false“ = Name, Symbol und URI des Tokens können nie wieder geändert werden — dauerhaft On-Chain.</span></td></tr>
           <tr><td class="key">Devnet / Mainnet</td><td><span class="t-en">Devnet: the public test network (worthless coins). Mainnet: the production network with real value. This project's token currently exists only on Devnet.</span><span class="t-de">Devnet: das öffentliche Testnetz (wertlose Coins). Mainnet: das Produktionsnetz mit echtem Wert. Der Token dieses Projekts existiert aktuell nur auf Devnet.</span></td></tr>
-          <tr><td class="key">PDA</td><td><span class="t-en">Program Derived Account: a deterministic address that a program computes from known inputs — used for the metadata account (the "name tag").</span><span class="t-de">Program Derived Account: eine deterministische Adresse, die ein Programm aus bekannten Werten berechnet — hier für das Metadaten-Konto (das „Namensschild").</span></td></tr>
+          <tr><td class="key">PDA</td><td><span class="t-en">Program Derived Account: a deterministic address that a program computes from known inputs — used for the metadata account (the "name tag").</span><span class="t-de">Program Derived Account: eine deterministische Adresse, die ein Programm aus bekannten Werten berechnet — hier für das Metadaten-Konto (das „Namensschild“).</span></td></tr>
           <tr><td class="key">Vesting</td><td><span class="t-en">Staggered release of a token share over time. For founder (5 %) and marketing (4 %) shares this is still open — see Roadmap, phase 1.</span><span class="t-de">Zeitgestaffelte Freigabe von Token-Anteilen. Für die Gründer-Anteile (5 %) und Marketing-Anteile (4 %) ist das noch offen — siehe Roadmap, Phase 1.</span></td></tr>
           <tr><td class="key">Liquidity pool</td><td><span class="t-en">A token + SOL pool on a DEX (like Orca or Raydium) that makes the token tradable from day one. 10 % of the planned allocation is seeded into this.</span><span class="t-de">Ein Token- + SOL-Pool auf einer DEX (wie Orca oder Raydium), der den Token ab Tag eins handelbar macht. Die geplanten 10 % fließen in diesen Pool.</span></td></tr>
         </tbody>
@@ -688,8 +710,8 @@
         </tr></thead>
         <tbody>
           <tr><td><span class="t-en">Core parameters (SIN, 10¹⁴, 5 decimals, FIXED-NO-FURTHER-ISSUANCE, both authorities revoked)</span><span class="t-de">Kernparameter (SIN, 10¹⁴, 5 Dez., FIXED-NO-FURTHER-ISSUANCE, beide Vollmachten entzogen)</span></td><td><code style="white-space:normal">token/config/token.json</code></td></tr>
-          <tr><td><span class="t-en">Allocation 81/10/5/4 (community / liquidity / founder / marketing) — planned mainnet values</span><span class="t-de">Verteilung 81/10/5/4 (Community / Liquidität / Gründer / Marketing) — geplante Mainnet-Werte</span></td><td><span class="t-en">This whitepaper + <code style="white-space:normal">token/config/token.json</code> (update pending commit)</span><span class="t-de">Dieses Whitepaper + <code style="white-space:normal">token/config/token.json</code> (Update ausstehend)</span></td></tr>
-          <tr><td><span class="t-en">u64 rationale for the 5 decimals</span><span class="t-de">u64-Begründung der 5 Dezimalstellen</span></td><td><code style="white-space:normal">token/docs/FRAGENLISTE.md</code> (Q3)</td></tr>
+          <tr><td><span class="t-en">Allocation 81/10/5/4 (community / liquidity / founder / marketing) — planned mainnet values, confirmed 09.11.2026</span><span class="t-de">Verteilung 81/10/5/4 (Community / Liquidität / Gründer / Marketing) — geplante Mainnet-Werte, bestätigt 09.11.2026</span></td><td><code style="white-space:normal">token/config/token.json</code> · <span class="t-en">this whitepaper</span><span class="t-de">dieses Whitepaper</span></td></tr>
+          <tr><td><span class="t-en">u64 rationale for the 5 decimals</span><span class="t-de">u64-Begründung der 5 Nachkommestellen</span></td><td><code style="white-space:normal">token/docs/FRAGENLISTE.md</code> (Q3)</td></tr>
           <tr><td><span class="t-en">Emission scripts &amp; test suite (6/6 passing)</span><span class="t-de">Emissions-Skripte &amp; Test-Suite (6/6 bestanden)</span></td><td><code style="white-space:normal">token/README.md</code> · <code style="white-space:normal">token/scripts/</code> · <code style="white-space:normal">token/tests/</code></td></tr>
           <tr><td><span class="t-en">Authority semantics (mint/freeze, revocation options)</span><span class="t-de">Vollmachts-Semantik (Mint/Freeze, Entzugs-Optionen)</span></td><td><code style="white-space:normal">token/docs/AUTHORITIES.md</code></td></tr>
           <tr><td><span class="t-en">Devnet run: mint address, signatures, final state</span><span class="t-de">Devnet-Lauf: Mint-Adresse, Signaturen, Endzustand</span></td><td><code style="white-space:normal">token/docs/DEVNET-TESTTOKEN-BERICHT.md</code></td></tr>
@@ -704,16 +726,16 @@
       <div class="card">
         <h4><span class="t-en">Official channels</span><span class="t-de">Offizielle Kanäle</span></h4>
         <p>
-          <a href="https://x.com/superintelnex" target="_blank" rel="noopener"><span class="t-en">X @superintelnex</span><span class="t-de">X @superintelnex</span></a> ·
-          <a href="https://discord.gg/5QVBqHSWXn" target="_blank" rel="noopener">Discord</a> ·
-          <a href="https://github.com/superintelnex/superintelnex" target="_blank" rel="noopener">GitHub superintelnex/superintelnex</a>
+          <a href="https://x.com/superintelnex" target="_blank" rel="noopener" style="color:var(--ink)">X @superintelnex</a> ·
+          <a href="https://discord.gg/5QVBqHSWXn" target="_blank" rel="noopener" style="color:var(--ink)">Discord</a> ·
+          <a href="https://github.com/superintelnex/superintelnex" target="_blank" rel="noopener" style="color:var(--ink)">GitHub superintelnex/superintelnex</a>
         </p>
       </div>
       <div class="card">
         <h4><span class="t-en">Version</span><span class="t-de">Version</span></h4>
         <p>
-          <span class="t-en">Draft v1.0, 09 Nov 2026. Next version: v2.0 after the mainnet parameters are final (Roadmap, phase 3). All parameters in this document apply to the Devnet test token; mainnet launch only after re-confirmation.</span>
-          <span class="t-de">Entwurf v1.0, 09.11.2026. Nächste Version: v2.0 nach Finalisierung der Mainnet-Parameter (Roadmap, Phase 3). Alle Parameter dieses Dokuments gelten für den Devnet-Testtoken; der Mainnet-Launch erfolgt erst nach erneuter Bestätigung.</span>
+          <span class="t-en">Draft v1.1, 09 Nov 2026. Next version: v2.0 after the mainnet parameters are final (Roadmap, phase 3). All parameters in this document apply to the Devnet test token; mainnet launch only after re-confirmation.</span>
+          <span class="t-de">Entwurf v1.1, 09.11.2026. Nächste Version: v2.0 nach Finalisierung der Mainnet-Parameter (Roadmap, Phase 3). Alle Parameter dieses Dokuments gelten für den Devnet-Testtoken; der Mainnet-Launch erfolgt erst nach erneuter Bestätigung.</span>
         </p>
       </div>
     </div>
@@ -737,6 +759,7 @@
   </div>
 </footer>
 
+<!-- language toggle -->
 <script>
 (() => {
   'use strict';
@@ -756,130 +779,130 @@
 })();
 </script>
 
-<script type="module">
-import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-
+<!-- theme toggle -->
+<script>
 (() => {
+  'use strict';
+  const btn = document.getElementById('themeBtn');
+  const icon = document.getElementById('themeIcon');
+  const root = document.documentElement;
+  function apply(){
+    const dark = root.getAttribute('data-theme') === 'dark';
+    icon.textContent = dark ? '☀' : '☾';
+    try{ localStorage.setItem('sni-theme', dark ? 'dark' : 'light'); }catch(e){}
+    window.dispatchEvent(new CustomEvent('sni-theme-change', {detail:{dark}}));
+  }
+  btn.addEventListener('click', () => {
+    root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    apply();
+  });
+  apply();
+})();
+</script>
+
+<!-- 3D coin (local three.js, no CDN required) -->
+<script src="vendor/three.min.js"></script>
+<script>
+(() => {
+  'use strict';
   const canvas = document.getElementById('coin');
-  if (!canvas) return;
-  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!canvas || typeof THREE === 'undefined') return;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  } catch (e) { return; } // No WebGL — page stays readable without the 3D element
+  } catch (e) { return; } // no WebGL — page stays readable without the coin
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-  camera.position.set(0, 0.2, 6.2);
-  camera.lookAt(0.4, 0, 0);
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  camera.position.set(0, 0, 5.6);
 
-  // ── lights ──
-  scene.add(new THREE.HemisphereLight(0xfff6ec, 0x2a2620, 1.1));
-  const key = new THREE.DirectionalLight(0xffffff, 1.6);
+  // lights
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9a9a, 1.0));
+  const key = new THREE.DirectionalLight(0xffffff, 0.9);
   key.position.set(4, 5, 6);
   scene.add(key);
-  const rim = new THREE.DirectionalLight(0xc4553b, 0.5);
-  rim.position.set(-5, -2, -4);
-  scene.add(rim);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.3);
+  fill.position.set(-4, -2, 3);
+  scene.add(fill);
 
-  // ── materials ──
-  const bodyMat = new THREE.MeshStandardMaterial({
-    color: 0xE9E6DD, metalness: 0.45, roughness: 0.32
-  });
-  const inkMat = new THREE.MeshStandardMaterial({
-    color: 0x141414, metalness: 0.3, roughness: 0.5
-  });
-
-  // ── coin ──
+  // coin body
   const coin = new THREE.Group();
-  const radius = 1.55;
-  const geo = new RoundedBoxGeometry(2 * radius, 2 * radius, 0.34, 6, 0.17);
-  const coinMesh = new THREE.Mesh(geo, bodyMat);
-  coin.add(coinMesh);
-  coin.position.set(2.5, 0.1, 0);
+  const bodyGeo = new THREE.CylinderGeometry(1.55, 1.55, 0.3, 96);
+  bodyGeo.rotateX(Math.PI / 2);
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xEDEDED, metalness: 0.55, roughness: 0.35 });
+  coin.add(new THREE.Mesh(bodyGeo, bodyMat));
 
-  // "SIN" on the front
-  function makeLabel(text, size, height) {
+  // thin rims on both faces
+  const rimMat = new THREE.MeshStandardMaterial({ color: 0xBFBFBF, metalness: 0.7, roughness: 0.3 });
+  const rimGeo = new THREE.TorusGeometry(1.55, 0.03, 16, 128);
+  const rimF = new THREE.Mesh(rimGeo, rimMat); rimF.position.z = 0.155; coin.add(rimF);
+  const rimB = new THREE.Mesh(rimGeo, rimMat); rimB.position.z = -0.155; coin.add(rimB);
+
+  // text faces (white texture, tinted by material color → theme-aware)
+  function label(text, size){
     const c = document.createElement('canvas');
-    c.width = 512; c.height = Math.round(512 * size);
+    c.width = 512; c.height = 512;
     const ctx = c.getContext('2d');
-    ctx.fillStyle = '#141414';
-    ctx.font = `600 ${Math.round(300 * size / 1.55)}px Georgia, serif`;
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '600 ' + Math.round(300 * size) + 'px Georgia, serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, 256, c.height / 2 + 8);
+    ctx.fillText(text, 256, 268);
     const tex = new THREE.CanvasTexture(c);
     tex.anisotropy = 4;
-    const mat = new THREE.MeshStandardMaterial({
-      map: tex, transparent: true, metalness: 0.1, roughness: 0.6
-    });
-    return new THREE.Mesh(new THREE.PlaneGeometry(size * 1.6, size * 1.6 * size), mat);
+    return tex;
   }
-  const front = makeLabel('SIN', 1.0, 0.38);
-  front.position.set(0, 0.1, 0.171);
+  const frontMat = new THREE.MeshStandardMaterial({ map: label('SIN', 0.62), transparent: true, metalness: 0.1, roughness: 0.6, color: 0x141414 });
+  const backMat  = new THREE.MeshStandardMaterial({ map: label('S', 0.62),  transparent: true, metalness: 0.1, roughness: 0.6, color: 0x141414 });
+  const front = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 1.9), frontMat);
+  front.position.z = 0.156;
   coin.add(front);
-  const back = makeLabel('S', 1.0, 0.38);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5), backMat);
   back.rotation.y = Math.PI;
-  back.position.set(0, 0.1, -0.171);
+  back.position.z = -0.156;
   coin.add(back);
 
-  // floating rings
-  const ringMat = new THREE.MeshStandardMaterial({
-    color: 0xc4553b, metalness: 0.2, roughness: 0.6,
-    transparent: true, opacity: 0.35
-  });
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(radius * 1.45, 0.015, 12, 128), ringMat);
-  ring.rotation.x = 1.1;
-  ring.position.copy(coin.position);
-  scene.add(ring);
+  coin.rotation.x = 0.08;
+  scene.add(coin);
 
-  // particles ("dust field")
-  const P = 420;
-  const positions = new Float32Array(P * 3);
-  for (let i = 0; i < P; i++) {
-    positions[i*3]   = (Math.random() - 0.5) * 16;
-    positions[i*3+1] = (Math.random() - 0.5) * 9;
-    positions[i*3+2] = -Math.random() * 7;
+  function applyTheme(dark){
+    bodyMat.color.set(dark ? 0x1E1E1E : 0xEDEDED);
+    rimMat.color.set(dark ? 0x3A3A3A : 0xBFBFBF);
+    frontMat.color.set(dark ? 0xF2F2F2 : 0x141414);
+    backMat.color.set(dark ? 0xF2F2F2 : 0x141414);
   }
-  const pGeo = new THREE.BufferGeometry();
-  pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const points = new THREE.Points(pGeo, new THREE.PointsMaterial({
-    color: 0xb08968, size: 0.028, transparent: true, opacity: 0.55
-  }));
-  scene.add(points);
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark');
+  window.addEventListener('sni-theme-change', function(e){ applyTheme(e.detail.dark); });
 
-  // ── layout ──
-  function resize() {
-    const w = canvas.clientWidth || canvas.parentElement.clientWidth || 800;
-    const h = canvas.clientHeight || 480;
+  function resize(){
+    const w = canvas.clientWidth || 600;
+    const h = canvas.clientHeight || 440;
     renderer.setSize(w, h, false);
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
-  canvas.style.width = '100%';
-  canvas.style.height = '100%';
-  const ro = new ResizeObserver(resize);
-  ro.observe(canvas.parentElement || canvas);
+  if (window.ResizeObserver){
+    new ResizeObserver(resize).observe(canvas.parentElement || canvas);
+  } else {
+    window.addEventListener('resize', resize);
+  }
   resize();
 
-  // ── animation ──
   const clock = new THREE.Clock();
-  function frame() {
+  function frame(){
     const t = clock.getElapsedTime();
-    if (!prefersReduced) {
-      coin.rotation.y = t * 0.4;
-      coin.rotation.x = Math.sin(t * 0.5) * 0.12;
-      coin.position.y = 0.1 + Math.sin(t * 0.8) * 0.09;
-      ring.rotation.z = t * 0.15;
-      points.rotation.y = t * 0.02;
+    if (!reduced){
+      coin.rotation.y = t * 0.45;
+      coin.position.y = Math.sin(t * 0.7) * 0.12;
+      coin.rotation.x = 0.08 + Math.sin(t * 0.5) * 0.05;
     }
     renderer.render(scene, camera);
-    if (!prefersReduced) requestAnimationFrame(frame);
+    if (!reduced) requestAnimationFrame(frame);
   }
-  frame(); // also renders once in reduced-motion mode (static frame)
+  frame(); // renders one static frame in reduced-motion mode
 })();
 </script>
 </body>

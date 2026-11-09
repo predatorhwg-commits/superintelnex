@@ -47,9 +47,10 @@
   .details div{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
   .details dt{color:var(--ink);font-size:13px;font-weight:700;line-height:1.5}
   .details dd{margin:0;display:flex;align-items:center;gap:12px}
-  .placeholder{border:1px dashed var(--line);padding:10px 13px}
-  .placeholder .tag{display:block;font:10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-  .details dd.placeholder{display:block}
+  .mail{width:39px;height:39px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;text-decoration:none;position:relative;transition:color .2s,border-color .2s}
+  .mail:hover{color:var(--ink);border-color:#ffffff66}
+  .mail::before{content:"";position:absolute;inset:-8px}
+  .mail svg{display:block}
   footer{min-height:83px;border-top:1px solid var(--line)}
   .caption{display:flex;align-items:center;gap:10px;margin-inline:var(--edge);min-height:83px;color:var(--muted);font:10px var(--mono);letter-spacing:.15em}
   .caption-note{display:inline}
@@ -89,15 +90,9 @@
       <p style="margin-top:24px" data-de="SuperIntelNex ist ein Community-Token-Projekt im Aufbau. Diese Website ist keine Anlageberatung und kein Erwerbsangebot für Token. Angaben, die bisher nicht bestätigt sind, werden nachträglich ergänzt.">SuperIntelNex is a community token project currently in development. This website is not investment advice and does not constitute an offer to sell tokens. Details that have not been confirmed yet will be completed as soon as they become available.</p>
 
       <dl class="details">
-        <div><dt data-de="Rechtsform">Legal form</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="Noch nicht mitgeteilt. Mit den Betreiberangaben folgt die Rechtsform und — soweit die Rechtsform eintragungspflichtig ist (z. B. GmbH, eG, eingetragener Verein) — der Registerhinweis.">Not yet provided. The legal form will follow with the operator details, and — where the legal form requires registration (e.g. GmbH, eG, registered association) — the register reference.</span></dd></div>
-        <div><dt data-de="Betreiber / Verantwortlich">Operator / responsible party</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="Name oder Firma des Betreibers — noch nicht mitgeteilt.">Name or company of the operator — not yet provided.</span></dd></div>
-        <div><dt data-de="Vertretungsberechtigt">Authorized to represent</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="Vertretungsbefugte Person des Betreibers — noch nicht mitgeteilt.">Person authorized to represent the operator — not yet provided.</span></dd></div>
-        <div><dt data-de="Anschrift">Postal address</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="Vollständige Postanschrift (Straße mit Hausnummer, Postleitzahl, Ort) des Betreibers — noch nicht mitgeteilt.">Full postal address of the operator (street and number, postal code, city) — not yet provided.</span></dd></div>
-        <div><dt data-de="E-Mail-Kontakt">Email contact</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="E-Mail-Kontakt wird veröffentlicht, sobald die Betreiber-Daten vorliegen. Bis dahin keine konkrete E-Mail-Adresse — keine Muster- oder Beispieldaten.">The email contact will be published as soon as the operator data are available. Until then no specific email address is given — no sample or placeholder data.</span></dd></div>
-        <div><dt data-de="Register">Register</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="Registergericht und Registernummer werden ergänzt, wenn die Rechtsform des Betreibers eine Eintragung in ein Handels- oder Vereinsregister erfordert.">The registry court and register number will be added once the operator's legal form requires an entry in a commercial or association register.</span></dd></div>
-        <div><dt data-de="Verantwortlich i. S. d. § 18 MStV">Responsible within the meaning of § 18 MStV</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="Name und Anschrift des inhaltlich Verantwortlichen (soweit journalistisch-redaktionelle Inhalte vorliegen) — noch nicht mitgeteilt.">Name and address of the person responsible for content (where journalistic or editorial content is present) — not yet provided.</span></dd></div>
+        <div><dt data-de="Verantwortlich / Betreiber">Operator</dt><dd>Superintelnex</dd></div>
+        <div><dt data-de="Kontakt / E-Mail">Contact / Email</dt><dd><a class="mail" href="mailto:superintelnex@gmail.com" aria-label="Email Superintelnex" data-de-label="Superintelnex per E-Mail kontaktieren"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 6.5C8.7 6.5 6 8.7 6 11.5c0 2.8 2.7 5 6 5 .4 0 .8 0 1.1-.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12.9 16.4C12.4 14.9 12 13.3 12 11.7c0-1.7 1-2.7 2.3-2.7 1.5 0 2.7 1.2 2.7 3.2 0 2-.8 3.1-2.4 3.1-.4 0-.7-.1-1-.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a></dd></div>
         <div><dt data-de="Projekt / Website">Project / website</dt><dd data-de="SuperIntelNex — Community-Token-Projekt im Aufbau. Ziel-Domain: superintelnex.com.">SuperIntelNex — a community token project in development. Domain: superintelnex.com.</dd></div>
-        <div><dt data-de="Technischer Betrieb / Hosting">Technical operation / hosting</dt><dd data-de="Diese Website wird auf GitHub Pages (GitHub, Inc.) gehostet.">This website is hosted on GitHub Pages (GitHub, Inc.).</dd></div>
         <div><dt data-de="Stand">Status</dt><dd>November 2026</dd></div>
       </dl>
 
