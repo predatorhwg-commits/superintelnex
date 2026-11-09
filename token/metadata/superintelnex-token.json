@@ -2,8 +2,8 @@
   "name": "SuperIntelNex",
   "symbol": "SIN",
   "description": "Community-Prototyp auf Solana (Devnet/Localnet). Testtoken: KEINE Anlage, KEIN Verkauf, KEINE Kursprognose. Alle Parameter (Kuerzel, Gesamtmenge, Verteilung) sind Vorschlaege und noch nicht bestaetigt.",
-  "image": "https://superintelnex.com/solana-token/assets/superintelnex-logo-512.png",
-  "file": "https://superintelnex.com/solana-token/assets/superintelnex-logo-512.png",
+  "image": "https://superintelnex.com/token/assets/superintelnex-logo-512.png",
+  "file": "https://superintelnex.com/token/assets/superintelnex-logo-512.png",
   "properties": {
     "category": "token",
     "tokenId": "@TOKEN-ADRESSE-WIRD-NACH-ERSTELLUNG-AUSGEGLEICHEN@",

@@ -115,7 +115,9 @@ const out = {
   mintAuthority: admin.publicKey.toBase58(),
   freezeAuthority: admin.publicKey.toBase58(),
   signature: sig,
-  explorerMint: "https://explorer.solana.com/" + (label === "DEVNET-TESTTOKEN" ? "devnet/" : "") + "address/" + mint.publicKey.toBase58(),
+  // Korrektes Explorer-Format: mainnet-Pfad + Cluster-Query-Parameter
+  explorerMint: "https://explorer.solana.com/address/" + mint.publicKey.toBase58()
+    + (label === "DEVNET-TESTTOKEN" ? "?cluster=devnet" : ""),
 };
 try { Deno.mkdirSync(resDir, { recursive: true }); } catch { /* existiert */ }
 Deno.writeTextFileSync(new URL("MINT-ADDRESS.txt", resDir), JSON.stringify(out, null, 2) + "\n");

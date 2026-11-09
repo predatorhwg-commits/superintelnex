@@ -17,7 +17,7 @@ angelegt (Seeds `["metadata", program_id, mint]`). Darin liegen:
 |---|---|
 | `name` | `SuperIntelNex` |
 | `symbol` | `SIN` (Vorschlag, nicht bestätigt) |
-| `uri` | `https://superintelnex.com/solana-token/metadata/superintelnex-token.json` |
+| `uri` | `https://superintelnex.com/token/metadata/superintelnex-token.json` |
 | `sellerFeeBasisPoints` | `0` (keine Verkaufsprovision) |
 | `creators` | Admin-Test-Wallet, 100 % |
 | `isMutable` | `false` |
@@ -28,7 +28,7 @@ angelegt (Seeds `["metadata", program_id, mint]`). Darin liegen:
   Beschreibung, Bild-URL, Kategorie, `seller_fee_basis_points: 0`.
 - `token/assets/superintelnex-logo-512.png` (und 800-px-Variante):
   wird von GitHub Pages ausgeliefert unter
-  `superintelnex.com/solana-token/assets/...`.
+  `superintelnex.com/token/assets/...`.
 - Die `uri` ist ein gewöhnlicher HTTPS-Link. Wer ihn hostet, kann
   den Inhalt ändern — solange das Metadaten-Account änderbar ist.
 
