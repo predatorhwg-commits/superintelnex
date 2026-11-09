@@ -6,7 +6,7 @@ Bis dahin sind sie in `site/impressum.html` und `site/datenschutz.html` als sich
 
 Vorrang-Kriterium: Pflichtangaben (§ 5 DDG / § 18 MStV) vor „schön-oder-besser“-Angaben.
 Gesetzeslage (Stand November 2026): § 5 TMG wurde durch § 5 DDG (Digitale-Dienste-Gesetz, in Kraft seit 14.05.2024)
-ersetzt; § 18 RStV ist in § 18 MStV (Medienstaatsvertrag, in Kraft seit 01.01.2020) übergegangen.
+ersetzt; § 18 RStV ist in § 18 MStV (Medienstaatsvertrag, in Kraft seit 01.01.2025; RStV wurde per 31.12.2024 außer Kraft gesetzt) übergegangen.
 Innerhalb einer Stufe: P0 erst, dann P1, dann P2.
 
 ## P0 — Pflichtangaben (Impressum lückenhaft ohne diese)
@@ -30,7 +30,7 @@ Innerhalb einer Stufe: P0 erst, dann P1, dann P2.
 
 | # | Angabe | Für welche Pflichtangabe fehlt? | Begründung |
 |---|--------|---------------------------------|------------|
-| 8 | **Verantwortlicher für journalistisch-redaktionelle Inhalte i. S. d. § 18 Abs. 2 MStV** (falls redaktionelle Inhalte über den Community-Status hinaus geplant werden) | MStV-Pflichtangabe (Nachfolger des früheren § 55 Abs. 2 RStV), wenn journalistisch-redaktionelle Inhalte vorliegen | Wenn die Website nur Community-Status (keine redaktionellen Inhalte) hat: P2-8 entfällt. Hinweis: Ein Verweis auf „§ 55 Abs. 2 RStV“ ist nicht mehr zulässig (RStV seit 2020 außer Kraft) — Abmahnrisiko. |
+| 8 | **Verantwortlicher für journalistisch-redaktionelle Inhalte i. S. d. § 18 Abs. 2 MStV** (falls redaktionelle Inhalte über den Community-Status hinaus geplant werden) | MStV-Pflichtangabe (Nachfolger des früheren § 55 Abs. 2 RStV), wenn journalistisch-redaktionelle Inhalte vorliegen | Wenn die Website nur Community-Status (keine redaktionellen Inhalte) hat: P2-8 entfällt. Hinweis: Ein Verweis auf „§ 55 RStV“ ist nicht mehr zulässig (RStV wurde per 31.12.2024 durch MStV ersetzt) — Abmahnrisiko. |
 
 ## Offene Rechtsfragen (nicht betreibergespeist, aber relevant)
 
