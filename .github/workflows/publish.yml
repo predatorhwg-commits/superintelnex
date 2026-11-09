@@ -10,6 +10,7 @@ on:
       - '404.html'
       - 'impressum.html'
       - 'datenschutz.html'
+      - 'kontakt.html'
       - 'whitepaper.html'
       - 'vendor/three.min.js'
       - 'token/assets/superintelnex-logo-512.png'
@@ -51,7 +52,7 @@ jobs:
           TMP="$(mktemp -d)"
           SOURCE_SHA="$(git rev-parse --short=7 HEAD)"
           for f in index.html 404.html impressum.html datenschutz.html \
-                   whitepaper.html vendor/three.min.js \
+                   kontakt.html whitepaper.html vendor/three.min.js \
                    token/assets/superintelnex-logo-512.png \
                    og-image.png apple-touch-icon.png icon-192.png icon-512.png \
                    robots.txt sitemap.xml manifest.webmanifest \
