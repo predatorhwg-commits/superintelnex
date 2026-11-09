@@ -1,0 +1,159 @@
+{
+  "checks": [
+    {
+      "kontrast": "#f0f0f0 auf #000000",
+      "ratio": 18.43,
+      "aa": true
+    },
+    {
+      "kontrast": "#a5a5a5 auf #000000",
+      "ratio": 8.53,
+      "aa": true
+    },
+    {
+      "overflow_390": 0
+    },
+    {
+      "touch_targets": [
+        {
+          "l": "SuperIntelNex, home",
+          "effW": 306,
+          "effH": 64,
+          "raw": [
+            272,
+            30
+          ]
+        },
+        {
+          "l": "Home",
+          "effW": 44,
+          "effH": 45,
+          "raw": [
+            32,
+            33
+          ]
+        },
+        {
+          "l": "Vision",
+          "effW": 44,
+          "effH": 44,
+          "raw": [
+            32,
+            32
+          ]
+        },
+        {
+          "l": "Project status",
+          "effW": 85,
+          "effH": 44,
+          "raw": [
+            73,
+            32
+          ]
+        },
+        {
+          "l": "English",
+          "effW": 51,
+          "effH": 45,
+          "raw": [
+            29,
+            23
+          ]
+        },
+        {
+          "l": "Deutsch",
+          "effW": 51,
+          "effH": 45,
+          "raw": [
+            29,
+            23
+          ]
+        },
+        {
+          "l": "Explore the vision ↗",
+          "effW": 175,
+          "effH": 54,
+          "raw": [
+            165,
+            44
+          ]
+        },
+        {
+          "l": "Project status",
+          "effW": 126,
+          "effH": 49,
+          "raw": [
+            116,
+            39
+          ]
+        },
+        {
+          "l": "Impressum",
+          "effW": 87,
+          "effH": 44,
+          "raw": [
+            53,
+            10
+          ]
+        },
+        {
+          "l": "Datenschutz",
+          "effW": 99,
+          "effH": 44,
+          "raw": [
+            65,
+            10
+          ]
+        },
+        {
+          "l": "Previous section",
+          "effW": 47,
+          "effH": 50,
+          "raw": [
+            31,
+            34
+          ]
+        },
+        {
+          "l": "Next section",
+          "effW": 47,
+          "effH": 50,
+          "raw": [
+            31,
+            34
+          ]
+        }
+      ],
+      "violations": []
+    },
+    {
+      "overflow_768": 0
+    },
+    {
+      "overflow_1280": 0
+    },
+    {
+      "reduced_motion": {
+        "static": true
+      }
+    },
+    {
+      "fps_desktop": 60.05826250078454
+    },
+    {
+      "fcp_ms": 60,
+      "paints": {
+        "first-paint": 60,
+        "first-contentful-paint": 60
+      }
+    },
+    {
+      "a11y_core": {
+        "htmlLang": "en",
+        "imgsNoAlt": 0,
+        "buttonsNoName": 0,
+        "h1": 1
+      }
+    }
+  ]
+}

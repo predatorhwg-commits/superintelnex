@@ -65,7 +65,8 @@
   .details dt{color:var(--ink);font-size:13px;font-weight:700;line-height:1.5}
   .details dd{margin:0;color:#bdbdbd;font-size:14px;line-height:1.5;text-wrap:pretty}
   .actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-top:30px}
-  .pill{display:inline-flex;align-items:center;gap:18px;border:1px solid transparent;border-radius:99px;padding:13px 19px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s}
+  .pill{display:inline-flex;align-items:center;gap:18px;border:1px solid transparent;border-radius:99px;padding:13px 19px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s;position:relative}
+  .pill::before{content:"";position:absolute;inset:-5px}
   .primary{color:var(--ink);background:#000;border-color:#ffffff66}
   .primary:hover{border-color:var(--ink)}
   .secondary{background:#000;border-color:var(--line);color:var(--ink)}
@@ -73,13 +74,16 @@
   @keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
   footer{min-height:83px;border-top:1px solid var(--line)}
   .caption{display:flex;align-items:center;gap:10px;color:var(--muted);font:10px var(--mono);letter-spacing:.15em}
+  .brand{position:relative}
+  .brand::before{content:"";position:absolute;inset:-17px}
   .legal-link{color:var(--muted);text-decoration:none;position:relative}
   .legal-link:hover{color:var(--ink)}
   .legal-link::before{content:"";position:absolute;inset:-17px}
   .caption-note{white-space:nowrap}
   .languages button,.arrow,nav [data-go]{position:relative}
   .languages button::before{content:"";position:absolute;inset:-11px}
-  .arrow::before,nav [data-go]::before{content:"";position:absolute;inset:-6px}
+  .arrow::before{content:"";position:absolute;inset:-8px}
+  nav [data-go]::before{content:"";position:absolute;inset:-6px}
   .pager{display:flex;align-items:center;gap:13px}
   .count{color:var(--muted);font:11px var(--mono);letter-spacing:.14em;min-width:67px;text-align:center}
   .count strong{color:var(--ink);font-weight:500}
