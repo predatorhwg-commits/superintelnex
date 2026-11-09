@@ -7,17 +7,21 @@ Launch". Keine Einzelpost ist vorab erledigt; alles hier ist
 
 ## 1. Entscheidungen (Betreiber)
 
-- [ ] **Ticker/Kürzel** final festlegen (aktuell: Vorschlag `SIN`).
-- [ ] **Gesamtmenge** final festlegen (Vorschlag: 1.000.000.000,
-      fest, keine weiteren Emissionen).
-- [ ] **Dezimalstellen** final festlegen (Vorschlag: 9).
-- [ ] **Verteilung** final festlegen (Vorschlag 55/20/15/10 —
-      community/founder/dev/liquidity), vor dem Mainnet-Mint.
-- [ ] **Admin-Vollmachten**: beide entziehen oder Freeze behalten?
-      (siehe `AUTHORITIES.md`).
-- [ ] **Metadaten-URI**: GitHub Pages (provisorisch) gegen
-      IPFS/Arweave (dauerhaft) entscheiden (siehe
-      `METADATEN-SPEICHERUNG.md`).
+Die Parameter wurden am 09.11.2026 für den DEVNET-Testtoken bestätigt
+(Details: `FRAGENLISTE.md`); sie gelten für Mainnet erst nach
+erneuter Bestätigung:
+
+- [x] **Ticker/Kürzel** — `SIN` (bestätigt 09.11.2026)
+- [x] **Gesamtmenge** — 100.000.000.000.000 (100 Billion = 10^14, bestätigt)
+- [x] **Dezimalstellen** — 5 (technisch gebunden an 10^14: u64-Supply-
+      Obergrenze, max. 5 Dez.; bestätigt)
+- [x] **Verteilung** — 55/20/15/10 (Planwert, bestätigt;
+      Sperrfristen/Vesting für Gründer/Dev: noch offen)
+- [x] **Admin-Vollmachten** — beide nach Emission entziehen
+      (bestätigt; `AUTHORITIES.md`)
+- [ ] **Metadaten-URI** — Devnet: Raw-URL der Feature-Branche (fixiert im
+      Devnet-Mint). Für Mainnet: IPFS/Arweave (content-addressed)
+      entscheiden (`METADATEN-SPEICHERUNG.md`).
 
 ## 2. Technische Vorbereitungen
 
