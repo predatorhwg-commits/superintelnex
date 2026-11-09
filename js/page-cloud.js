@@ -1,27 +1,30 @@
-/* SuperIntelNex — Hero-Punktewolke (WebGL)
+/* SuperIntelNex — punktewolke als seitenweites Hintergrund-Bild (WebGL)
 
-   Eine Wolke aus feinen Lichtpunkten morpht zwischen drei Szenen:
-   Kugel, Galaxie, Lorenz-Attraktor (parametrisch erzeugt, keine
-   externen Assets). Verhalten nach yunbay.xyz:
-     - Ziehen = Rotation mit Traegheit (Lerp 0.12)
-     - Klick (ohne Ziehen) = naechste Szene
+   Ein fixer Layer hinter der gesamten Seite. Die Wolke aus feinen
+   Lichtpunkten morpht automatisch zwischen drei Szenen (Kugel,
+   Galaxie, Lorenz-Attraktor — parametrisch erzeugt, keine externen
+   Assets) und reagiert ueberall auf die Maus: sanftes Kippen in
+   Mausrichtung + punktuelle Abstoessung (Gauss). Verhalten nach
+   yunbay.xyz:
      - Auto-Advance: 2.6 s Morph, dann 4.4 s Pause
-     - Mausfeld = punktuelle Abstoessung (Gauss)
+     - Rotation mit Traegheit (Lerp 0.12), Auto-Drehung + Maus-Kippen
+     - Mausfeld = punktuelle Abstoessung, ueber die ganze Seite
      - prefers-reduced-motion: statisches Bild, keine Schleife
-     - ohne WebGL: CSS laesst die Logo-Platte sichtbar
+     - ohne WebGL: Layer bleibt leer, die dunkle Seite ist ohne
+       die Wolke weiterhin lesbar
 */
 (function () {
   "use strict";
 
-  var host = document.querySelector("[data-hero-cloud]");
-  var canvas = host ? host.querySelector(".hero-cloud__canvas") : null;
+  var host = document.querySelector("[data-page-cloud]");
+  var canvas = host ? host.querySelector(".page-cloud__canvas") : null;
   if (!host || !canvas) {
     return;
   }
 
   var gl = canvas.getContext("webgl", { antialias: true, alpha: false });
   if (!gl) {
-    return; // Fallback (Logo-Platte) bleibt sichtbar
+    return; // Layer zeigt nur den schwarzen Grund
   }
   host.classList.add("is-active");
 
@@ -59,7 +62,7 @@
     var coreCount = Math.floor(N * 0.18);
     for (var i = 0; i < N; i++) {
       if (i < coreCount) {
-        // Kugelhaufenge im Kern
+        // Kugelhaufen im Kern
         a[i * 3] = gauss() * 0.14;
         a[i * 3 + 1] = gauss() * 0.09;
         a[i * 3 + 2] = gauss() * 0.14;
@@ -192,7 +195,7 @@
       throw new Error(gl.getProgramInfoLog(prog) || "Linkfehler");
     }
   } catch (err) {
-    // Stille Abmeldung: Fallback bleibt sichtbar, kein Konsolenfehler.
+    // Stille Abmeldung: Layer bleibt schwarz, kein Konsolenfehler.
     host.classList.remove("is-active");
     return;
   }
@@ -236,16 +239,17 @@
 
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // additiv: Lichtpunkte
-  gl.clearColor(0.02, 0.02, 0.02, 1);
+  gl.clearColor(0.01, 0.01, 0.012, 1);
   gl.enable(gl.DEPTH_TEST);
-  gl.depthMask(false); // keine Tiefen-Buffer bei additivem Blending
+  gl.depthMask(false); // kein Tiefen-Buffer bei additivem Blending
 
   /* -------------------------------------------------------- Zustand */
 
   var MORPH = 2.6;  // Sekunden
   var HOLD = 4.4;
   var from = 0, to = 0, phase = "hold", phaseT = 0, time = 0;
-  var rx = 0, ry = -0.35, targetRX = 0, targetRY = -0.35;
+  // Sanfte Auto-Drehung: Y wandert dauerhaft, X pendelt leicht.
+  var rx = 0.12, ry = -0.35, targetRX = 0.12, targetRY = -0.35;
   var mouseX = 0, mouseY = 0, mouseStr = 0, mouseStrTarget = 0;
   var uAspect = 1, uPixelRatio = 1;
 
@@ -283,8 +287,9 @@
 
   function resize() {
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = Math.max(1, Math.round(canvas.clientWidth * dpr));
-    var h = Math.max(1, Math.round(canvas.clientHeight * dpr));
+    // Layer ist seitenweit fix: Canvas maesst immer das Viewport.
+    var w = Math.max(1, Math.round(window.innerWidth * dpr));
+    var h = Math.max(1, Math.round(window.innerHeight * dpr));
     if (canvas.width !== w || canvas.height !== h) {
       canvas.width = w;
       canvas.height = h;
@@ -298,80 +303,61 @@
   resize();
   window.addEventListener("resize", resize, { passive: true });
 
-  /* ------------------------------------------------ Interaktion */
+  /* --------------------------------------------- Interaktion (ganze Seite) */
 
-  function toNDC(e) {
-    var rect = canvas.getBoundingClientRect();
-    var nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    var ny = 1 - ((e.clientY - rect.top) / rect.height) * 2;
+  // Maus-Position ins Canvas-Koordinatensystem (NDC, y nach oben),
+  // egal wo auf der Seite die Maus ist.
+  function toNDC(clientX, clientY) {
+    var nx = (clientX / window.innerWidth) * 2 - 1;
+    var ny = 1 - (clientY / window.innerHeight) * 2;
     return [nx, ny];
   }
 
-  var down = false, dragging = false, downX = 0, downY = 0, lastX = 0,
-    lastY = 0, downT = 0;
-
-  canvas.addEventListener("pointerdown", function (e) {
-    down = true;
-    dragging = false;
-    downX = lastX = e.clientX;
-    downY = lastY = e.clientY;
-    downT = performance.now();
-    if (canvas.setPointerCapture) {
-      canvas.setPointerCapture(e.pointerId);
-    }
-  });
-
-  canvas.addEventListener("pointermove", function (e) {
-    var p = toNDC(e);
+  document.addEventListener("mousemove", function (e) {
+    var p = toNDC(e.clientX, e.clientY);
     mouseX = p[0];
     mouseY = p[1];
+    // Sanftes Kippen in Mausrichtung, mit Begrenzung (yunbay-Style).
+    targetRY = -0.35 + p[0] * 0.5;
+    targetRX = 0.12 - p[1] * 0.5;
+    if (targetRX > 0.65) { targetRX = 0.65; }
+    if (targetRX < -0.65) { targetRX = -0.65; }
+    if (targetRY > 0.65) { targetRY = 0.65; }
+    if (targetRY < -0.65) { targetRY = -0.65; }
     mouseStrTarget = reduced ? 0 : 0.32;
-    if (!down) {
-      return;
-    }
-    var dx = e.clientX - lastX;
-    var dy = e.clientY - lastY;
-    if (Math.abs(e.clientX - downX) > 4 || Math.abs(e.clientY - downY) > 4) {
-      dragging = true;
-    }
-    if (dragging) {
-      targetRY += dx * 0.008;
-      targetRX = Math.min(0.65, Math.max(-0.65, targetRX + dy * 0.004));
-      lastX = e.clientX;
-      lastY = e.clientY;
-      if (reduced) {
-        rx = targetRX;
-        ry = targetRY;
-        render();
-      }
-    }
-  });
+  }, { passive: true });
 
-  canvas.addEventListener("pointerup", function (e) {
-    if (!down) {
-      return;
-    }
-    down = false;
-    if (!dragging && performance.now() - downT < 350) {
-      advance();
-      if (reduced) {
-        render();
-      }
-    }
-  });
-
-  canvas.addEventListener("pointerleave", function () {
+  document.addEventListener("mouseleave", function () {
     mouseStrTarget = 0;
+    targetRX = 0.12;
+    targetRY = -0.35;
     if (!reduced) {
       mouseX = 0;
       mouseY = 0;
     }
   });
 
+  // Touch: gleiche Reaktivitaet mit dem Finger, ohne zu blockieren.
+  document.addEventListener("touchmove", function (e) {
+    if (!e.touches || !e.touches[0]) {
+      return;
+    }
+    var p = toNDC(e.touches[0].clientX, e.touches[0].clientY);
+    mouseX = p[0];
+    mouseY = p[1];
+    targetRY = -0.35 + p[0] * 0.5;
+    targetRX = 0.12 - p[1] * 0.5;
+    if (targetRX > 0.65) { targetRX = 0.65; }
+    if (targetRX < -0.65) { targetRX = -0.65; }
+    if (targetRY > 0.65) { targetRY = 0.65; }
+    if (targetRY < -0.65) { targetRY = -0.65; }
+    mouseStrTarget = reduced ? 0 : 0.32;
+  }, { passive: true });
+
   /* --------------------------------------------------- Schleife */
 
   if (reduced) {
-    // Statisches Bild: eine Scene, ohne Auto-Advance, ohne Loop.
+    // Statisches Bild: eine Szene, ohne Auto-Advance, ohne Loop.
     render();
     return;
   }
@@ -391,7 +377,10 @@
       advance();
     }
 
-    // Rotation mit Traegheit
+    // Auto-Drehung: y wandert kontinuierlich, x pendelt sanft.
+    targetRY += dt * 0.10;
+    targetRX = 0.12 + Math.sin(time * 0.22) * 0.16;
+    // Rotation mit Traegheit (Lerp 0.12, yunbay-Style)
     ry += (targetRY - ry) * 0.12;
     rx += (targetRX - rx) * 0.12;
 

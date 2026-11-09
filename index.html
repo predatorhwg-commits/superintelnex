@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SuperIntelNex — Gemeinsam die intelligente Zukunft gestalten</title>
   <meta name="description" content="SuperIntelNex ist ein Community-Token für Menschen, die sich für künstliche Intelligenz, Superintelligenz und die digitale Zukunft begeistern. Das Projekt befindet sich im Aufbau." />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="theme-color" content="#050506" />
   <meta property="og:title" content="SuperIntelNex" />
   <meta property="og:description" content="Gemeinsam die intelligente Zukunft gestalten." />
   <meta property="og:type" content="website" />
@@ -15,6 +15,11 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <div class="page-cloud" data-page-cloud aria-hidden="true">
+    <canvas class="page-cloud__canvas"></canvas>
+    <p class="page-cloud__hint">Die Punkte reagieren auf deine Maus &middot; Formen wechseln automatisch</p>
+  </div>
 
   <header class="site-header" id="top">
     <div class="container header-inner">
@@ -65,18 +70,6 @@
           <p class="hero-note">
             Community-Links werden ergänzt, sobald die offiziellen Konten feststehen.
           </p>
-        </div>
-
-        <div class="hero-visual hero-cloud" data-hero-cloud>
-          <canvas class="hero-cloud__canvas" aria-hidden="true"></canvas>
-          <div class="hero-cloud__shade" aria-hidden="true"></div>
-          <div class="hero-cloud__scanlines" aria-hidden="true"></div>
-          <div class="hero-cloud__fallback" aria-hidden="true">
-            <div class="logo-plate">
-              <img src="assets/logo.svg" alt="" width="160" height="160" />
-            </div>
-          </div>
-          <p class="hero-cloud__hint">Ziehen: drehen &middot; Klick: n&uuml;chste Form</p>
         </div>
       </div>
     </section>
@@ -496,6 +489,6 @@
   </footer>
 
   <script src="js/main.js"></script>
-  <script src="js/hero-cloud.js"></script>
+  <script src="js/page-cloud.js"></script>
 </body>
 </html>
