@@ -17,6 +17,10 @@ on:
     branches: [main, gh-pages]
   pull_request:
     branches: [main, gh-pages]
+  # Manuelles Re-Trigger: Pushes auf gh-pages kommen vom Publish-Workflow
+  # (GITHUB_ACTOR) und loesen keine Events aus — damit ist der Publish-Tree
+  # nach jedem main-Push gezielt erneut pruefbar.
+  workflow_dispatch:
 
 permissions:
   contents: read
