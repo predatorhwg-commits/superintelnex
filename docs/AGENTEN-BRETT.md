@@ -41,12 +41,13 @@ Entscheidungen, Umfang der ersten Version). Die Aufgaben stehen als Issues in
 | i18n | Englische Fassung | `en/index.html`, `en/css/style.css`, `docs/I18N.md` | **offen** | — |
 | Sicherheit | Sicherheits-Meldeweg | `.well-known/security.txt`, `SECURITY.md`, `docs/SICHERHEIT.md` | **offen** | — |
 | QA | Prüfwerkzeuge **erweitern** | `tools/verify-content.py`, `tools/check-links.py`, `tools/sweep.py`, `docs/WERKZEUGE.md` | **offen** (Basis-Arbeit abgeschlossen, Erweiterungen offen) | — |
+| Koordination | Domain `superintelnex.com` an GitHub Pages anbinden | `CNAME`, `.nojekyll`, `docs/DOMAIN.md`, Sichtbarkeit des Repos | **fertig** (DNS-Änderung bei Checkdomain läuft, siehe `docs/DOMAIN.md`) | `0cbb247` |
 | QA | Barrierefreiheit vertiefen | `index.html`, `css/style.css`, `docs/A11Y.md` | **offen** | — |
 
 ## Rollenzuordnung
 
 Jeder Arbeitsbereich gehört genau einer Rolle. GitHub-Zuweisungen sind in
-diesem privaten Repository bisher nicht möglich, weil es keine Teams mit
+diesem Repository bisher nicht möglich, weil es keine Teams mit
 Schreibrecht gibt. Die Zuordnung ist deshalb hier und im Tracking-Issue
 verbindlich dokumentiert.
 
@@ -119,7 +120,9 @@ zusätzlich in `docs/QUELLEN.md`, in `docs/project-brief.md` und im Abschnitt
 
 ## Koordinationskanal
 
-Das Repository ist privat: `predatorhwg-commits/superintelnex`.
+Das Repository ist öffentlich (GitHub Pages auf dem Free-Plan benötigt
+öffentliche Repos): `predatorhwg-commits/superintelnex`. Nur statische
+Inhalte, keine Secrets — Details in `docs/DOMAIN.md`.
 `gh` ist auf dieser Maschine nicht installiert. Der Helfer `tools/gh-api.py`
 spricht die GitHub-API direkt an.
 
