@@ -218,6 +218,9 @@
   let shape = 0, shapeAgeMs = 0;
   let width = 0, height = 0, cx = 0, cy = 0, scale = 0, count = 0;
   const pointer = {x:0, y:0, targetX:0, targetY:0, inside:false, strength:0};
+  // Read-only Beobachtungsfunktion (Headless-Verifikation, agenten/checks/touch-pointerup-check.py).
+  // Kein Verhalten, kein API — nur Snapshot-Zugriff für Tests.
+  window.__sinxPointer = () => ({inside: pointer.inside, strength: pointer.strength});
   let morph = 1, from = null;
   const tau = Math.PI * 2, total = 7400;
   const coords = new Float32Array(total * 3);
