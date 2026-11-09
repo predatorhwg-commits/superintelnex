@@ -43,7 +43,14 @@ jobs:
           done
           git config user.name  "SuperIntelNex CI"
           git config user.email "superintelnex@gmail.com"
-          git checkout -q gh-pages 2>/dev/null || git checkout -q -b gh-pages
+          # gh-pages vom Remote holen — der lokale Stand (via main-Checkout) ist
+          # sonst hinter dem Remote und der Push wird non-fast-forward abgelehnt.
+          git fetch -q origin gh-pages
+          if git rev-parse --verify -q origin/gh-pages >/dev/null; then
+            git checkout -q -B gh-pages origin/gh-pages
+          else
+            git checkout -q -b gh-pages
+          fi
           git rm -rq --ignore-unmatch .
           cp -R .publish/. .
           git add -A
