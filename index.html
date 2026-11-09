@@ -224,9 +224,14 @@
   let language = 'en';
   const shapeIntervalMs = 7000;
   const shapeTransitionSeconds = 3.6;
-  const shapeOrder = ['galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere', 'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit'];
+  const shapeOrder = [
+    'galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere',
+    'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit',
+    'wormhole', 'eye', 'mobius', 'comet', 'crystal', 'butterfly'
+  ];
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
-  let shape = 0, shapeAgeMs = 0;
+  let shape = Math.floor(Math.random() * shapeOrder.length), shapeAgeMs = 0;
+  let shapeQueue = [];
   let width = 0, height = 0, cx = 0, cy = 0, scale = 0, count = 0, skyCount = 0;
   const pointer = {x:0, y:0, targetX:0, targetY:0, inside:false, strength:0};
   let morph = 1, from = null;
@@ -252,6 +257,10 @@
   ];
   // Torus knot (2,3) parameters.
   const knotP = 2, knotQ = 3, knotRadius = .72;
+  const crystalRing = Array.from({length:6}, (_, i) => {
+    const angle = i * tau / 6 + Math.PI / 6;
+    return [Math.cos(angle), Math.sin(angle)];
+  });
   // One ECG beat spans ekgPeriod units of x: P wave, Q dip, R spike, T wave.
   const ekgPeriod = 1.3;
   function ekgY(x) {
@@ -413,7 +422,82 @@
       orbitPos = [rr, rz * .44 + (e - .5) * .03, rz];
     }
     const orbit = orbitPos;
-    return {shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, vortex, knot, circuit, ekg, constellation, orbit], size:e, phase:b, scatter};
+    // Wurmloch: feine Gewinde und Ringe auf zwei zur Mitte verengten Trichtern.
+    const ring = i % 4 === 0;
+    const tunnelLane = ring ? Math.floor(i / 4) : i;
+    const tunnelDepth = ring ? (tunnelLane % 11 + .45 * c) / 11 : c;
+    const tunnelAngle = ring ? a : (i % 9) * tau / 9 + 4.6 * tunnelDepth + (d - .5) * .25;
+    const tunnelRadius = .10 + .53 * tunnelDepth ** 1.68 + (e - .5) * .025;
+    const tunnelSide = tunnelLane % 2 === 0 ? -1 : 1;
+    const wormhole = [tunnelSide * 1.1 * tunnelDepth,
+      Math.cos(tunnelAngle) * tunnelRadius, Math.sin(tunnelAngle) * tunnelRadius];
+
+    // KI-Auge: doppelte Lidlinie, unterbrochener Irisrand und radiale Fasern.
+    let eye;
+    if (i % 5 < 2) {
+      const lid = (i % 5 === 0 ? -1 : 1) * .53 * Math.sin(Math.PI * c) ** .84;
+      const rim = i % 13 < 3 ? 1.13 : 1;
+      eye = [(2 * c - 1) * 1.20, lid * rim + (d - .5) * .042, .10 + (e - .5) * .09];
+    } else {
+      const irisRadius = i % 7 === 0 ? .402 + (d - .5) * .026 : .137 + .254 * c;
+      const irisAngle = i % 7 === 0 ? a : (i % 53) * tau / 53 + (d - .5) * .047 + irisRadius * 1.5;
+      eye = [Math.cos(irisAngle) * irisRadius, Math.sin(irisAngle) * irisRadius,
+        .13 + .25 * (1 - irisRadius) + (e - .5) * .045];
+    }
+
+    // Möbiusband: gestreifte Fläche mit durchgehenden, einmal verdrehten Kanten.
+    const band = i % 5;
+    const across = band < 2 ? (band === 0 ? -.31 : .31) + (d - .5) * .018
+      : ((i % 9) - 4) * .069 + (d - .5) * .038;
+    const bandRadius = .79 + across * Math.cos(a * .5);
+    const mobius = [Math.cos(a) * bandRadius, Math.sin(a) * bandRadius, across * Math.sin(a * .5)];
+
+    // Komet: kompakter Kopf, schmale Fäden und ein aufgefächerter Staubschweif.
+    let comet;
+    if (i % 5 === 0) {
+      const head = .21 * c ** .73;
+      comet = [.66 + Math.cos(a) * head, -.17 + Math.sin(a) * head, Math.sin(b) * head * .8];
+    } else {
+      const tailWidth = .023 + .34 * c ** 1.36;
+      const filament = i % 3 === 0 ? (i % 7 - 3) / 3 + (d - .5) * .18 : Math.sin(b) * Math.sqrt(d);
+      comet = [.66 - 1.94 * c, -.17 + .49 * c * c + filament * tailWidth,
+        Math.cos(b) * tailWidth * .56];
+    }
+
+    // Kristall: sechs Facetten, scharfe Längskanten und zwei kleine Splitter.
+    const face = Math.floor(a * 6 / tau);
+    const faceStart = crystalRing[face], faceEnd = crystalRing[(face + 1) % 6];
+    const faceWidth = i % 5 < 2 ? .021 * d : d;
+    const crystalY = i % 11 === 0 ? (i % 2 ? -.51 : .51) : 2.06 * (c - .5);
+    const facetRadius = .57 * Math.min(1, (1.04 - Math.abs(crystalY)) / .53);
+    const shard = i % 10;
+    const shardScale = shard < 2 ? .33 : 1;
+    const shardX = shard === 0 ? -.90 : shard === 1 ? .82 : 0;
+    const crystal = [
+      shardX + shardScale * facetRadius * (faceStart[0] + faceWidth * (faceEnd[0] - faceStart[0])),
+      crystalY * shardScale + (shard === 0 ? .26 : shard === 1 ? -.23 : 0),
+      shardScale * facetRadius * (faceStart[1] + faceWidth * (faceEnd[1] - faceStart[1]))
+    ];
+
+    // Schmetterlingsnebel: asymmetrische Flügelpaare, Staubadern und heller Kern.
+    let butterfly;
+    if (i % 9 === 0) {
+      butterfly = [Math.cos(b) * .072 * Math.sqrt(d), (c - .5) * .62, Math.sin(b) * .088];
+    } else {
+      const upper = i % 4 < 2;
+      const wingSide = i % 2 ? -1 : 1;
+      const wingWidth = Math.sin(Math.PI * c) ** .79;
+      const vein = i % 3 === 0 ? ((i % 7) / 3 - 1) + (d - .5) * .07 : 2 * d - 1;
+      const wingY = upper ? -.08 - .64 * c : .14 + .36 * c;
+      butterfly = [wingSide * (.06 + (upper ? 1.14 : .84) * c),
+        wingY + vein * wingWidth * (upper ? .34 : .32),
+        Math.sin(b) * (.035 + .17 * wingWidth) * Math.sqrt(e)];
+    }
+    return {
+      shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, vortex, knot,
+        circuit, ekg, constellation, orbit, wormhole, eye, mobius, comet, crystal, butterfly],
+      size:e, phase:b, scatter
+    };
   });
   const sky = Array.from({length:1350}, () => {
     const x = random(), y = random(), brightness = random();
@@ -475,6 +559,10 @@
     const sx = Math.sin(xAngle), ax = Math.cos(xAngle), sz = Math.sin(zAngle), az = Math.cos(zAngle);
     const sway = mode === 'star' ? 0 : Math.sin(time * .38) * .19;
     const ys = Math.sin(sway), yc = Math.cos(sway);
+    const turnAngle = mode === 'mobius' ? time * .32 : time * .46;
+    const turnSin = Math.sin(turnAngle), turnCos = Math.cos(turnAngle);
+    const blink = 1 - .82 * Math.max(0, Math.cos(time * .78)) ** 26;
+    const flap = .34 * Math.sin(time * 1.42);
     const pullScaleSquared = clamp(width * .15, 90, 165) ** 2;
     for (let i = 0; i < skyCount; i++) {
       const star = sky[i];
@@ -484,6 +572,7 @@
     for (let i = 0; i < count; i++) {
       const p = points[i], v = p.shapes[shape], j = i * 3;
       let x = v[0], y = v[1], z = v[2];
+      let detailLight = 0;
       if (mode === 'galaxy') {
         const angle = spin * .42 + .026 * Math.sin(time * .7 + p.phase);
         const u = x * Math.cos(angle) - y * Math.sin(angle);
@@ -545,6 +634,40 @@
         x = u2;
         const wobble = .10 * Math.sin(time * .4);
         y += z * wobble * .3;
+      } else if (mode === 'wormhole') {
+        const tunnelY = y * turnCos - z * turnSin;
+        z = y * turnSin + z * turnCos;
+        y = tunnelY + x * .20;
+        detailLight = .16 * Math.sin(Math.abs(x) * 23 + time * 2.8)
+          + (i % 4 === 0 ? .10 : -.06);
+        x += z * .40;
+      } else if (mode === 'eye') {
+        y *= blink;
+        const scan = .37 * Math.sin(time * 1.3);
+        detailLight = i % 5 < 2 ? .13
+          : .14 * Math.exp(-((x - scan) ** 2) / .026) - .04;
+      } else if (mode === 'mobius' || mode === 'crystal') {
+        const originalX = x;
+        x = x * turnCos - z * turnSin;
+        z = originalX * turnSin + z * turnCos;
+        if (mode === 'mobius') {
+          y = .86 * y + .38 * z;
+          detailLight = (i % 5 < 2 ? .19 : -.16) + .09 * Math.sin(p.phase + time * 1.8);
+        } else {
+          detailLight = (i % 5 < 2 || i % 11 === 0 ? .22 : -.23)
+            + .13 * Math.sin(y * 12 - time * 2.6);
+        }
+      } else if (mode === 'comet') {
+        const tail = clamp((.66 - x) / 1.94, 0, 1);
+        x += .15 * Math.sin(time * .62);
+        y += .08 * Math.cos(time * .62) + .11 * tail * Math.sin(time * 1.5 - tail * 5);
+        detailLight = (i % 5 === 0 ? .30 : .06 - .40 * tail)
+          + .09 * Math.sin(tail * 15 + time * 3.6);
+      } else if (mode === 'butterfly') {
+        z += Math.abs(x) * flap;
+        x *= Math.cos(flap);
+        detailLight = i % 9 === 0 ? .23
+          : (i % 3 === 0 ? .04 : -.16) + .09 * Math.sin(Math.abs(x) * 15 - time * 2);
       }
       const xx = x * yc - z * ys;
       z = x * ys + z * yc; x = xx;
@@ -558,7 +681,7 @@
       const px = cx + x * scale * persp, py = cy + y * scale * persp;
       const featured = mode === 'star' || (mode === 'token' && v[2] >= .06);
       const light = .24 + .27 * z + p.size * .43 + .10 * Math.sin(time * 1.7 + p.phase)
-        + (featured ? .18 : 0) - (p.scatter ? .25 : 0);
+        + (featured ? .18 : 0) - (p.scatter ? .25 : 0) + detailLight;
       const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1) * (featured ? 1.15 : 1);
       addStar(px, py, radius, light, p.phase, pullScaleSquared);
     }
@@ -617,11 +740,16 @@
     shapeAgeMs += elapsedMs;
     morph = Math.min(1, morph + dt / shapeTransitionSeconds);
     if (shapeAgeMs >= shapeIntervalMs) {
-      // Random next shape, never the same one twice in a row.
-      const length = shapeOrder.length;
-      let candidate = Math.floor(Math.random() * (length - 1));
-      if (candidate >= shape) candidate++;
-      selectShape(candidate);
+      // Shuffle a full round so every shape gets its turn.
+      if (shapeQueue.at(-1) === shape) shapeQueue.pop();
+      if (!shapeQueue.length) {
+        shapeQueue = shapeOrder.map((_, index) => index).filter(index => index !== shape);
+        for (let i = shapeQueue.length - 1; i > 0; i--) {
+          const other = Math.floor(Math.random() * (i + 1));
+          [shapeQueue[i], shapeQueue[other]] = [shapeQueue[other], shapeQueue[i]];
+        }
+      }
+      selectShape(shapeQueue.pop());
     }
     const follow = 1 - Math.exp(-dt * 20);
     pointer.x += (pointer.targetX - pointer.x) * follow;
@@ -640,7 +768,7 @@
   }
   function show(i, {writeHash = true, focus = null, initial = false} = {}) {
     if (!Number.isInteger(i) || i < 0 || i >= scenes.length) return;
-    selectShape(initial ? 0 : i, initial || !running);
+    selectShape(initial ? shape : i, initial || !running);
     if (i === active && !initial) { draw(); return; }
     active = i;
     scenes.forEach((scene, index) => {
