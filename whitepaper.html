@@ -71,6 +71,20 @@
   .mark b{font-family:var(--serif);font-size:15px;font-weight:700;letter-spacing:-.01em}
   .mark small{font-size:9.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.14em}
   .topbar .spacer{flex:1}
+
+  /* ── chapter rail (desktop) ── */
+  .rail{position:fixed;left:calc(50% + 454px + 40px);top:50%;transform:translateY(-50%);z-index:15;display:none;flex-direction:column;gap:5px;width:210px}
+  @media(min-width:1500px){.rail{display:flex}}
+  .rail .rl{font:600 9.5px var(--mono);letter-spacing:.24em;color:var(--faint);margin:0 0 4px;padding-left:10px}
+  .rail a{font:12.5px var(--sans);color:var(--faint);text-decoration:none;padding:4px 10px;border-left:1px solid var(--line);transition:color .15s,border-color .15s}
+  .rail a .no{font:600 9.5px var(--mono);letter-spacing:.1em;margin-right:8px}
+  .rail a:hover{color:var(--ink)}
+  .rail a.active{color:var(--ink);border-left-color:var(--ink);font-weight:600}
+  .rail a.active .no{color:var(--ink)}
+  .top{position:fixed;right:26px;bottom:26px;z-index:15;width:38px;height:38px;border:1px solid var(--line);border-radius:50%;background:var(--bg);color:var(--ink);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,border-color .15s}
+  .top.show{opacity:1;pointer-events:auto}
+  .top:hover{border-color:var(--ink)}
+  section{scroll-margin-top:76px}
   .badge{font:10px var(--mono);letter-spacing:.14em;border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:5px 12px;white-space:nowrap}
   .theme{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
   .theme:hover{border-color:var(--ink)}
@@ -124,6 +138,7 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
   @media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+  @media(max-width:600px){.topbar .badge{display:none}}
 
   /* callouts — monochrome */
   .note{border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:4px;padding:20px 24px;margin:26px 0}
@@ -243,6 +258,22 @@
   </div>
 </header>
 
+<!-- chapter rail (desktop) -->
+<aside class="rail" aria-label="Chapter navigation">
+  <p class="rl"><span class="t-en">Chapters</span><span class="t-de">Kapitel</span></p>
+  <a href="#summary"><span class="no">01</span><span class="t-en">Summary</span><span class="t-de">Zusammenfassung</span></a>
+  <a href="#vision"><span class="no">02</span><span class="t-en">Vision</span><span class="t-de">Vision</span></a>
+  <a href="#architecture"><span class="no">03</span><span class="t-en">Architecture</span><span class="t-de">Architektur</span></a>
+  <a href="#design"><span class="no">04</span><span class="t-en">Token design</span><span class="t-de">Token-Design</span></a>
+  <a href="#devnet"><span class="no">05</span><span class="t-en">Devnet prototype</span><span class="t-de">Devnet-Prototyp</span></a>
+  <a href="#roadmap"><span class="no">06</span><span class="t-en">Roadmap</span><span class="t-de">Roadmap</span></a>
+  <a href="#risks"><span class="no">07</span><span class="t-en">Risks &amp; legal</span><span class="t-de">Risiken &amp; Recht</span></a>
+  <a href="#glossary"><span class="no">08</span><span class="t-en">Glossary</span><span class="t-de">Glossar</span></a>
+  <a href="#sources"><span class="no">09</span><span class="t-en">Sources</span><span class="t-de">Quellen</span></a>
+</aside>
+
+<button type="button" class="top" id="topBtn" aria-label="Back to top / Nach oben">↑</button>
+
 <div class="wrap">
 
   <div class="note" role="alert">
@@ -259,8 +290,8 @@
       <h2><span class="t-en">Summary</span><span class="t-de">Zusammenfassung</span></h2>
     </div>
     <p class="lead">
-      <span class="t-en">SuperIntelNex (<strong>SIN</strong>) is a community token project with a long-term vision for <strong>AI, superintelligence and digital payments</strong>. It is developed in the open: every token parameter, script, test and transaction record is published in the public GitHub repository, and every on-chain step of the Devnet run can be verified by anyone in the Solana Explorer.</span>
-      <span class="t-de">SuperIntelNex (<strong>SIN</strong>) ist ein Community-Token-Projekt mit einer langfristigen Vision für <strong>KI, Superintelligenz und digitale Zahlungen</strong>. Es wird offen entwickelt: Jeder Token-Parameter, jedes Skript, jeder Test und jedes Transaktionsprotokoll liegt öffentlich im GitHub-Repository, und jeder On-Chain-Schritt des Devnet-Laufs kann von jedem im Solana-Explorer geprüft werden.</span>
+      <span class="t-en">SuperIntelNex (<strong>SIN</strong>) is a community token project with a long-term vision for <strong>AI, superintelligence and digital payments</strong>. It is developed in the open: every token parameter, script, test and transaction record is published in the public project repository, and every on-chain step of the Devnet run can be verified by anyone in the Solana Explorer.</span>
+      <span class="t-de">SuperIntelNex (<strong>SIN</strong>) ist ein Community-Token-Projekt mit einer langfristigen Vision für <strong>KI, Superintelligenz und digitale Zahlungen</strong>. Es wird offen entwickelt: Jeder Token-Parameter, jedes Skript, jeder Test und jedes Transaktionsprotokoll liegt öffentlich im Projektrepository, und jeder On-Chain-Schritt des Devnet-Laufs kann von jedem im Solana-Explorer geprüft werden.</span>
     </p>
 
     <h3><span class="n">A</span><span class="t-en">What exists today (09 Nov 2026)</span><span class="t-de">Was heute existiert (09.11.2026)</span></h3>
@@ -605,7 +636,7 @@
           <ul>
             <li><span class="t-en">Final confirmation of all token parameters (ticker, 10¹⁴ supply, 5 decimals, allocation 81/10/5/4, both authorities revoked)</span><span class="t-de">Finale Bestätigung aller Token-Parameter (Kürzel, 10¹⁴-Supply, 5 Nachkommastellen, Verteilung 81/10/5/4, beide Vollmachten entzogen)</span></li>
             <li><span class="t-en">Decide on vesting schedules for the founder (5 %) and marketing (4 %) shares</span><span class="t-de">Sperrfristen (Vesting) für die Gründer-Anteile (5 %) und Marketing-Anteile (4 %) festlegen</span></li>
-            <li><span class="t-en">Move the metadata URI to content-addressed storage (IPFS, e.g. Pinata/Web3Storage, or Arweave) instead of the provisional GitHub URL</span><span class="t-de">Metadaten-URI auf content-addressed Speicher (IPFS, z. B. Pinata/Web3Storage, oder Arweave) umstellen statt der provisorischen GitHub-URL</span></li>
+            <li><span class="t-en">Move the metadata URI to content-addressed storage (IPFS, e.g. Pinata/Web3Storage, or Arweave) instead of the provisional repository URL</span><span class="t-de">Metadaten-URI auf content-addressed Speicher (IPFS, z. B. Pinata/Web3Storage, oder Arweave) umstellen statt der provisorischen Repository-URL</span></li>
             <li><span class="t-en">Review of the legal situation for the target market (no legal status, no clearance yet)</span><span class="t-de">Prüfung der Rechtslage für den Startmarkt (kein Rechtsstand, keine Freigabe)</span></li>
             <li><span class="t-en">External audit of the emission/distribution logic (not performed so far)</span><span class="t-de">Externes Audit der Emissions- und Distributions-Logik (bisher nicht durchgeführt)</span></li>
             <li><span class="t-en">Finalize imprint/privacy pages</span><span class="t-de">Impressum/Datenschutz finalisieren</span></li>
@@ -620,7 +651,7 @@
             <li><span class="t-en">Four-account emission script (community 81 %, liquidity 10 %, founder 5 %, marketing 4 % — one account per share); today <code>mint-initial.ts</code> deliberately mints the full supply to a one-way admin account</span><span class="t-de">Vierkonten-Emissions-Skript (Community 81 %, Liquidität 10 %, Gründer 5 %, Marketing 4 % — ein Konto pro Anteil); heute emittiert <code>mint-initial.ts</code> bewusst die Gesamtmenge an eine einweg-Admin-Konten</span></li>
             <li><span class="t-en">Fresh, separated hardware wallets for emission and (if retained) freeze — no one-way test wallet for mainnet</span><span class="t-de">Neue, getrennte Hardware-Wallets für Emission und (falls behalten) Freeze — keine einweg-Test-Wallet für Mainnet</span></li>
             <li><span class="t-en">Upload metadata to permanent content-addressed storage, update the config, run <code>verify.ts</code> against the new URI</span><span class="t-de">Metadaten auf den permanenten content-addressed Speicher hochladen, Konfiguration aktualisieren, <code>verify.ts</code> gegen die neue URI laufen lassen</span></li>
-            <li><span class="t-en">Bring the domain <code>superintelnex.com</code> out of the GitHub verification phase</span><span class="t-de">Domain <code>superintelnex.com</code> aus der GitHub-Verification-Phase bringen</span></li>
+            <li><span class="t-en">Bring the domain <code>superintelnex.com</code> out of the verification phase</span><span class="t-de">Domain <code>superintelnex.com</code> aus der Verifikations-Phase bringen</span></li>
           </ul>
         </div>
       </div>
@@ -699,8 +730,8 @@
       <h2><span class="t-en">Appendix — Sources &amp; Traceability</span><span class="t-de">Anhang — Quellen &amp; Nachvollziehbarkeit</span></h2>
     </div>
     <p>
-      <span class="t-en">Every claim in this whitepaper is backed by a path in the public GitHub repository:</span>
-      <span class="t-de">Jede Behauptung in diesem Whitepaper ist per Pfad im öffentlichen GitHub-Repository belegt:</span>
+      <span class="t-en">Every claim in this whitepaper is backed by a path in the public project repository:</span>
+      <span class="t-de">Jede Behauptung in diesem Whitepaper ist per Pfad im öffentlichen Projektrepository belegt:</span>
     </p>
     <div class="tblwrap">
       <table>
@@ -728,7 +759,7 @@
         <p>
           <a href="https://x.com/superintelnex" target="_blank" rel="noopener" style="color:var(--ink)">X @superintelnex</a> ·
           <a href="https://discord.gg/5QVBqHSWXn" target="_blank" rel="noopener" style="color:var(--ink)">Discord</a> ·
-          <a href="https://github.com/superintelnex/superintelnex" target="_blank" rel="noopener" style="color:var(--ink)">GitHub superintelnex/superintelnex</a>
+          <a href="index.html" style="color:var(--ink)"><span class="t-en">homepage</span><span class="t-de">Startseite</span></a>
         </p>
       </div>
       <div class="card">
@@ -752,8 +783,7 @@
       <span>
         <a href="index.html"><span class="t-en">Homepage</span><span class="t-de">Startseite</span></a> ·
         <a href="https://x.com/superintelnex" target="_blank" rel="noopener">X</a> ·
-        <a href="https://discord.gg/5QVBqHSWXn" target="_blank" rel="noopener">Discord</a> ·
-        <a href="https://github.com/superintelnex/superintelnex" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/5QVBqHSWXn" target="_blank" rel="noopener">Discord</a>
       </span>
     </div>
   </div>
@@ -797,6 +827,45 @@
     apply();
   });
   apply();
+})();
+</script>
+
+<!-- scroll spy + back to top -->
+<script>
+(() => {
+  'use strict';
+  const ids = ['summary','vision','architecture','design','devnet','roadmap','risks','glossary','sources'];
+  const links = [...document.querySelectorAll('.rail a')];
+  const topBtn = document.getElementById('topBtn');
+
+  function onScroll(){
+    const pos = window.scrollY + 120; // below sticky topbar
+    let current = ids[0];
+    for (const id of ids){
+      const el = document.getElementById(id);
+      if (el && el.offsetTop <= pos) current = id;
+    }
+    links.forEach(a => {
+      const active = a.getAttribute('href') === '#' + current;
+      a.classList.toggle('active', active);
+      a.setAttribute('aria-current', active ? 'true' : 'false');
+    });
+    if (topBtn) topBtn.classList.toggle('show', window.scrollY > 600);
+  }
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking){
+      ticking = true;
+      requestAnimationFrame(() => { onScroll(); ticking = false; });
+    }
+  }, { passive: true });
+  onScroll();
+
+  if (topBtn){
+    topBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+  }
 })();
 </script>
 
