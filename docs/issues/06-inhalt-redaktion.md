@@ -43,8 +43,8 @@ Darstellung sind getrennte Aufgaben, damit beide parallel bearbeitbar bleiben.
 
 ## Abhängigkeiten
 
-- **Berührt `index.html`:** Koordination mit #{{design-struktur}},
-  #{{qa-barrierefreiheit}} und #{{rechtstexte}} absprechen. Empfohlene
+- **Berührt `index.html`:** Koordination mit #10,
+  #12 und #5 absprechen. Empfohlene
   Arbeitsteilung: Redaktion ändert nur den Textinhalt, Design ändert nur
   Struktur und Klassen. Reihenfolge: Redaktion vor Design.
 - **Keine Abhängigkeit zu den Rechtstexten.** Die Rechtstexte werden parallel

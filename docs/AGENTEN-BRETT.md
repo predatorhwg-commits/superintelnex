@@ -33,7 +33,7 @@ Entscheidungen, Umfang der ersten Version). Die Aufgaben stehen als Issues in
 | Basis | Landingpage, Design, Responsive, Navigation | `index.html`, `css/style.css`, `js/main.js`, `assets/logo*.svg` | fertig, geprüft | `d415d0e` + `setup` |
 | Basis | Quellenpflege, Regeln | `AGENTS.md`, `docs/QUELLEN.md` | fertig | `setup` |
 | Basis | **Prüfwerkzeuge implementiert** | `tools/release-check.py`, `tools/verify-markup.py`, `tools/verify-content.py`, `tools/check-links.py`, `tools/sweep.py`, `tools/smoke-test.py`, `tools/a11y-audit.py`, `docs/WERKZEUGE.md` | fertig, 7/7 grün | `setup` |
-| Koordination | Projekt-Brief, Issuesatz, GitHub-API-Helfer | `docs/project-brief.md`, `docs/issues/`, `docs/pr/`, `tools/gh-api.py` | **beansprucht** | — |
+| Koordination | Projekt-Brief, Issuesatz, GitHub-API-Helfer | `docs/project-brief.md`, `docs/issues/`, `docs/pr/`, `tools/gh-api.py` | fertig, geprüft | `fe49882` + PR #2 |
 | Redaktion | Inhaltliche Qualität und Tonalität | `index.html` (Texte), `docs/TEXTE.md` | **offen** | — |
 | Design | Struktur, Lesbarkeit, Responsive | `index.html`, `css/style.css`, `docs/DESIGN.md` | **offen** | — |
 | Recht | Rechtstexte | `impressum.html`, `datenschutz.html`, `docs/RECHT.md` | **offen** | — |
@@ -64,21 +64,22 @@ verbindlich dokumentiert.
 
 ## Issue-Nummern
 
-Nach dem Anlegen der Issues wird diese Spalte gefüllt. Vorher gilt die
-Zuordnung über `docs/issues/`:
+Die Spalte ist am 09.11.2026 nach dem Anlegen der Issues (Batch in
+`docs/project-brief`-PR #2) gefüllt. Davor galt die Zuordnung über
+`docs/issues/`:
 
 | Rolle | Issue-Datei | GitHub-Nummer |
 |---|---|---|
-| Koordination | `docs/issues/00-tracking.md` | — |
-| Koordination | `docs/issues/01-project-brief.md` | — |
-| Recht | `docs/issues/02-rechtstexte.md` | — |
-| SEO | `docs/issues/03-seo-social.md` | — |
-| Sicherheit | `docs/issues/04-sicherheit-meldeweg.md` | — |
-| QA | `docs/issues/05-qa-werkzeuge.md` | — |
-| Redaktion | `docs/issues/06-inhalt-redaktion.md` | — |
-| Design | `docs/issues/07-design-struktur.md` | — |
-| i18n | `docs/issues/08-i18n-en.md` | — |
-| QA | `docs/issues/09-qa-barrierefreiheit.md` | — |
+| Koordination | `docs/issues/00-tracking.md` | #3 |
+| Koordination | `docs/issues/01-project-brief.md` | #4 |
+| Recht | `docs/issues/02-rechtstexte.md` | #5 |
+| SEO | `docs/issues/03-seo-social.md` | #6 |
+| Sicherheit | `docs/issues/04-sicherheit-meldeweg.md` | #7 |
+| QA | `docs/issues/05-qa-werkzeuge.md` | #8 |
+| Redaktion | `docs/issues/06-inhalt-redaktion.md` | #9 |
+| Design | `docs/issues/07-design-struktur.md` | #10 |
+| i18n | `docs/issues/08-i18n-en.md` | #11 |
+| QA | `docs/issues/09-qa-barrierefreiheit.md` | #12 |
 
 ## Überschneidungen — bitte beachten
 
@@ -138,6 +139,22 @@ python3 tools/gh-api.py issue update-tracking <NUMMER> --dir docs/issues
 Nach dem Merge des Dokumentations-PRs wird hier die Nummer des
 Tracking-Issues eingetragen. Bis dahin gilt dieses Brett als einzige
 Koordinationsstelle.
+
+## Stand 09.11.2026
+
+- GitHub-Koordination steht: PR #2 `docs/project-brief` (Basis `main`),
+  Issues **#3–#12** (Tracking = **#3**), 14 Labels. `tools/gh-api.py`
+  nachgeliefert (Commit `fe49882`): `issue create-batch` hat die
+  `{{...}}`-Platzhalter in den lokalen Dateien **und** in GitHub gelöst,
+  `issue update-tracking` hat Tracking-Issue #3 mit Aufgabenliste und
+  Statusübersicht gefüllt.
+- **Vorgang zum Eintragen:** `tools/gh-api.py` war zwischenzeitlich im
+  Arbeitsverzeichnis gelöscht, aber nie committet — dadurch lief der
+  Bootstrap-Lauf nicht durch. Die Datei wurde neu geschrieben und mit
+  `fe49882` committet; seither ist sie im Repo versioniert und kein
+  einzelner Agent mehr auf eine nicht-committete Version angewiesen.
+- Lokale Spiegelung `docs/issues/00-tracking.md` und das Brett wurden mit
+  den GitHub-Nummern abgeglichen.
 
 ## Stand 08.11.2026
 

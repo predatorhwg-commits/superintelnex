@@ -46,14 +46,14 @@ Abstände, das Verhalten über die Breiten.
 
 ## Abhängigkeiten
 
-- **Setzt den Textbestand von #{{inhalt-redaktion}} voraus.** Die Messung
+- **Setzt den Textbestand von #9 voraus.** Die Messung
   gilt für den Endstand der Inhalte. Design und Redaktion arbeiten daher
   nacheinander, nicht gleichzeitig an `index.html`.
 - **Berührt `index.html` und `css/style.css`:** Diese Dateien werden auch von
-  #{{qa-barrierefreiheit}} und #{{seo-social}} angefasst. Reihenfolge:
+  #12 und #6 angefasst. Reihenfolge:
   Redaktion, dann Design, dann Barrierefreiheit.
 - **Berührt `css/style.css`:** Fokusringe und Kontrast sind Teil von
-  #{{qa-barrierefreiheit}}. Der Fokusring wird hier nicht entfernt, nur
+  #12. Der Fokusring wird hier nicht entfernt, nur
   gestaltet.
 
 ## Zuständige Rolle

@@ -42,16 +42,16 @@ Zwischenstufe, weil Fokusreihenfolge und Kontrast vom Textumbau abhängen.
 
 ## Abhängigkeiten
 
-- **Kommt zuletzt.** Setzt die Endstände von #{{inhalt-redaktion}},
-  #{{design-struktur}}, #{{i18n-en}} und #{{rechtstexte}} voraus, weil alle
+- **Kommt zuletzt.** Setzt die Endstände von #9,
+  #10, #11 und #5 voraus, weil alle
   vier Aufgaben `index.html` bzw. die Unterseiten verändern.
-- **Berührt `css/style.css`:** Koordination mit #{{design-struktur}}. Empfohlen:
+- **Berührt `css/style.css`:** Koordination mit #10. Empfohlen:
   Design liefert die Fokusring- und Kontrastbasis, QA misst und korrigiert.
 - **Berührt `index.html`:** Letzte Rolle an dieser Datei.
 
 ## Zuständige Rolle
 
-Qualitätssicherung. Dieselbe Rolle wie #{{qa-werkzeuge}}, aber ein anderer
+Qualitätssicherung. Dieselbe Rolle wie #8, aber ein anderer
 Arbeitsbereich: hier die Seite, dort die Werkzeuge.
 
 ## Betroffene Dateien und Bereiche

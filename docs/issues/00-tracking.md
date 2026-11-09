@@ -55,14 +55,14 @@ als fehlend auf der Seite (Abschnitt `#offen`), nicht als Lücke.
 
 | Rolle | Arbeitsbereich | Issues |
 |---|---|---|
-| Koordination | Planung, Aufgabenverteilung, Statuspflege, Freigabe | dieses Issue, #{{project-brief}} |
-| Redaktion | Sachtexte, Tonalität, Quellenpflege | #{{inhalt-redaktion}} |
-| Design | Struktur, Lesbarkeit, Typografie, Responsive | #{{design-struktur}} |
-| Recht | Impressum, Datenschutz, Rechtshinweise | #{{rechtstexte}} |
-| SEO | Social-Vorschau, Sitemap, Robots, Metadaten | #{{seo-social}} |
-| i18n | Englische Fassung, Sprachumschalter, Glossar | #{{i18n-en}} |
-| Sicherheit | Meldeweg, Kontakt, HTTP-Header-Empfehlung | #{{sicherheit-meldeweg}} |
-| Qualitätssicherung | Prüfwerkzeuge, Barrierefreiheit, Gegenproben | #{{qa-werkzeuge}}, #{{qa-barrierefreiheit}} |
+| Koordination | Planung, Aufgabenverteilung, Statuspflege, Freigabe | dieses Issue, #4 |
+| Redaktion | Sachtexte, Tonalität, Quellenpflege | #9 |
+| Design | Struktur, Lesbarkeit, Typografie, Responsive | #10 |
+| Recht | Impressum, Datenschutz, Rechtshinweise | #5 |
+| SEO | Social-Vorschau, Sitemap, Robots, Metadaten | #6 |
+| i18n | Englische Fassung, Sprachumschalter, Glossar | #11 |
+| Sicherheit | Meldeweg, Kontakt, HTTP-Header-Empfehlung | #7 |
+| Qualitätssicherung | Prüfwerkzeuge, Barrierefreiheit, Gegenproben | #8, #12 |
 
 GitHub-Zuweisungen sind in diesem privaten Repository nicht möglich, solange
 es keine GitHub-Teams mit Schreibrecht gibt. Die Rolle ist deshalb hier und
@@ -72,23 +72,23 @@ wird die Zuweisung zusätzlich in GitHub gesetzt.
 ## Reihenfolge und Abhängigkeiten
 
 ```
-                 #{{project-brief}}
+                 #4
                         |
     +-------------------+-------------------+
     |                   |                   |
-#{{rechtstexte}}  #{{seo-social}}  #{{sicherheit-meldeweg}}
+#5  #6  #7
     |                   |                   |
     +---------+---------+                   |
               |                             |
-     #{{inhalt-redaktion}}          #{{qa-werkzeuge}}
+     #9          #8
               |                             |
               +-------------+---------------+
                             |
-                    #{{design-struktur}}
+                    #10
                             |
-                    #{{i18n-en}}
+                    #11
                             |
-                    #{{qa-barrierefreiheit}}
+                    #12
 ```
 
 - **Recht, SEO, Sicherheit** sind unabhängig von den Texten und starten sofort.
@@ -103,11 +103,25 @@ tatsächlich blockieren, stehen im jeweiligen Issue unter „Abhängigkeiten".
 ## Aufgabenliste
 
 <!-- BEGIN:AUFGABENLISTE -->
+| Aufgabe | Rolle | Status |
+|---|---|---|
+| [#4](https://github.com/predatorhwg-commits/superintelnex/issues/4) Projekt-Brief und Dokumentationsbasis | koordination | offen |
+| [#5](https://github.com/predatorhwg-commits/superintelnex/issues/5) Rechtstexte: Impressum und Datenschutzerklärung | recht | offen |
+| [#6](https://github.com/predatorhwg-commits/superintelnex/issues/6) Social-Vorschau und Suchmaschinen | seo | offen |
+| [#7](https://github.com/predatorhwg-commits/superintelnex/issues/7) Sicherheits-Meldeweg | sicherheit | offen |
+| [#8](https://github.com/predatorhwg-commits/superintelnex/issues/8) Prüfwerkzeuge erweitern und Gegenproben dokumentieren | qa | offen |
+| [#9](https://github.com/predatorhwg-commits/superintelnex/issues/9) Inhaltsqualität und Redaktion | redaktion | offen |
+| [#10](https://github.com/predatorhwg-commits/superintelnex/issues/10) Struktur, Lesbarkeit und Responsive-Verhalten | design | offen |
+| [#11](https://github.com/predatorhwg-commits/superintelnex/issues/11) Englische Fassung | i18n | offen |
+| [#12](https://github.com/predatorhwg-commits/superintelnex/issues/12) Barrierefreiheit vertiefen | qa | offen |
 <!-- END:AUFGABENLISTE -->
 
 ## Statusübersicht
 
 <!-- BEGIN:STATUSUEBERSICHT -->
+| Status | Anzahl |
+|---|---|
+| offen | 9 |
 <!-- END:STATUSUEBERSICHT -->
 
 ## Definition of Done für ein Arbeits-Issue
@@ -133,14 +147,14 @@ jeweiligen Aufgaben, aber nicht den Rest des Projekts.
 
 | Frage | Blockiert | Stand |
 |---|---|---|
-| Betreiber, Rechtsform, Sitz, Kontaktadresse | #{{rechtstexte}} | offen |
-| Hosting-Anbieter (für Datenschutzerklärung) | #{{rechtstexte}} | offen |
-| Token-Kürzel, Blockchain, Gesamtmenge, Verteilung, Sperrfristen | #{{inhalt-redaktion}} (Abschnitt `#offen`) | offen |
-| Offizielle Token-Adresse | #{{inhalt-redaktion}} | offen |
-| Bestätigte Social-Media-Konten | #{{inhalt-redaktion}}, #{{seo-social}} | offen |
-| Sicherheitskontakt für Meldungen | #{{sicherheit-meldeweg}} | offen |
-| Anredeform „Sie" oder „du" | #{{inhalt-redaktion}} | offen |
-| Hosting-Ziel für den Livegang | #{{seo-social}} (canonical, Sitemap) | offen |
+| Betreiber, Rechtsform, Sitz, Kontaktadresse | #5 | offen |
+| Hosting-Anbieter (für Datenschutzerklärung) | #5 | offen |
+| Token-Kürzel, Blockchain, Gesamtmenge, Verteilung, Sperrfristen | #9 (Abschnitt `#offen`) | offen |
+| Offizielle Token-Adresse | #9 | offen |
+| Bestätigte Social-Media-Konten | #9, #6 | offen |
+| Sicherheitskontakt für Meldungen | #7 | offen |
+| Anredeform „Sie" oder „du" | #9 | offen |
+| Hosting-Ziel für den Livegang | #6 (canonical, Sitemap) | offen |
 
 Die vollständige Liste mit Erläuterungen steht in `docs/project-brief.md`.
 

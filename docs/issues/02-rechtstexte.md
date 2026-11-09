@@ -57,8 +57,8 @@ Lücke später gezielt geschlossen werden kann.
   Hosting-Anbieter. Diese Angaben sind derzeit offen. Die Aufgabe wird
   trotzdem angefangen: die Struktur und die Platzhalter entstehen jetzt, die
   Inhalte folgen, sobald die Angaben geliefert sind.
-- **Berührt `index.html`:** Koordination mit #{{design-struktur}} und
-  #{{inhalt-redaktion}} absprechen. Empfohlen: nur Navigation und Footer
+- **Berührt `index.html`:** Koordination mit #10 und
+  #9 absprechen. Empfohlen: nur Navigation und Footer
   anfassen, keine Textarbeit in den Sektionen.
 
 ## Zuständige Rolle

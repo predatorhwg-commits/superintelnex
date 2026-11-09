@@ -49,7 +49,7 @@ wenn jemand eine Schwachstelle in der Website oder im geplanten Token findet.
 - **Keine harte Abhängigkeit.** Startet sofort.
 - **Benötigt vom Betreiber:** eine Sicherheitskontaktadresse. Derzeit offen.
   Die Struktur entsteht jetzt, die Adresse folgt.
-- **Berührt `index.html`:** Koordination mit #{{design-struktur}} absprechen.
+- **Berührt `index.html`:** Koordination mit #10 absprechen.
 
 ## Zuständige Rolle
 

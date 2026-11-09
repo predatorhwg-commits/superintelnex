@@ -47,13 +47,13 @@ Seiten indexiert werden, die es noch nicht gibt.
 ## Abhängigkeiten
 
 - **Keine harte Abhängigkeit.** Startet sofort.
-- **Berührt `index.html`:** Koordination mit #{{design-struktur}},
-  #{{inhalt-redaktion}} und #{{qa-barrierefreiheit}} absprechen. Empfohlen:
+- **Berührt `index.html`:** Koordination mit #10,
+  #9 und #12 absprechen. Empfohlen:
   nur den `<head>`-Bereich anfassen.
 - **Abhängig vom Hosting-Ziel:** Die canonical-URL und der Sitemap-Eintrag
   setzen `superintelnex.com` voraus. Falls das Hosting abweichend gewählt
   wird, müssen beide Stellen zusammen angepasst werden.
-- **Aufgabe 8 (`#{{qa-werkzeuge}}`) und dieses Issue teilen sich `tools/`**:
+- **Aufgabe 8 (`#8`) und dieses Issue teilen sich `tools/`**:
   `tools/og-image.py` wird hier angelegt, `tools/verify-content.py` dort
   erweitert. Der Datei-Eintrag im Agenten-Brett nennt beide.
 

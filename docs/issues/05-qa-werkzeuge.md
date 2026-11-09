@@ -48,7 +48,7 @@ die immer grün ist, ist wertlos.
 ## Abhängigkeiten
 
 - **Keine harte Abhängigkeit.** Startet sofort.
-- **Teilt `tools/` mit #{{seo-social}}:** `tools/og-image.py` wird dort
+- **Teilt `tools/` mit #6:** `tools/og-image.py` wird dort
   angelegt. Der Eintrag in `docs/AGENTEN-BRETT.md` nennt beide Dateien, damit
   kein Konflikt entsteht.
 - **Berührt `index.html` nicht.**
