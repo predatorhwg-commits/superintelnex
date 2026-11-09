@@ -20,7 +20,7 @@ Der Bericht trennt strikt vier Kategorien:
 
 | Baustein | Pfad | Status |
 |---|---|---|
-| Zentrale Konfiguration | `token/config/token.json` | vorhanden, alle Parameter mit `NOT-FINAL` markiert |
+| Zentrale Konfiguration | `token/config/token.json` | vorhanden, Parameter **BESTÄTIGT** (100 Billion @ 5 Dez., Commit `8c57777`) |
 | Mint + Metadaten (1 Tx) | `token/scripts/create-mint.ts` | fertig, getestet auf LOCALNET |
 | Emission Gesamtmenge | `token/scripts/mint-initial.ts` | fertig, getestet auf LOCALNET |
 | Checked-Transfer 1.234 | `token/scripts/transfer-test.ts` | fertig, getestet auf LOCALNET |
@@ -50,10 +50,10 @@ Deno 2.9.8.
 
 | Test | Ergebnis | Beleg |
 |---|---|---|
-| `token/tests/config.test.ts` (offline) | **3/3 ok** | Pflichtfelder, Verteilung=100 %, authorities-Boolean, sellerFeeBasisPoints=0 |
+| `token/tests/config.test.ts` (offline) | **4/4 ok** | Pflichtfelder, Verteilung=100 %, authorities-Boolean, sellerFeeBasisPoints=0 + **u64-Supply-Guard** (neu: fängt totalSupply × 10^decimals > u64max ab — bei 100 Billion @ 9 Dez. würde genau hier der Fehler liegen) |
 | `token/tests/integration.test.ts` (LOCALNET-TEST) | **ok** | Test-Mint (2 Dez.) `4eW2U83N...`, Emission 1234.57, Checked-Transfer 0.50, Decimals-/Supply-/Saldo-Gegenprobe + On-Chain-Metadaten-Name — alles bestanden |
 | `token/tests/authorities.test.ts` (LOCALNET-TEST, neu) | **ok** | Test-Mint `64w5Lmyc...`: Freeze-Vollmacht entzogen (sig `37fVxcvH...`) → Freeze-Instruktion On-Chain **abgelehnt**; Mint-Vollmacht entzogen (sig `2TLSdugC...`) → MintTo **abgelehnt**; Supply fix bei 1000.00, beide Vollmachten = `none` |
-| `deno test --allow-all token/tests/` (Gesamt) | **5 passed / 0 failed** | Einzelaufruf, 09.11.2026 |
+| `deno test --allow-all token/tests/` (Gesamt) | **6 passed / 0 failed** | Einzelaufruf, 09.11.2026 (inkl. u64-Guard und decimals-awareem Transfer-Test) |
 | `token/scripts/devnet-prefund.ts` (devnet-Modus) | **funktioniert** | zeigt Test-Wallet `FoJ8tLty...`, Saldo 0.000000 SOL, die 3 Finanzierungswege; keine Transaktion gesendet |
 
 **Früherer LOCALNET-Testlauf (06:21–06:28, `token/result/EXECUTED-TRANSACTIONS.jsonl`):**
@@ -117,16 +117,16 @@ genannte `FoJ8tLty...` gilt nur für den aktuellen Arbeits-Worktree.
 
 ### A) Ihre Entscheidungen (kurz) — Details: `token/docs/FRAGENLISTE.md`
 
-| # | Frage | Vorschlag (begründet) |
+| # | Frage | Bestätigter Wert (09.11.2026) |
 |---|---|---|
-| Q1 | Kürzel | `SIN` (3 Zeichen, aus dem Namen abgeleitet; Alternativen: SNX, SI) |
-| Q2 | Gesamtmenge | 1.000.000.000 (runde, leicht kommunizierbare Größenordnung) |
-| Q3 | Dezimalstellen | 9 (SPL-Standard, wie SOL) |
-| Q4 | Ausgabe-Policy | **feste Menge, keine weiteren Emissionen** (höchste Integrität; nach Entzug der Mint-Vollmacht ohnehin unmöglich) |
-| Q5 | Verteilung | 55 % Community / 20 % Gründer / 15 % Entwicklung / 10 % Liquidität (+ optional Vesting für Gründer/Dev) — Multi-Adress-Emission ist GEPLANT, erscheint erst nach Bestätigung |
+| Q1 | Kürzel | `SIN` |
+| Q2 | Gesamtmenge | **100.000.000.000.000** (100 Billion = 10^14, deutsche Zählung) — vorgegeben |
+| Q3 | Dezimalstellen | **5** (technisch gebunden an Q2: u64-Supply-Obergrenze erlaubt 10^14 maximal mit 5 Dez.) |
+| Q4 | Ausgabe-Policy | **feste Menge, keine weiteren Emissionen** (FIXED-NO-FURTHER-ISSUANCE) |
+| Q5 | Verteilung | 55 % Community / 20 % Gründer / 15 % Entwicklung / 10 % Liquidität (Planwert; Multi-Adress-Emission erst für den Mainnet-Launch, Devnet-Lauf mintet die Gesamtmenge an die einweg-Admin-ATA) |
 | Q6 | Vollmachten | **beide nach Emission unwiderruflich entziehen** (Mint: sonst unbegrenzte Ausweitung der Supply; Freeze: einzige Sperrmöglichkeit im SPL — Beibehaltung = dauerhafte Macht über fremde Konten; Entzug = kein Rekorrigieren, kein Thawen mehr). On-Chain sichtbar: `mintAuthority = (none)` |
-| Q7 | URI-Speicher | Devnet: GitHub Pages reicht; für Mainnet: IPFS (Pinata/Web3Storage) oder Arweave (content-addressed, manipulationsresistent) |
-| Q8 | Devnet-Lauf | nach Q1–Q7 + nach Test-SOL-Finanzierung (Wege A/B/C) |
+| Q7 | URI-Speicher | Devnet: GitHub Pages (provisorisch); für Mainnet: IPFS (Pinata/Web3Storage) oder Arweave (content-addressed, manipulationsresistent) |
+| Q8 | Devnet-Lauf | **nach Test-SOL-Finanzierung** (Wege A/B/C oben) — Q1–Q7 sind bestätigt |
 
 ### B) Technische Restarbeiten (nach Ihren Entscheidungen)
 
