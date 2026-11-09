@@ -43,6 +43,7 @@ Entscheidungen, Umfang der ersten Version). Die Aufgaben stehen als Issues in
 | QA | Prüfwerkzeuge **erweitern** | `tools/verify-content.py`, `tools/check-links.py`, `tools/sweep.py`, `docs/WERKZEUGE.md` | **offen** (Basis-Arbeit abgeschlossen, Erweiterungen offen) | — |
 | Koordination | Domain `superintelnex.com` an GitHub Pages anbinden | `CNAME`, `.nojekyll`, `docs/DOMAIN.md`, Sichtbarkeit des Repos | **fertig** (DNS-Änderung bei Checkdomain läuft, siehe `docs/DOMAIN.md`) | `0cbb247` |
 | QA | Barrierefreiheit vertiefen | `index.html`, `css/style.css`, `docs/A11Y.md` | **offen** | — |
+| Basis | **FAQ-Sektion + aktive Navigation + Nach-oben-Button** | `index.html`, `css/style.css`, `js/main.js` (Branch `improve/faq-nav`) | **beansprucht** — 7/7 Prüfungen grün | (im Arbeitsschritt) |
 
 ## Rollenzuordnung
 
