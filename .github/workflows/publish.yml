@@ -9,6 +9,8 @@ on:
       - '404.html'
       - 'impressum.html'
       - 'datenschutz.html'
+      - 'whitepaper.html'
+      - 'vendor/three.min.js'
       - 'og-image.png'
       - 'apple-touch-icon.png'
       - 'icon-192.png'
@@ -39,10 +41,12 @@ jobs:
           # und wandert per "git add -A" in den Publish-Tree.
           TMP="$(mktemp -d)"
           for f in index.html 404.html impressum.html datenschutz.html \
+                   whitepaper.html vendor/three.min.js \
                    og-image.png apple-touch-icon.png icon-192.png icon-512.png \
                    robots.txt sitemap.xml manifest.webmanifest \
                    superintelnex-sn-anthrazit.svg CNAME; do
-            [ -f "$f" ] && cp "$f" "$TMP/" || { echo "FEHLT auf main: $f"; exit 1; }
+            mkdir -p "$TMP/$(dirname "$f")"
+            [ -f "$f" ] && cp "$f" "$TMP/$f" || { echo "FEHLT auf main: $f"; exit 1; }
           done
           git config user.name  "SuperIntelNex CI"
           git config user.email "superintelnex@gmail.com"
