@@ -120,7 +120,7 @@ genannte `FoJ8tLty...` gilt nur für den aktuellen Arbeits-Worktree.
 | # | Frage | Vorschlag (begründet) |
 |---|---|---|
 | Q1 | Kürzel | `SIN` (3 Zeichen, aus dem Namen abgeleitet; Alternativen: SNX, SI) |
-| Q2 | Gesamtmenge | 1.000.000.000 (runde, kommunizierbare Grö­ßenordnung) |
+| Q2 | Gesamtmenge | 1.000.000.000 (runde, leicht kommunizierbare Größenordnung) |
 | Q3 | Dezimalstellen | 9 (SPL-Standard, wie SOL) |
 | Q4 | Ausgabe-Policy | **feste Menge, keine weiteren Emissionen** (höchste Integrität; nach Entzug der Mint-Vollmacht ohnehin unmöglich) |
 | Q5 | Verteilung | 55 % Community / 20 % Gründer / 15 % Entwicklung / 10 % Liquidität (+ optional Vesting für Gründer/Dev) — Multi-Adress-Emission ist GEPLANT, erscheint erst nach Bestätigung |
@@ -132,7 +132,7 @@ genannte `FoJ8tLty...` gilt nur für den aktuellen Arbeits-Worktree.
 
 1. Devnet-Erstellung der 5 Schritte (Mint → Emission → Transfer →
    Verify → [Vollmachten entziehen]) — ~0,5 Test-SOL, keine echten Kosten.
-2. Falls Q5 besteuert wird: Emissions-Skript für 4 Verteilungsadressen
+2. Falls Q5 bestätigt wird: Emissions-Skript für 4 Verteilungsadressen
    (Community/Gründer/Dev/Liquidität) — aktuell ist das bewusst nicht
    implementiert (`mint-initial.ts` mintet die Gesamtmenge an die
    einweg-Admin-ATA).
