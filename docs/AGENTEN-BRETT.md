@@ -44,7 +44,7 @@ Entscheidungen, Umfang der ersten Version). Die Aufgaben stehen als Issues in
 | Koordination | Domain `superintelnex.com` an GitHub Pages anbinden | `CNAME`, `.nojekyll`, `docs/DOMAIN.md`, Sichtbarkeit des Repos | **fertig** (DNS-Änderung bei Checkdomain läuft, siehe `docs/DOMAIN.md`) | `0cbb247` |
 | QA | Barrierefreiheit vertiefen | `index.html`, `css/style.css`, `docs/A11Y.md` | **offen** | — |
 | Basis | **FAQ-Sektion + aktive Navigation + Nach-oben-Button** | `index.html`, `css/style.css`, `js/main.js` | fertig, in `main` (über `improve/faq-nav` merged), 7/7 Prüfungen grün | `0f720b3` |
-| Design | **Hero-Punktewolke (WebGL, 3 Szenen, Interaktion)** | `index.html`, `css/style.css`, `js/hero-cloud.js` | fertig, release-check 7/7 + WebGL-Render-Test (SwiftShader, 0 Konsolenfehler) | — |
+| Design | **Hero-Punktewolke (WebGL, 3 Szenen, Interaktion)** | `index.html`, `css/style.css`, `js/hero-cloud.js` | fertig, release-check 7/7 + WebGL-Render-Test (SwiftShader, 0 Konsolenfehler) | `1cdeb1b` |
 
 ## Rollenzuordnung
 
