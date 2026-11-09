@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="SuperIntelNex ist ein Community-Token-Projekt im Aufbau mit einer langfristigen Vision für KI, Superintelligenz und digitale Zahlungen.">
+<title>SuperIntelNex | Community-Token-Projekt im Aufbau</title>
+<style>
+  :root{color-scheme:dark;--bg:#000;--ink:#f0f0f0;--muted:#a5a5a5;--line:#ffffff21;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--edge:clamp(20px,5vw,84px)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+  button,a{-webkit-tap-highlight-color:transparent}
+  button{font:inherit;color:inherit;cursor:pointer}
+  button:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+  .site{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;isolation:isolate;position:relative;overflow:hidden}
+  header,footer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-inline:var(--edge);position:relative;z-index:2}
+  header{height:82px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:750;font-size:18px;letter-spacing:-.025em;white-space:nowrap}
+  .brand svg{width:32px;height:32px;color:var(--ink)}
+  nav{display:flex;gap:clamp(13px,3vw,42px);align-items:center}
+  nav button{background:none;border:0;padding:12px 0;color:var(--muted);font-size:13px;white-space:nowrap}
+  nav button:hover,nav button[aria-current]{color:var(--ink)}
+  nav button[aria-current]::after{content:"";display:block;width:100%;height:1px;background:var(--ink);transform:translateY(8px)}
+  .motion{display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--line);border-radius:99px;background:#000;padding:9px 13px;color:var(--muted);font-size:12px;white-space:nowrap}
+  .motion:hover,.secondary:hover,.arrow:hover:not(:disabled){border-color:#ffffff66;color:var(--ink)}
+  .signal{width:6px;height:6px;flex:none;border-radius:50%;background:var(--ink);box-shadow:0 0 11px #ffffff60}
+  .motion[aria-pressed="false"] .signal{background:var(--muted);box-shadow:none}
+  main{position:relative;display:grid;align-items:center;min-height:555px}
+  .art{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
+  canvas{display:block;width:100%;height:100%}
+  .art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000000 1%,#000000e8 19%,#00000066 41%,transparent 62%)}
+  .instrument{position:absolute;right:var(--edge);top:24px;display:flex;align-items:center;gap:12px;color:#aaa;font:10px var(--mono);letter-spacing:.16em}
+  .instrument::before{content:"";display:block;width:25px;height:1px;background:#ffffff38}
+  .content{position:relative;padding:70px var(--edge);max-width:100%}
+  .eyebrow{display:flex;align-items:center;gap:13px;margin:0 0 27px;font:11px var(--mono);letter-spacing:.21em;text-transform:uppercase;color:var(--ink)}
+  .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
+  h1,h2{margin:0;font-size:clamp(48px,7.3vw,120px);line-height:.91;letter-spacing:-.082em;font-weight:750}
+  h1 span,h2 span{color:#b0b0b0}
+  #start h1{font-size:clamp(39px,6.3vw,100px)}
+  #status h2{font-size:clamp(43px,5.7vw,84px)}
+  .desc{max-width:430px;color:#bdbdbd;font-size:clamp(15px,1.35vw,19px);line-height:1.6;margin:28px 0 0;text-wrap:pretty}
+  .details{max-width:510px;display:grid;gap:0;margin:24px 0 0;background:#000c;border-top:1px solid var(--line)}
+  .details div{display:grid;grid-template-columns:115px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .details dt{color:var(--ink);font-size:13px;font-weight:700;line-height:1.5}
+  .details dd{margin:0;color:#bdbdbd;font-size:14px;line-height:1.5;text-wrap:pretty}
+  .actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-top:30px}
+  .pill{display:inline-flex;align-items:center;gap:18px;border:1px solid transparent;border-radius:99px;padding:13px 19px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s}
+  .primary{color:var(--ink);background:#000;border-color:#ffffff66}
+  .primary:hover{border-color:var(--ink)}
+  .secondary{background:#000;border-color:var(--line);color:var(--ink)}
+  .scene.enter{animation:enter .55s cubic-bezier(.22,.7,.2,1) both}
+  @keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  footer{min-height:83px;border-top:1px solid var(--line)}
+  .caption{display:flex;align-items:center;gap:10px;color:var(--muted);font:10px var(--mono);letter-spacing:.15em}
+  .caption svg{width:15px;color:var(--ink)}
+  .pager{display:flex;align-items:center;gap:13px}
+  .count{color:var(--muted);font:11px var(--mono);letter-spacing:.14em;min-width:67px;text-align:center}
+  .count strong{color:var(--ink);font-weight:500}
+  .arrow{width:39px;height:39px;border-radius:50%;border:1px solid var(--line);background:#000;font-size:17px}
+  .arrow.next{border-color:#ffffff66}
+  .arrow.next:hover:not(:disabled){border-color:var(--ink)}
+  .arrow:disabled{opacity:.3;cursor:default}
+  @media(max-width:780px){
+    header{height:69px}
+    main{min-height:560px}
+    h1,h2{font-size:clamp(55px,10vw,79px)}
+    .art::after{background:linear-gradient(90deg,#000000e8,#00000050 61%,transparent)}
+  }
+  @media(max-width:560px){
+    header,footer{gap:10px}
+    header{height:auto;min-height:94px;display:grid;grid-template-columns:1fr auto;align-content:center;row-gap:0}
+    .brand{font-size:16px}.brand svg{width:26px;height:26px}
+    .motion{grid-column:2;grid-row:1}
+    nav{grid-row:2;grid-column:1/-1;gap:24px}
+    nav button{padding:9px 0;font-size:12px}
+    nav button[aria-current]::after{transform:translateY(5px)}
+    main{min-height:590px;align-items:end}
+    .content{padding-top:155px;padding-bottom:43px}
+    .art::after{background:linear-gradient(0deg,#000000 0%,#000000e0 15%,#00000070 49%,transparent 79%)}
+    .instrument{top:18px}
+    .eyebrow{margin-bottom:19px;font-size:10px}
+    h1,h2{font-size:clamp(44px,12vw,63px)}
+    #start h1{font-size:clamp(32px,9.8vw,53px)}
+    .details div{grid-template-columns:1fr;gap:3px;padding:9px 0}
+    .desc{margin-top:19px}
+    .actions{margin-top:22px}
+    .pill{padding:11px 14px;gap:10px}
+    footer{min-height:67px}
+    .caption{letter-spacing:.05em;font-size:9px}
+    .pager{gap:7px}.count{min-width:61px}
+    .arrow{width:34px;height:34px}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="site">
+  <header>
+    <a class="brand" href="#start" aria-label="SuperIntelNex, Start">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 2.5 29.5 16 16 29.5 2.5 16 16 2.5Z" stroke="currentColor"/><path d="M16 8v16M8 16h16" stroke="currentColor"/><circle cx="16" cy="16" r="2.7" fill="currentColor"/></svg>
+      SuperIntelNex
+    </a>
+    <nav aria-label="Hauptnavigation">
+      <button type="button" data-go="0" aria-current="page">Start</button>
+      <button type="button" data-go="1">Vision</button>
+      <button type="button" data-go="2">Projektstatus</button>
+    </nav>
+    <button type="button" class="motion" id="motion" aria-pressed="true" aria-label="Animation"><span class="signal"></span><span id="motion-label" aria-hidden="true">Animation an</span></button>
+  </header>
+  <main id="stage">
+    <div class="art" aria-hidden="true"><canvas id="dust"></canvas></div>
+    <div class="instrument" id="figure" aria-hidden="true">FIG. 01 / RING</div>
+    <div class="content">
+      <section class="scene" id="start" aria-labelledby="title-1">
+        <p class="eyebrow">Community-Token-Projekt im Aufbau</p>
+        <h1 id="title-1">KI und digitale<br><span>Zahlungen.</span></h1>
+        <p class="desc">SuperIntelNex ist ein Community-Token-Projekt mit einer langfristigen Vision für KI, Superintelligenz und digitale Zahlungen.</p>
+        <div class="actions">
+          <button class="pill primary" type="button" data-go="1">Vision entdecken <span aria-hidden="true">↗</span></button>
+          <button class="pill secondary" type="button" data-go="2">Projektstatus</button>
+        </div>
+      </section>
+      <section class="scene" id="vision" aria-labelledby="title-2" hidden>
+        <p class="eyebrow">02 / Die Vision</p>
+        <h2 id="title-2">Was wir<br><span>vorhaben.</span></h2>
+        <dl class="details">
+          <div><dt>Übertragen</dt><dd>Wir planen Übertragungen zwischen Wallets.</dd></div>
+          <div><dt>Handeln</dt><dd>Später soll der Token auf unterstützten Plattformen handelbar sein.</dd></div>
+          <div><dt>Bezahlen und KI</dt><dd>Zahlungen bei teilnehmenden Anbietern sind vorgesehen. Händlerakzeptanz und KI-Anwendungen sind langfristige Ziele.</dd></div>
+        </dl>
+        <div class="actions">
+          <button class="pill primary" type="button" data-go="2">Projektstatus ansehen <span aria-hidden="true">↗</span></button>
+        </div>
+      </section>
+      <section class="scene" id="status" aria-labelledby="title-3" hidden>
+        <p class="eyebrow">03 / Projektstatus</p>
+        <h2 id="title-3">Im Aufbau.</h2>
+        <dl class="details">
+          <div><dt>Token-Details</dt><dd>Blockchain, Token-Kürzel, Gesamtmenge, Verteilung und Ausgaberechte sind noch offen.</dd></div>
+          <div><dt>Veröffentlichung</dt><dd>Eine Token-Veröffentlichung, eine Contract-Adresse und Börsenlistings sind bisher nicht bestätigt.</dd></div>
+          <div><dt>Projektangaben</dt><dd>Partnerschaften, Audits, Teamangaben und offizielle Social-Media-Links sind bisher nicht bestätigt.</dd></div>
+        </dl>
+        <div class="actions">
+          <button class="pill secondary" type="button" data-go="0">Zur Startseite <span aria-hidden="true">↖</span></button>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <div class="caption"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m10 2 8 8-8 8-8-8 8-8Z" stroke="currentColor"/></svg> superintelnex.com</div>
+    <div class="pager" role="group" aria-label="Bereich wechseln">
+      <button type="button" class="arrow" id="prev" aria-label="Vorheriger Bereich" disabled>←</button>
+      <span class="count" role="status" aria-label="Aktueller Bereich"><strong id="current">01</strong> / 03</span>
+      <button type="button" class="arrow next" id="next" aria-label="Nächster Bereich">→</button>
+    </div>
+  </footer>
+</div>
+<script>
+(() => {
+  'use strict';
+  const stage = document.querySelector('#stage');
+  const canvas = document.querySelector('#dust');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const scenes = [...document.querySelectorAll('.scene')];
+  const nav = [...document.querySelectorAll('nav [data-go]')];
+  const prev = document.querySelector('#prev');
+  const next = document.querySelector('#next');
+  const motion = document.querySelector('#motion');
+  const preference = matchMedia('(prefers-reduced-motion: reduce)');
+  const labels = ['RING', 'WELLE', 'HELIX'];
+  const shapeIntervalMs = 7000;
+  let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
+  let shape = 0, shapeAgeMs = 0;
+  let width = 0, height = 0, cx = 0, cy = 0, scale = 0, count = 0;
+  const pointer = {x:0, y:0, targetX:0, targetY:0, inside:false, strength:0};
+  let morph = 1, from = null;
+  const tau = Math.PI * 2, total = 7400;
+  const coords = new Float32Array(total * 3);
+  let seed = 349112;
+  function random() {
+    seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
+    return seed / 4294967296;
+  }
+  // Dieselben Partikel bleiben erhalten; nur ihre Zielkoordinaten wechseln.
+  const points = Array.from({length: total}, (_, i) => {
+    const a = random() * tau, b = random() * tau, c = random(), d = random(), e = random();
+    const scatter = c > .93, spread = scatter ? 1.12 + d * 1.4 : Math.sqrt(d);
+    const tube = (.12 + .035 * Math.cos(a * 3)) * spread;
+    const r = .83 + tube * Math.cos(b) + .035 * Math.sin(2 * a);
+    const orbit = [r * Math.cos(a), r * Math.sin(a), tube * Math.sin(b)];
+    const x = (a / tau - .5) * 2.38;
+    const wave = [x, .31 * Math.sin(x * 2.9) + Math.cos(b) * spread * .15, Math.sin(b) * spread * .31 + .14 * Math.sin(x * 4)];
+    const y = (a / tau - .5) * 2.13, turn = y * 3.55 + (i % 2) * Math.PI;
+    const radius = .34 + .16 * Math.cos(y * 2.7) + Math.cos(b) * spread * .09;
+    const helix = [radius * Math.cos(turn) + y * .29, y + Math.sin(b) * spread * .11, radius * Math.sin(turn)];
+    return {shapes:[orbit, wave, helix], size:e, phase:b, scatter};
+  });
+  const paths = Array.from({length:8}, () => []);
+  const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
+
+  function draw() {
+    if (!ctx || !width || !height) return;
+    ctx.clearRect(0, 0, width, height);
+    for (const path of paths) path.length = 0;
+    const t = morph * morph * (3 - 2 * morph);
+    const spin = time * .16;
+    const xAngle = .84, zAngle = -.39;
+    const sx = Math.sin(xAngle), ax = Math.cos(xAngle), sz = Math.sin(zAngle), az = Math.cos(zAngle);
+    const sway = Math.sin(time * .38) * .19;
+    const ys = Math.sin(sway), yc = Math.cos(sway);
+    const reach = clamp(width * .065, 34, 80);
+    const reachSquared = reach * reach;
+    for (let i = 0; i < count; i++) {
+      const p = points[i], v = p.shapes[shape], j = i * 3;
+      let x = v[0], y = v[1], z = v[2];
+      if (shape === 0) {
+        const angle = spin + .026 * Math.sin(time * .7 + p.phase);
+        const u = x * Math.cos(angle) - y * Math.sin(angle);
+        const w = x * Math.sin(angle) + y * Math.cos(angle);
+        const q = w * ax - z * sx;
+        z = w * sx + z * ax; x = u * az - q * sz; y = u * sz + q * az;
+      } else if (shape === 1) {
+        y += .16 * Math.sin(x * 3.8 - time * 1.1 + z * 1.8);
+        z += .09 * Math.sin(x * 4 + time * .7);
+        x += .09 * Math.sin(p.phase + time * .5);
+        y += x * .08;
+      } else {
+        const theta = spin * 2;
+        const mid = x - y * .29;
+        x = mid * Math.cos(theta) - z * Math.sin(theta) + y * .29;
+        z = mid * Math.sin(theta) + z * Math.cos(theta);
+      }
+      const xx = x * yc - z * ys;
+      z = x * ys + z * yc; x = xx;
+      if (t < 1 && from) {
+        x = from[j] + (x - from[j]) * t;
+        y = from[j+1] + (y - from[j+1]) * t;
+        z = from[j+2] + (z - from[j+2]) * t;
+      }
+      coords[j] = x; coords[j+1] = y; coords[j+2] = z;
+      const persp = 3.35 / (3.35 - z);
+      let px = cx + x * scale * persp, py = cy + y * scale * persp;
+      let influence = 0;
+      if (pointer.strength > 0) {
+        const dx = px - pointer.x, dy = py - pointer.y;
+        const distanceSquared = dx * dx + dy * dy;
+        if (distanceSquared < reachSquared) {
+          // Der Wirbel wird am Rand des Einflussbereichs sanft ausgeblendet.
+          const falloff = 1 - distanceSquared / reachSquared;
+          influence = pointer.strength * falloff * falloff;
+          const angle = influence * (1.6 + .32 * Math.sin(time * 2.6 + z * 2));
+          const sin = Math.sin(angle), cos = Math.cos(angle);
+          const push = 1 + influence * 1.2;
+          px = pointer.x + (dx * cos - dy * sin) * push;
+          py = pointer.y + (dx * sin + dy * cos) * push;
+        }
+      }
+      const light = clamp(.24 + .27 * z + p.size * .43 + .10 * Math.sin(time * 1.7 + p.phase) + influence * .24 - (p.scatter ? .25 : 0), .07, .99);
+      const bin = Math.floor(light * paths.length);
+      const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1);
+      paths[bin].push(px, py, radius);
+    }
+    ctx.fillStyle = '#fff';
+    for (let k = 0; k < paths.length; k++) {
+      const data = paths[k];
+      if (!data.length) continue;
+      ctx.globalAlpha = .12 + k * .125;
+      ctx.beginPath();
+      for (let j = 0; j < data.length; j += 3) {
+        const r = data[j+2];
+        ctx.rect(data[j]-r/2, data[j+1]-r/2, r, r);
+      }
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function size() {
+    if (!ctx) return;
+    const r = canvas.getBoundingClientRect();
+    width = r.width; height = r.height;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const narrow = width <= 560;
+    count = narrow ? 4500 : width < 850 ? 5800 : total;
+    cx = width * (narrow ? .57 : .71); cy = height * (narrow ? .36 : .51);
+    scale = narrow ? Math.min(width * .44, height * .35) : Math.min(width * .32, height * .42, 520);
+    draw();
+  }
+  function selectShape(index, instant = false) {
+    shapeAgeMs = 0;
+    if (index !== shape) {
+      from = instant ? null : coords.slice();
+      morph = instant ? 1 : 0;
+      shape = index;
+    }
+    const number = String(index + 1).padStart(2, '0');
+    document.querySelector('#figure').textContent = 'FIG. ' + number + ' / ' + labels[index];
+  }
+  function animate(now) {
+    frame = 0;
+    const elapsedMs = last === null ? 0 : now - last;
+    const dt = Math.min(elapsedMs / 1000, .05);
+    last = now; time += dt;
+    shapeAgeMs += elapsedMs;
+    morph = Math.min(1, morph + dt / 1.3);
+    if (shapeAgeMs >= shapeIntervalMs) {
+      selectShape((shape + 1) % labels.length);
+    }
+    const follow = 1 - Math.exp(-dt * 20);
+    pointer.x += (pointer.targetX - pointer.x) * follow;
+    pointer.y += (pointer.targetY - pointer.y) * follow;
+    const targetStrength = pointer.inside ? 1 : 0;
+    pointer.strength += (targetStrength - pointer.strength) * (1 - Math.exp(-dt * 12));
+    if (pointer.strength < .001) pointer.strength = 0;
+    draw();
+    if (running && !document.hidden) frame = requestAnimationFrame(animate);
+  }
+  function syncMotion() {
+    motion.setAttribute('aria-pressed', String(running));
+    document.querySelector('#motion-label').textContent = running ? 'Animation an' : 'Animation aus';
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0; last = null;
+    if (running && ctx && !document.hidden) frame = requestAnimationFrame(animate);
+    else if (!running) { morph = 1; pointer.strength = 0; draw(); }
+  }
+  function show(i, {writeHash = true, focus = null, initial = false} = {}) {
+    if (!Number.isInteger(i) || i < 0 || i >= scenes.length) return;
+    selectShape(i, initial || !running);
+    if (i === active && !initial) { draw(); return; }
+    active = i;
+    scenes.forEach((scene, index) => {
+      scene.hidden = index !== i;
+      scene.classList.toggle('enter', index === i && !initial && running);
+    });
+    nav.forEach((button, index) => index === i ? button.setAttribute('aria-current','page') : button.removeAttribute('aria-current'));
+    prev.disabled = i === 0;
+    next.disabled = i === scenes.length - 1;
+    const number = String(i + 1).padStart(2, '0');
+    document.querySelector('#current').textContent = number;
+    if (writeHash && location.hash !== '#' + scenes[i].id) {
+      try { history.pushState(null, '', '#' + scenes[i].id); }
+      catch { location.hash = scenes[i].id; }
+    }
+    if (focus === 'title') {
+      const heading = scenes[i].querySelector('h1,h2');
+      heading.tabIndex = -1;
+      heading.focus({preventScroll:true});
+    } else if (focus?.disabled) (i === 0 ? next : prev).focus({preventScroll:true});
+    draw();
+  }
+  const sceneFromHash = () => Math.max(0, scenes.findIndex(scene => '#' + scene.id === location.hash));
+  document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => show(Number(button.dataset.go), {focus: button.closest('.scene') ? 'title' : null})));
+  document.querySelector('.brand').addEventListener('click', event => {event.preventDefault(); show(0);});
+  prev.addEventListener('click', () => show(active - 1, {focus:prev}));
+  next.addEventListener('click', () => show(active + 1, {focus:next}));
+  document.addEventListener('keydown', event => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      const destination = active + (event.key === 'ArrowRight' ? 1 : -1);
+      if (destination < 0 || destination >= scenes.length) return;
+      event.preventDefault(); show(destination, {focus:event.target});
+    }
+  });
+  addEventListener('hashchange', () => show(sceneFromHash(), {writeHash:false}));
+  motion.addEventListener('click', () => {running = !running; syncMotion();});
+  preference.addEventListener('change', () => {running = !preference.matches; syncMotion();});
+  document.addEventListener('visibilitychange', syncMotion);
+  stage.addEventListener('pointermove', event => {
+    if (event.pointerType !== 'mouse') return;
+    const r = stage.getBoundingClientRect();
+    pointer.targetX = event.clientX - r.left;
+    pointer.targetY = event.clientY - r.top;
+    if (!pointer.inside && pointer.strength === 0) {
+      pointer.x = pointer.targetX;
+      pointer.y = pointer.targetY;
+    }
+    pointer.inside = true;
+  });
+  const releasePointer = () => {pointer.inside = false;};
+  stage.addEventListener('pointerleave', releasePointer);
+  stage.addEventListener('pointercancel', releasePointer);
+  new ResizeObserver(size).observe(stage);
+  show(sceneFromHash(), {initial:true, writeHash:false});
+  size();
+  syncMotion();
+})();
+</script>
+</body>
+</html>
