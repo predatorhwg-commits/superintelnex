@@ -1,18 +1,18 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#000000">
 <meta name="robots" content="noindex,follow">
-<meta name="description" content="SuperIntelNex — die gewünschte Seite wurde nicht gefunden.">
+<meta name="description" content="SuperIntelNex — page not found.">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="superintelnex-sn-anthrazit.svg" type="image/svg+xml">
 <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
 <link rel="icon" href="icon-512.png" type="image/png" sizes="512x512">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<title>404 | SuperIntelNex</title>
+<title data-de="404 | SuperIntelNex">404 | SuperIntelNex</title>
 <style>
   :root{color-scheme:dark;--bg:#000;--ink:#f0f0f0;--muted:#a5a5a5;--line:#ffffff21;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--edge:clamp(20px,5vw,84px)}
   *{box-sizing:border-box}
@@ -26,6 +26,11 @@
   nav{display:flex;gap:clamp(13px,3vw,42px);align-items:center}
   nav a{color:var(--muted);font-size:13px;text-decoration:none;white-space:nowrap}
   nav a:hover{color:var(--ink)}
+  .languages{display:flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:99px}
+  .languages button{border:0;border-radius:99px;background:transparent;color:var(--muted);padding:5px 8px;font:11px var(--mono);position:relative}
+  .languages button::before{content:"";position:absolute;inset:-11px}
+  .languages button:hover{color:var(--ink)}
+  .languages button[aria-pressed="true"]{color:var(--bg);background:var(--ink)}
   .content{padding:64px var(--edge) 72px}
   .eyebrow{display:flex;align-items:center;gap:13px;margin:0 0 27px;font:11px var(--mono);letter-spacing:.21em;text-transform:uppercase;color:var(--ink)}
   .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
@@ -34,13 +39,14 @@
   .actions{margin-top:30px}
   .pill{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border:1px solid var(--line);border-radius:99px;color:var(--ink);font-size:13px;text-decoration:none}
   .pill:hover{border-color:var(--ink)}
+  .pill svg{display:block}
   footer{min-height:83px;border-top:1px solid var(--line)}
   .caption{display:flex;align-items:center;gap:10px;margin-inline:var(--edge);min-height:83px;color:var(--muted);font:10px var(--mono);letter-spacing:.15em}
   .caption-note{display:inline}
   @media(max-width:560px){
     header{height:auto;min-height:84px;display:grid;grid-template-columns:1fr auto;align-content:center}
     .brand{font-size:16px}.brand img{width:30px;height:30px;border-radius:7px}
-    nav{grid-column:1/-1;justify-content:flex-start;gap:24px}
+    nav{grid-column:1/-1;justify-content:flex-start;gap:24px;grid-row:2}
     footer{align-items:center}
     .caption{flex-wrap:wrap;row-gap:3px;letter-spacing:.05em}
   }
@@ -50,29 +56,58 @@
 <body>
 <div class="site">
   <header>
-    <a class="brand" href="index.html" aria-label="SuperIntelNex, zur Startseite">
+    <a class="brand" href="index.html" aria-label="SuperIntelNex, home" data-de-label="SuperIntelNex, Startseite">
       <img src="superintelnex-sn-anthrazit.svg" width="40" height="40" alt="">
       SuperIntelNex
     </a>
-    <nav aria-label="Seitennavigation">
-      <a href="index.html">Startseite</a>
-      <a href="impressum.html">Impressum</a>
-      <a href="datenschutz.html">Datenschutz</a>
+    <nav aria-label="Page navigation" data-de-label="Seitennavigation">
+      <a href="index.html" data-de="Startseite">Home</a>
+      <a href="impressum.html" data-de="Impressum">Imprint</a>
+      <a href="datenschutz.html" data-de="Datenschutz">Privacy</a>
     </nav>
+    <div class="languages" role="group" aria-label="Language" data-de-label="Sprache">
+      <button type="button" lang="en" data-lang="en" aria-label="English" aria-pressed="true">EN</button>
+      <button type="button" lang="de" data-lang="de" aria-label="Deutsch" aria-pressed="false">DE</button>
+    </div>
   </header>
   <main>
     <div class="content">
-      <p class="eyebrow">404 / Nicht gefunden</p>
-      <h1>Seite nicht gefunden</h1>
-      <p style="margin-top:24px">Die aufgerufene Adresse existiert (noch) nicht. Das Projekt befindet sich im Aufbau — vielleicht erscheint an dieser Stelle in Kürze etwas.</p>
+      <p class="eyebrow" data-de="404 / Nicht gefunden">404 / Not found</p>
+      <h1 data-de="Seite nicht gefunden">Page not found</h1>
+      <p style="margin-top:24px" data-de="Die aufgerufene Adresse existiert (noch) nicht. Das Projekt befindet sich im Aufbau — vielleicht erscheint an dieser Stelle in Kürze etwas.">The address you requested does not (yet) exist. The project is in development — something may appear here soon.</p>
       <div class="actions">
-        <a class="pill" href="index.html">Zur Startseite <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M10 10L4 4M4 4H8M4 4V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="pill" href="index.html"><span data-de="Zur Startseite">Back to home</span> <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M10 10L4 4M4 4H8M4 4V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
     </div>
   </main>
   <footer>
-    <div class="caption">superintelnex.com<span class="caption-note">— Projekt im Aufbau, keine Anlageberatung</span></div>
+    <div class="caption">superintelnex.com<span class="caption-note" data-de="— Projekt im Aufbau, keine Anlageberatung">— Project in development, no investment advice</span></div>
   </footer>
 </div>
+<script>
+(() => {
+  'use strict';
+  const languageButtons = [...document.querySelectorAll('[data-lang]')];
+  const translatedText = [...document.querySelectorAll('[data-de]')].map(el => ({element: el, english: el.textContent, german: el.dataset.de}));
+  const translatedLabels = [...document.querySelectorAll('[data-de-label]')].map(el => ({element: el, english: el.getAttribute('aria-label') || '', german: el.dataset.deLabel}));
+  const languageKey = 'superintelnex-language';
+  let language = 'en';
+  function setLanguage(nextLanguage) {
+    language = nextLanguage === 'de' ? 'de' : 'en';
+    document.documentElement.lang = language;
+    const translation = language === 'de' ? 'german' : 'english';
+    for (const item of translatedText) item.element.textContent = item[translation];
+    for (const item of translatedLabels) item.element.setAttribute('aria-label', item[translation]);
+    for (const button of languageButtons) button.setAttribute('aria-pressed', String(button.dataset.lang === language));
+  }
+  for (const button of languageButtons) {
+    button.addEventListener('click', () => {
+      setLanguage(button.dataset.lang);
+      try { localStorage.setItem(languageKey, language); } catch {}
+    });
+  }
+  try { setLanguage(localStorage.getItem(languageKey)); } catch { setLanguage('en'); }
+})();
+</script>
 </body>
 </html>
