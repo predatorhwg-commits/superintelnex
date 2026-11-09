@@ -1,0 +1,118 @@
+# CIO-Gate: permanentes Qualitaetsnetz fuer die SuperIntelNex-Page.
+# Laeuft auf jedem Push (main + gh-pages) und staendig (1x/h) —
+# postet einen up-to-date Status-Comment auf Issue #5 (upsert, kein Spam).
+#
+# Zugang: GITHUB_TOKEN (default, Rechte ueber `permissions:` deklariert).
+# Kein extra Secret, kein Repo-Key.
+name: CIO-Gate
+
+on:
+  push:
+    branches: [main, gh-pages]
+  schedule:
+    - cron: "0 * * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Publish-Tree
+        run: |
+          R=.cio-gate-report.md
+          {
+            echo "### Publish-Tree (gh-pages)"
+            echo '```'
+            git ls-tree -r --name-only HEAD
+            echo '```'
+            for f in index.html 404.html impressum.html datenschutz.html og-image.png superintelnex-sn-anthrazit.svg; do
+              [ -f "$f" ] && echo "OK   $f" || echo "MISS $f"
+            done
+            for f in robots.txt sitemap.xml manifest.webmanifest; do
+              [ -f "$f" ] && echo "ok   $f" || echo "todo $f (#9)"
+            done
+          } | tee "$R"
+
+      - name: Secret-Scan (Publish-Tree)
+        continue-on-error: true
+        run: |
+          R=.cio-gate-report.md
+          echo "### Secret-Scan" >> "$R"
+          hits=$(grep -rniE "ghp_[a-z0-9]{20,}|gho_[a-z0-9]{20,}|x-oauth-basic|ed25519|BEGIN (RSA|OPENSSH|EC) PRIVATE" . --exclude-dir=.git 2>/dev/null | head -20 || true)
+          if [ -n "$hits" ]; then
+            echo "FAIL: moeglicher Secret-Treffer (Auszug):" >> "$R"
+            echo "$hits" >> "$R"
+          else
+            echo "PASS: kein Secret im Publish-Tree" >> "$R"
+          fi
+
+      - name: Tote Links (relativ)
+        continue-on-error: true
+        run: |
+          R=.cio-gate-report.md
+          fails=0
+          {
+            echo "### Tote Links (relativ)"
+            for f in *.html; do
+              for href in $(grep -oE 'href="[^"#]+"' "$f" | sed -E 's/href="([^"]+)"/\1/' | grep -v '^https' | sort -u); do
+                if [ ! -f "$href" ]; then echo "DEAD $f -> $href"; fails=1; fi
+              done
+              for img in $(grep -oE 'src="[^"]+"' "$f" | sed -E 's/src="([^"]+)"/\1/' | grep -v '^https' | sort -u); do
+                if [ ! -f "$img" ]; then echo "DEAD(img) $f -> $img"; fails=1; fi
+              done
+            done
+            [ $fails -eq 0 ] && echo "keine toten Links"
+          } >> "$R"
+
+      - name: Live-Checks (DNS/HTTP/HTTPS)
+        run: |
+          R=.cio-gate-report.md
+          # A-Records per python3 (auf ubuntu-latest garantiert vorhanden).
+          A_RECORDS=$(python3 -c 'import socket;print(" ".join(sorted({a[0] for a in socket.getaddrinfo("superintelnex.com",443,socket.AF_INET)}) or ["unresolved"]))')
+          {
+            echo "### Live"
+            echo "- A-Records: $A_RECORDS (erwartet 4: .108/.109/.110/.111)"
+            echo "- HTTP apex: $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 http://superintelnex.com/ || echo unreachable)"
+            echo "- HTTPS apex: $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://superintelnex.com/ || echo 'noch kein TLS')"
+            echo "- HTTPS www: $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://www.superintelnex.com/ || echo 'noch kein TLS')"
+          } >> "$R"
+
+      - name: Status-Comment auf #5 (upsert)
+        env:
+          CIO_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          REPORT=.cio-gate-report.md
+          # Report begrenzen (kein Comment-Ueberlauf)
+          head -c 8000 "$REPORT" > .cio-gate-report.cap.md
+          {
+            echo "<!-- cio-gate -->"
+            echo "## CIO-Gate - letzter Lauf $(date -u +'%Y-%m-%d %H:%M UTC') (Run: ${{ github.run_number }})"
+            echo ""
+            cat .cio-gate-report.cap.md
+            echo ""
+            echo "_CIO: Status wird bei jedem Lauf aktualisiert (stundlich + auf Push)._ "
+            echo "Abnahme-Liste: Label 'cio:review'. Agenten-Board: dieses Issue."
+          } > .cio-gate-comment.md
+          API="https://api.github.com/repos/${{ github.repository }}/issues"
+          LAST_ID=$(curl -sf -H "Authorization: Bearer $CIO_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "$API/5/comments?per_page=50" \
+            | jq -r '[.[] | select(.body | contains("<!-- cio-gate -->"))] | last | .id // empty')
+          BODY_JSON=$(jq -n --rawfile b .cio-gate-comment.md '{body: $b}')
+          if [ -n "$LAST_ID" ]; then
+            curl -sf -X PATCH -H "Authorization: Bearer $CIO_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -d "$BODY_JSON" "$API/comments/$LAST_ID" >/dev/null && echo "CIO-Comment aktualisiert (#$LAST_ID)"
+          else
+            curl -sf -X POST -H "Authorization: Bearer $CIO_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -d "$BODY_JSON" "$API/5/comments" >/dev/null && echo "CIO-Comment angelegt"
+          fi
