@@ -47,10 +47,9 @@
   .details div{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
   .details dt{color:var(--ink);font-size:13px;font-weight:700;line-height:1.5}
   .details dd{margin:0;display:flex;align-items:center;gap:12px}
-  .mail{width:39px;height:39px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;text-decoration:none;position:relative;transition:color .2s,border-color .2s}
-  .mail:hover{color:var(--ink);border-color:#ffffff66}
-  .mail::before{content:"";position:absolute;inset:-8px}
-  .mail svg{display:block}
+  .placeholder{border:1px dashed var(--line);padding:10px 13px}
+  .placeholder .tag{display:block;font:10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .details dd.placeholder{display:block}
   footer{min-height:83px;border-top:1px solid var(--line)}
   .caption{display:flex;align-items:center;gap:10px;margin-inline:var(--edge);min-height:83px;color:var(--muted);font:10px var(--mono);letter-spacing:.15em}
   .caption-note{display:inline}
@@ -90,10 +89,15 @@
       <p style="margin-top:24px" data-de="Diese Datenschutzerklärung beschreibt nur das, was die Website tatsächlich einsetzt: keine Cookies, kein Tracking, keine externen Schriftarten, kein Kontaktformular. Die Website kann ohne Angabe personenbezogener Daten genutzt werden.">This privacy statement only describes what the website actually uses: no cookies, no tracking, no external fonts, and no contact form. The website can be used without providing any personal data.</p>
 
       <dl class="details">
-        <div><dt data-de="Verantwortlich">Responsible party</dt><dd>Superintelnex</dd></div>
-        <div><dt data-de="Support">Support</dt><dd><a class="mail" href="mailto:superintelnex@gmail.com" aria-label="Email Superintelnex" data-de-label="Superintelnex per E-Mail kontaktieren"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 6.5C8.7 6.5 6 8.7 6 11.5c0 2.8 2.7 5 6 5 .4 0 .8 0 1.1-.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12.9 16.4C12.4 14.9 12 13.3 12 11.7c0-1.7 1-2.7 2.3-2.7 1.5 0 2.7 1.2 2.7 3.2 0 2-.8 3.1-2.4 3.1-.4 0-.7-.1-1-.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a></dd></div>
+        <div><dt data-de="Verantwortlich">Responsible party</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="Name/Bezeichnung und Anschrift des Betreibers fehlen noch. Vollständige Angaben folgen im Impressum.">Name or designation and address of the operator are not yet available. Complete details will be published in the imprint.</span></dd></div>
+        <div><dt data-de="Kontakt (Anfragen, Rechte)">Contact (requests, rights)</dt><dd class="placeholder"><span class="tag" data-de="Platzhalter — wird ergänzt">Placeholder — to be completed</span><span data-de="Eine elektronische Kontaktadresse folgt mit der Veröffentlichung der Betreiber-E-Mail (siehe Impressum).">An electronic contact address will be published together with the operator's email (see imprint).</span></dd></div>
+        <div><dt data-de="Hosting (techn. Betrieb)">Hosting (technical operation)</dt><dd data-de="Diese Website wird auf GitHub Pages (GitHub, Inc.) gehostet.">This website is hosted on GitHub Pages (GitHub, Inc.).</dd></div>
         <div><dt data-de="Stand">Status</dt><dd>November 2026</dd></div>
       </dl>
+      <h2 data-de="Hosting / Server-Logfiles">Hosting / server logs</h2>
+      <p data-de="Die technische Weiterverarbeitung der Website erfolgt über GitHub Pages (GitHub, Inc., USA). Bei jedem Aufruf können Server-Logdaten verarbeitet werden, z. B. IP-Adresse, Zeitpunkt der Anfrage und die abgerufene Seite. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO: ein berechtigtes Interesse an einem fehlerfreien, sicheren Betrieb der Website. Die Logdaten werden gelöscht, wenn sie für diesen Zweck nicht mehr erforderlich sind. Für weiterführende Informationen zur Datenverarbeitung gilt die Datenschutzerklärung von GitHub (https://docs.github.com/en/site-policy).">The technical operation of this website is performed through GitHub Pages (GitHub, Inc., USA). Each request may result in the processing of server log data, such as the IP address, the time of the request, and the page requested. The legal basis is Article 6(1)(f) GDPR: a legitimate interest in a proper and secure operation of the website. Log data are deleted when they are no longer required for this purpose. For further information on data processing, GitHub's privacy policy applies (https://docs.github.com/en/site-policy).</p>
+
+
 
       <h2 data-de="Datenverarbeitung durch die Website">Data processing by the website</h2>
       <p data-de="Die Website kann ohne Angabe personenbezogener Daten genutzt werden. Es werden keine Cookies gesetzt und keine Analyseinstrumente oder Trackings eingebunden. Die Seite besteht aus eigenem HTML, CSS und JavaScript; Schriftarten oder Skripte werden nicht von externen Servern geladen. Ein Kontaktformular existiert nicht. Die Sprachauswahl (EN/DE) wird ausschließlich lokal im Browser gespeichert (localStorage) und nicht an die Website übertragen.">The website can be used without providing any personal data. No cookies are set and no analytics or tracking tools are embedded. The pages consist of our own HTML, CSS, and JavaScript; fonts and scripts are not loaded from external servers. There is no contact form. The language choice (EN/DE) is stored exclusively locally in your browser (localStorage) and is not transmitted to the website.</p>
