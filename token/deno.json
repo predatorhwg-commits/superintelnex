@@ -1,0 +1,6 @@
+{
+  "lockfile": false,
+  "_kommentar": "Kein Build-Schritt. Alle Skripte laufen mit 'deno run --allow-all <skript.ts>'. Die npm:-Importe laedt Deno automatisch in den Cache; es ist kein node_modules noetig.",
+  "nodeModulesDir": "auto",
+  "exclude": []
+}
