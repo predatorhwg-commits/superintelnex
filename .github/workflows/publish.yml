@@ -1,10 +1,11 @@
-# Publish-Sync: main -> gh-pages (reine statische Publikationsquelle)
+# Synchronisiert den statischen Publish-Tree und veröffentlicht ihn über GitHub Pages.
 name: Publish main -> gh-pages
 
 on:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/publish.yml'
       - 'index.html'
       - '404.html'
       - 'impressum.html'
@@ -23,11 +24,17 @@ on:
       - 'CNAME'
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: {}
+
+concurrency:
+  group: publish-pages
+  cancel-in-progress: false
 
 jobs:
   sync:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,12 +42,14 @@ jobs:
           ref: main
 
       - name: gh-pages auf Main-Stand bringen
+        id: publish-tree
         run: |
           set -euo pipefail
           # Temp-Ordner AUSSERHALB des Worktrees: ein .publish/ im Worktree
           # blockiert "git checkout gh-pages" (untracked vs. tracked-Konflikt)
           # und wandert per "git add -A" in den Publish-Tree.
           TMP="$(mktemp -d)"
+          SOURCE_SHA="$(git rev-parse --short=7 HEAD)"
           for f in index.html 404.html impressum.html datenschutz.html \
                    whitepaper.html vendor/three.min.js \
                    token/assets/superintelnex-logo-512.png \
@@ -62,12 +71,31 @@ jobs:
           fi
           git rm -rq --ignore-unmatch .
           cp -R "$TMP/." .
-          rm -rf "$TMP"
           git add -A
           if git diff --staged --quiet; then
             echo "gh-pages bereits auf Main-Stand — nichts zu tun."
           else
-            git commit -q -m "publish: sync mit main @ ${GITHUB_SHA::7} (CI)"
+            git commit -q -m "publish: sync mit main @ $SOURCE_SHA (CI)"
             git push -q origin gh-pages
             echo "gh-pages synchronisiert."
           fi
+          echo "path=$TMP" >> "$GITHUB_OUTPUT"
+
+      - name: GitHub-Pages-Artefakt hochladen
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ steps.publish-tree.outputs.path }}
+
+  deploy:
+    needs: sync
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Auf GitHub Pages veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
