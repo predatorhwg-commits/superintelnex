@@ -173,9 +173,13 @@ OVERFLOW_JS = """
   const all = document.body ? document.body.querySelectorAll('*') : [];
   for (const el of all) {
     const r = el.getBoundingClientRect();
-    if (r.width > vw + 4) {
+    // Breite UND Position: ein schmales Element kann rechts *vor* vw
+    // anfangen und ueberlaufen (Flex-Kinder mit min-width:auto) — der
+    // Positions-Check (r.right > vw+1) faengt solche False-Gruen-Faelle.
+    if (r.width > 0 && (r.width > vw + 4 || r.right > vw + 1 || r.left < -1)) {
       const cls = (el.className && typeof el.className === 'string') ? '.' + el.className.trim().split(/\\s+/).join('.') : '';
-      offenders.push(el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + cls);
+      offenders.push(el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + cls +
+        ' [L=' + Math.round(r.left) + ' R=' + Math.round(r.right) + ']');
       if (offenders.length > 12) break;
     }
   }

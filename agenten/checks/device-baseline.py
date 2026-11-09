@@ -65,6 +65,25 @@ def overflow(page):
         "document.documentElement.scrollWidth - document.documentElement.clientWidth")
 
 
+def position_offenders(page):
+    """Elemente, die rechts/links aus dem Viewport ragen (Positions-Check;
+    breite-ueberlaufende-Elemente fingen die HScroll-Pruefung nicht, wenn
+    overflow:hidden die Dokument-Scrollbreite maskiert — false-gruen-Fall)."""
+    return page.evaluate("""() => {
+      const vw = document.documentElement.clientWidth;
+      const off = [];
+      for (const el of document.body.querySelectorAll('*')) {
+        const r = el.getBoundingClientRect();
+        if (r.width > 0 && (r.right > vw + 1 || r.left < -1)) {
+          off.push(el.tagName.toLowerCase() + '.' +
+            (el.className || '').toString().trim().split(/\\s+/).join('.') +
+            ' [L=' + Math.round(r.left) + ' R=' + Math.round(r.right) + ']');
+        }
+      }
+      return off;
+    }""")
+
+
 try:
     from playwright.sync_api import sync_playwright
 except ImportError:
@@ -112,7 +131,9 @@ with sync_playwright() as pw:
         ok("index @390: 0 pageerrors")
     d = overflow(page)
     (ok if d == 0 else bad)("index @390 Overflow: %s" % d)
-    report["checks"].append({"overflow_390": d})
+    off = position_offenders(page)
+    (ok if not off else bad("index @390 Positions-Offender: %s" % off[:8]))
+    report["checks"].append({"overflow_390": d, "offenders_390": off})
 
     # K2 Touch-Targets: alle sichtbar-klickbaren Elemente effektiv >= 44x44.
     # Die unsichtbaren ::before-Hit-Areas (inset -6px..-17px, siehe #11-A11y
@@ -170,7 +191,9 @@ with sync_playwright() as pw:
         ok("index @768: 0 pageerrors")
     d = overflow(tp)
     (ok if d == 0 else bad("index @768 Overflow: %s" % d))
-    report["checks"].append({"overflow_768": d})
+    off = position_offenders(tp)
+    (ok if not off else bad("index @768 Positions-Offender: %s" % off[:8]))
+    report["checks"].append({"overflow_768": d, "offenders_768": off})
     tp.screenshot(path=os.path.join(OUT, "screenshot-tablet-768-index.png"))
     tablet.close()
 
@@ -186,7 +209,9 @@ with sync_playwright() as pw:
         ok("index @1280: 0 pageerrors")
     d = overflow(dp)
     (ok if d == 0 else bad("index @1280 Overflow: %s" % d))
-    report["checks"].append({"overflow_1280": d})
+    off = position_offenders(dp)
+    (ok if not off else bad("index @1280 Positions-Offender: %s" % off[:8]))
+    report["checks"].append({"overflow_1280": d, "offenders_1280": off})
     dp.screenshot(path=os.path.join(OUT, "screenshot-desktop-1280-index.png"))
 
     # K4 prefers-reduced-motion

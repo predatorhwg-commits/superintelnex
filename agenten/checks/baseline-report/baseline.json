@@ -11,7 +11,8 @@
       "aa": true
     },
     {
-      "overflow_390": 0
+      "overflow_390": 0,
+      "offenders_390": []
     },
     {
       "touch_targets": [
@@ -98,28 +99,37 @@
         },
         {
           "l": "Datenschutz",
-          "effW": 99,
+          "effW": 98,
           "effH": 44,
           "raw": [
-            65,
+            64,
             10
           ]
         },
         {
+          "l": "SuperIntelNex on X",
+          "effW": 55,
+          "effH": 55,
+          "raw": [
+            39,
+            39
+          ]
+        },
+        {
           "l": "Previous section",
-          "effW": 47,
+          "effW": 50,
           "effH": 50,
           "raw": [
-            31,
+            34,
             34
           ]
         },
         {
           "l": "Next section",
-          "effW": 47,
+          "effW": 50,
           "effH": 50,
           "raw": [
-            31,
+            34,
             34
           ]
         }
@@ -127,10 +137,12 @@
       "violations": []
     },
     {
-      "overflow_768": 0
+      "overflow_768": 0,
+      "offenders_768": []
     },
     {
-      "overflow_1280": 0
+      "overflow_1280": 0,
+      "offenders_1280": []
     },
     {
       "reduced_motion": {
@@ -138,13 +150,13 @@
       }
     },
     {
-      "fps_desktop": 60.05826250078454
+      "fps_desktop": 60.0990336237986
     },
     {
-      "fcp_ms": 60,
+      "fcp_ms": 120,
       "paints": {
-        "first-paint": 60,
-        "first-contentful-paint": 60
+        "first-paint": 120,
+        "first-contentful-paint": 120
       }
     },
     {
