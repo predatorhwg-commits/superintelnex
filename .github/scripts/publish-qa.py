@@ -89,7 +89,7 @@ def main():
         css = "".join(re.findall(r"<style[^>]*>(.*?)</style>", page.read_text(encoding="utf-8"), re.S))
         root = parse_root_vars(css)
         bg_h = to_hex8(root.get("--bg", "#000"))
-        for var in ("--ink", "--muted", "--line"):
+        for var in ("--ink", "--body", "--muted", "--faint", "--line"):
             h = to_hex8(root.get(var, ""))
             if not h or not bg_h:
                 continue
