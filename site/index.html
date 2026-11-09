@@ -420,6 +420,9 @@
   const releasePointer = () => {pointer.inside = false;};
   stage.addEventListener('pointerleave', releasePointer);
   stage.addEventListener('pointercancel', releasePointer);
+  // Touch-Pointer: Beim Finger-Release gibt es kein verlässliches pointerleave —
+  // der Wirbel würde sonst mit voller Stärke am letzten Ort stehen bleiben.
+  stage.addEventListener('pointerup', event => {if (event.pointerType !== 'mouse') releasePointer();});
   // Guard gegen einen Resize-Loop: size() darf Layout auslösen, das den
   // ResizeObserver erneut triggert. Deshalb erst im nächsten Animation-Frame
   // prüfen und nur neu ausmessen, wenn sich die Box wirklich geändert hat.
