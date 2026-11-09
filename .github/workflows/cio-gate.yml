@@ -75,7 +75,8 @@ jobs:
         run: |
           R=.cio-gate-report.md
           # A-Records per python3 (auf ubuntu-latest garantiert vorhanden).
-          A_RECORDS=$(python3 -c 'import socket;print(" ".join(sorted({a[0] for a in socket.getaddrinfo("superintelnex.com",443,socket.AF_INET)}) or ["unresolved"]))')
+          # getaddrinfo-Tupel: [4][0] = IPv4-Adresse.
+          A_RECORDS=$(python3 -c 'import socket;addrs=sorted({a[4][0] for a in socket.getaddrinfo("superintelnex.com",443,socket.AF_INET)});print(" ".join(addrs) if addrs else "unresolved")')
           {
             echo "### Live"
             echo "- A-Records: $A_RECORDS (erwartet 4: .108/.109/.110/.111)"
