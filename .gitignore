@@ -12,3 +12,6 @@ build/
 
 # Bildordner aus der Codex-Ausgabe, nicht Teil der Website
 SuperIntelNex-Profilbild/
+
+# Lokaler Arbeitsordner (Token-Assets), nicht Teil der Website
+token/
