@@ -5,8 +5,11 @@
 #   (2) Secret-Scan — portable der dokumentierten QA-Check-Spec C7
 #       (agenten/checks/release-gate.py, Commit f00c41a):
 #         (d) token/wallets/ + token/result/ duerfen NICHT getrackt sein
-#         (b) "BEGIN ... PRIVATE KEY" in getrackten Dateien
-#         (c) "secretKey" ausserhalb von token/scripts/
+#         (b) PRIVATE-Key-Blöcke (PKCS/PEM-Header) in getrackten Dateien
+#         (c) das Token-Wort "secretKey" ausserhalb von token/scripts/
+#       .github/workflows/ ist bei (b)/(c) ausgenommen, weil dort die
+#       Scan-Spec selbst im Text steht (Analogie zu 'agenten/' in der
+#       ursprunglichen Spec).
 # Das Gate ist blockierend: geht es nicht durch, darf laut CEO-Release-Regel
 # nicht gepusht/merge-gefreet werden.
 name: CI
@@ -66,8 +69,9 @@ jobs:
           fi
 
           # C7-b: Private-Key-Blöcke in getrackten Dateien (git grep = nur getrackt).
-          # agenten/ ist ausgenommen (dort steht die Scan-Spec selbst im Text).
-          hits=$(git grep -n -I -E 'BEGIN [A-Z0-9 ]*PRIVATE KEY' -- ':!agenten' || true)
+          # agenten/ + .github/workflows/ sind ausgenommen (dort steht die
+          # Scan-Spec selbst im Text — Analogie zu 'agenten/' in der Ursprungs-Spec).
+          hits=$(git grep -n -I -E 'BEGIN [A-Z0-9 ]*PRIVATE KEY' -- ':!agenten' ':!.github' || true)
           if [ -n "$hits" ]; then
             bad "'BEGIN ... PRIVATE KEY' gefunden in getrackten Dateien:"
             printf '%s\n' "$hits" | sed 's/^/      - /'
@@ -75,9 +79,10 @@ jobs:
             ok "kein 'BEGIN ... PRIVATE KEY' in getrackten Dateien"
           fi
 
-          # C7-c: 'secretKey' darf nur in token/scripts/ vorkommen (Skript-Logik),
-          # nie in Doku/Metadaten/Repo-Wurzeln. agenten/ ebenfalls ausgenommen.
-          hits=$(git grep -n -I -E 'secretKey' -- ':!token/scripts' ':!agenten' || true)
+          # C7-c: das Token-Wort 'secretKey' darf nur in token/scripts/ vorkommen
+          # (Skript-Logik), nie in Doku/Metadaten/Repo-Wurzeln.
+          # agenten/ + .github/ ebenfalls ausgenommen (Scan-Spec-Text).
+          hits=$(git grep -n -I -E 'secretKey' -- ':!token/scripts' ':!agenten' ':!.github' || true)
           if [ -n "$hits" ]; then
             bad "'secretKey' gefunden ausserhalb von token/scripts/:"
             printf '%s\n' "$hits" | sed 's/^/      - /'
