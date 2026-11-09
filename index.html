@@ -228,7 +228,9 @@
     'galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere',
     'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit',
     'wormhole', 'eye', 'mobius', 'comet', 'crystal', 'butterfly',
-    'jellyfish', 'aurora', 'hourglass', 'binary', 'supernova'
+    'jellyfish', 'aurora', 'hourglass', 'binary', 'supernova',
+    'candlesticks', 'orderbook', 'depth-chart', 'volume-profile', 'bollinger',
+    'triangle', 'double-bottom', 'fibonacci-fan', 'trade-ticker', 'portfolio-rings'
   ];
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
   let shapeQueue = [];
@@ -242,6 +244,31 @@
   function random() {
     seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
     return seed / 4294967296;
+  }
+  const candleBars = [
+    [.38,.20,.10,.49], [.22,.32,.13,.40], [.34,.08,-.03,.42], [.10,-.13,-.24,.21],
+    [-.12,.02,-.21,.16], [.04,.19,-.04,.28], [.18,-.05,-.14,.27], [-.03,-.29,-.39,.08],
+    [-.27,-.46,-.57,-.15], [-.44,-.32,-.54,-.22], [-.34,-.56,-.68,-.25]
+  ];
+  const orderSteps = [0,.20,.34,.44,.63,.76,1];
+  const depthLevels = [.02,.10,.21,.29,.43,.53,.67,.73,.84];
+  const volumeBars = [.23,.35,.53,.74,1.04,1.42,1.82,1.55,1.22,.91,.67,.49,.29,.20];
+  const doubleBottomPath = [
+    [-1.04,-.47],[-.91,-.29],[-.80,-.34],[-.69,.02],[-.53,.40],[-.42,.52],
+    [-.32,.43],[-.24,.19],[-.10,-.10],[.00,-.23],[.10,-.10],[.22,.19],
+    [.33,.44],[.44,.53],[.55,.42],[.63,.16],[.76,-.19],[.86,-.16],[1.04,-.54]
+  ];
+  const fanRatios = [0,.236,.382,.50,.618,.786,1];
+  const portfolioCuts = [0,.18,.51,.78,1];
+  function tracePoint(path, progress) {
+    const position = progress * (path.length - 1);
+    const segment = Math.floor(position);
+    const fraction = position - segment;
+    const start = path[segment], end = path[segment + 1];
+    return [start[0] + (end[0] - start[0]) * fraction, start[1] + (end[1] - start[1]) * fraction];
+  }
+  function bandCenter(x) {
+    return .19 * Math.sin(x * 5.7) - x * .21 + .052 * Math.sin(x * 13);
   }
   const starCorners = Array.from({length:10}, (_, index) => {
     const angle = index * tau / 10 - Math.PI / 2;
@@ -562,10 +589,119 @@
       Math.sin(burstAngle) * burstRadius * corrugation * .78,
       Math.sin(b) * burstRadius * .35];
 
+    const lane = i % 10;
+    const noise = (d - .5) * .022;
+    const chartZ = (e - .5) * .045;
+
+    // Candlesticks: hollow and filled bodies, fine wicks, and volume at the baseline.
+    const candleIndex = Math.floor(i / 10) % candleBars.length;
+    const candleX = -.99 + candleIndex * .198;
+    const [open, close, high, low] = candleBars[candleIndex];
+    const top = Math.min(open, close), bottom = Math.max(open, close);
+    const bodyX = lane < 2 ? (lane === 0 ? -.057 : .057) + noise : (d - .5) * .114;
+    let candlesticks;
+    if (lane < 6) {
+      const bodyY = lane === 2 ? top + noise : lane === 3 ? bottom + noise : top + (bottom - top) * c;
+      const hollowDepth = lane >= 4 && close > open ? -.20 : chartZ;
+      candlesticks = [candleX + bodyX, bodyY, hollowDepth];
+    } else if (lane < 8) {
+      const wickY = lane === 6 ? high + (top - high) * c : bottom + (low - bottom) * c;
+      candlesticks = [candleX + noise, wickY, chartZ];
+    } else {
+      candlesticks = [candleX + (d - .5) * .108, .73 - c * (.085 + 1.1 * Math.abs(close - open)), chartZ];
+    }
+
+    // Order book: interlocking stairs and resting orders flowing toward the gap.
+    const orderSide = Math.floor(i / 10) % 2 === 0 ? -1 : 1;
+    const orderLevel = Math.floor(i / 20) % 6;
+    const orderY = -.54 + orderLevel * .202;
+    const orderInner = .14 + orderSteps[orderLevel] * .88;
+    const orderOuter = .14 + orderSteps[orderLevel + 1] * .88;
+    const orderX = lane < 4 ? orderInner + c * (orderOuter - orderInner) : orderOuter;
+    const orderbook = lane < 8
+      ? [orderSide * (orderX + noise), orderSide * (orderY + (lane < 4 ? 0 : c * .202)) + noise, chartZ]
+      : lane === 9 && orderLevel === 2
+        ? [Math.cos(a) * .11 * c, Math.sin(a) * .11 * c, chartZ]
+        : [orderSide * (.18 + c * .86), orderSide * orderY + noise, chartZ];
+
+    // Market depth: the bids and asks build two filled terraces around the spread.
+    const depthSide = Math.floor(i / 10) % 2 === 0 ? -1 : 1;
+    const depthLevel = Math.floor(i / 20) % depthLevels.length;
+    const depthX = .095 + depthLevel * .108;
+    const depthY = .58 - depthLevels[depthLevel] * (depthSide < 0 ? 1.22 : 1.36);
+    const nextDepthY = .58 - depthLevels[Math.min(depthLevel + 1, depthLevels.length - 1)]
+      * (depthSide < 0 ? 1.22 : 1.36);
+    const depthSampleX = depthX + (lane === 3 ? .108 : c * .108);
+    const depthSampleY = lane < 3 ? depthY : lane === 3 ? depthY + (nextDepthY - depthY) * c
+      : depthY + (.61 - depthY) * c;
+    const depthChart = [depthSide * (depthSampleX + noise), depthSampleY + noise, chartZ];
+
+    // Volume profile: a bright point-of-control row and thinner outer rows.
+    const volumeIndex = Math.floor(i / 10) % volumeBars.length;
+    const volumeLength = volumeBars[volumeIndex];
+    const volumeY = -.64 + volumeIndex * .097;
+    const volumeProfile = lane === 0
+      ? [-.91 + noise, (c - .5) * 1.48, chartZ]
+      : [-.91 + (lane === 1 ? volumeLength + noise : c * volumeLength),
+        volumeY + (lane === 2 ? -.025 + noise : lane === 3 ? .025 + noise : (d - .5) * .061), chartZ];
+
+    // Bollinger bands: the middle average meanders between two breathing bands.
+    const bandX = (c - .5) * 2.10;
+    const bandMid = bandCenter(bandX);
+    const bandwidth = .20 + .105 * (1 + Math.sin(bandX * 3 - .65));
+    const bandOffset = lane < 3 ? -bandwidth : lane < 6 ? bandwidth : lane < 8 ? 0 : (d - .5) * 2 * bandwidth;
+    const bollinger = [bandX, bandMid + bandOffset + noise, chartZ];
+
+    // Triangle: two converging trend lines, a bouncing price, and breakout dust.
+    const triangleX = -1.03 + c * 1.93;
+    const triangleHeight = .58 - c * .55;
+    const bounce = 2 / Math.PI * Math.asin(Math.sin(c * tau * 2.45 + .36));
+    const triangle = lane < 8
+      ? [triangleX, (lane < 2 ? -triangleHeight : lane < 4 ? triangleHeight : triangleHeight * bounce)
+        - .08 * c + noise, chartZ]
+      : [.65 + c * .42 + noise, -.09 - c * .32 + (d - .5) * .17 * c, chartZ];
+
+    // Double bottom: two highlighted lows and a dotted neckline.
+    const [bottomX, bottomY] = tracePoint(doubleBottomPath, c);
+    const lowX = lane % 2 === 0 ? -.42 : .44;
+    const lowY = lane % 2 === 0 ? .52 : .53;
+    const doubleBottom = lane < 7 ? [bottomX + noise, bottomY + (e - .5) * .033, chartZ]
+      : lane === 7 ? [((Math.floor(c * 23) + d * .53) / 23 - .5) * 1.54, -.23 + noise, chartZ]
+      : [lowX + Math.cos(a) * (.048 + .083 * c), lowY + Math.sin(a) * (.048 + .083 * c), chartZ];
+
+    // Fibonacci fan: seven rays from one pivot with dotted measuring arcs.
+    const fanIndex = Math.floor(i / 10) % fanRatios.length;
+    const fanX = c * 1.95;
+    const fanSlope = .54 - 1.27 * fanRatios[fanIndex];
+    const guideRadius = .47 + (i % 3) * .39;
+    const guideAngle = -.62 + (Math.floor(c * 22) + d * .45) / 22 * 1.12;
+    const fibonacciFan = lane < 8 ? [-.94 + fanX, .21 + fanSlope * fanX * .60 + noise, chartZ]
+      : [-.94 + Math.cos(guideAngle) * guideRadius, .21 + Math.sin(guideAngle) * guideRadius, chartZ];
+
+    // Ticker: staggered trade packets with individual cores and short wakes.
+    const tickerRow = Math.floor(i / 10) % 4;
+    const tickerPacket = Math.floor(i / 40) % 6;
+    const tickerSize = .022 + .035 * ((tickerPacket * 3 + tickerRow * 5) % 7) / 6;
+    const tickerCenter = -.97 + tickerPacket * .39 + tickerRow * .064;
+    const tradeTicker = lane < 8
+      ? [tickerCenter + Math.cos(a) * tickerSize * c + (lane < 5 ? 0 : c * .15),
+        (tickerRow - 1.5) * .28 + Math.sin(a) * tickerSize * Math.sqrt(c), chartZ]
+      : [(c - .5) * 2.08, (tickerRow - 1.5) * .28 + noise * .42, chartZ];
+
+    // Portfolio: three ring planes with gaps between their weighted segments.
+    const portfolioRing = Math.floor(i / 10) % 3;
+    const portfolioSector = Math.floor(i / 30) % 4;
+    const sectorStart = portfolioCuts[portfolioSector], sectorEnd = portfolioCuts[portfolioSector + 1];
+    const sectorAngle = (sectorStart + .012 + c * (sectorEnd - sectorStart - .024)) * tau;
+    const ringRadius = .46 + portfolioRing * .22 + (d - .5) * (lane < 3 ? .032 : .095);
+    const portfolioRings = [Math.cos(sectorAngle) * ringRadius,
+      Math.sin(sectorAngle) * ringRadius, (e - .5) * .055];
+
     return {
       shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, vortex, knot,
         circuit, ekg, constellation, orbit, wormhole, eye, mobius, comet, crystal, butterfly,
-        jellyfish, aurora, hourglass, binary, supernova],
+        jellyfish, aurora, hourglass, binary, supernova, candlesticks, orderbook, depthChart,
+        volumeProfile, bollinger, triangle, doubleBottom, fibonacciFan, tradeTicker, portfolioRings],
       size:e, phase:b, scatter
     };
   });
@@ -648,6 +784,17 @@
     const shock = (time * .24) % 1;
     const shockExpansion = .45 + .72 * shock ** .6;
     const shockFade = Math.min(1, shock * 9, (1 - shock) * 8);
+    const chartSweep = -1.12 + (time * .23 % 1) * 2.24;
+    const candleGrowth = .45 + .55 * (.5 - .5 * Math.cos(time * 1.05));
+    const bandBreath = 1 + .23 * Math.sin(time * 1.04);
+    const bookFlow = time * .19 % 1;
+    const bookMatch = Math.max(0, Math.sin(time * 1.75)) ** 6;
+    const tickerShift = time * .31 % 2.18;
+    const ringRotations = mode === 'portfolio-rings' && [.31, -.24, .17].map((speed, ring) => {
+      const spin = time * speed;
+      const tilt = (ring - 1) * .48 + .17 * Math.sin(time * .46 + ring);
+      return [Math.sin(spin), Math.cos(spin), Math.sin(tilt), Math.cos(tilt)];
+    });
     const pullScaleSquared = clamp(width * .15, 90, 165) ** 2;
     for (let i = 0; i < skyCount; i++) {
       const star = sky[i];
@@ -830,6 +977,98 @@
           detailLight = (lane < 7 ? .22 : -.12) - .31 * shock
             + .12 * Math.sin(p.phase * 3 - shock * 12);
         }
+      } else if (mode === 'candlesticks') {
+        const lane = i % 10;
+        detailLight = lane >= 8 ? -.23 : z === -.20 ? -.41 : .14;
+        if (Math.floor(i / 10) % candleBars.length === candleBars.length - 1) {
+          if (lane < 8) {
+            const open = candleBars[candleBars.length - 1][0];
+            y = open + (y - open) * candleGrowth;
+            detailLight += .18 * candleGrowth;
+          } else {
+            y = .73 + (y - .73) * candleGrowth;
+          }
+        }
+      } else if (mode === 'orderbook') {
+        const lane = i % 10;
+        const side = Math.sign(x);
+        const breathe = 1 + .065 * Math.sin(time * .95 + side * 1.7);
+        if (lane === 9 && Math.abs(x) < .14) {
+          x *= .50 + bookMatch;
+          y *= .50 + bookMatch;
+          detailSize = .30 + .70 * bookMatch;
+          detailLight = -.22 + .54 * bookMatch;
+        } else if (lane >= 8) {
+          const progress = ((Math.abs(x) - .18) / .86 + 1 - bookFlow) % 1;
+          x = side * (.15 + progress * .88);
+          detailSize = Math.min(1, progress * 7, (1 - progress) * 7);
+          detailLight = -.21 + .25 * (1 - progress);
+        } else {
+          x = side * (.13 + (Math.abs(x) - .13) * breathe);
+          detailLight = .07 + .15 * Math.sin(y * 6 - time * 2);
+        }
+      } else if (mode === 'depth-chart') {
+        const lane = i % 10;
+        y = .61 + (y - .61) * (1 + .075 * Math.sin(time * .96 + Math.sign(x) + Math.abs(x) * 3));
+        detailLight = lane < 4 ? .17 : -.27;
+        detailLight += .13 * Math.sin(Math.abs(x) * 12 - time * 2);
+      } else if (mode === 'volume-profile') {
+        const lane = i % 10;
+        const row = Math.floor(i / 10) % volumeBars.length;
+        x = -.91 + (x + .91) * (1 + .06 * Math.sin(time * 1.12 + row * .55));
+        detailLight = lane === 0 ? -.20 : row === 6 ? .31 + .11 * Math.sin(time * 1.7)
+          : lane < 4 ? .02 : -.15;
+      } else if (mode === 'bollinger') {
+        const lane = i % 10;
+        const center = bandCenter(x);
+        y = center + (y - center) * bandBreath + .046 * Math.sin(x * 4 - time * 1.2);
+        const shine = Math.max(0, 1 - 4 * Math.abs(x - chartSweep));
+        detailLight = (lane < 6 ? .13 : lane < 8 ? .19 : -.34) + .16 * shine;
+      } else if (mode === 'triangle') {
+        const lane = i % 10;
+        if (lane >= 8) {
+          const progress = clamp((x - .65) / .42, 0, 1);
+          y += .05 * progress * Math.sin(time * 1.5 - progress * 6);
+          detailLight = -.22 + .24 * Math.max(0, Math.cos(time * 1.9 - progress * 4));
+        } else {
+          y += .034 * (1 - x) * Math.sin(time * .9 + x * 2);
+          detailLight = lane < 4 ? .07 : .16 + .21 * Math.max(0, 1 - 5 * Math.abs(x - chartSweep));
+        }
+      } else if (mode === 'double-bottom') {
+        const lane = i % 10;
+        if (lane >= 8) {
+          const lowX = lane === 8 ? -.42 : .44, lowY = lane === 8 ? .52 : .53;
+          const pulse = Math.sin(time * 1.7 - (lane - 8) * 1.2);
+          x = lowX + (x - lowX) * (1 + .18 * pulse);
+          y = lowY + (y - lowY) * (1 + .18 * pulse);
+          detailLight = -.17 + .14 * pulse;
+        } else {
+          detailLight = lane === 7 ? -.21 : .17 + .21 * Math.max(0, 1 - 4 * Math.abs(x - chartSweep));
+        }
+      } else if (mode === 'fibonacci-fan') {
+        const travel = x + .94;
+        y = .21 + (y - .21) * (1 + .19 * Math.sin(time * 1.1));
+        const shine = .16 * Math.max(0, Math.sin(travel * 8 - time * 2.5)) ** 3;
+        detailLight = i % 10 < 8 ? .01 + shine : -.22 + shine;
+      } else if (mode === 'trade-ticker') {
+        const lane = i % 10;
+        if (lane < 8) {
+          x = ((x - tickerShift + 3.27) % 2.18) - 1.09;
+          detailSize = Math.min(1, (1.09 - Math.abs(x)) * 7);
+          detailLight = lane < 5 ? .19 + .16 * Math.sin(p.phase + time * 2) : -.19;
+        } else {
+          detailLight = -.38;
+        }
+      } else if (mode === 'portfolio-rings') {
+        const ring = Math.floor(i / 10) % 3;
+        const sector = Math.floor(i / 30) % 4;
+        const [spinSin, spinCos, tiltSin, tiltCos] = ringRotations[ring];
+        const ringX = x * spinCos - y * spinSin;
+        const ringY = (x * spinSin + y * spinCos) * (.62 + ring * .10);
+        x = ringX * tiltCos - ringY * tiltSin;
+        y = ringX * tiltSin + ringY * tiltCos;
+        z += .21 * ringY;
+        detailLight = .12 - sector * .085 + .12 * Math.sin(time * 1.45 + sector * 1.55);
       }
       const xx = x * yc - z * ys;
       z = x * ys + z * yc; x = xx;
