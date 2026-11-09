@@ -1,4 +1,98 @@
+# SuperIntelNex — robots.txt
+#
+# Grundsatz:
+#   - Suchmaschinenindexierung bleibt erlaubt (die Seite soll gefunden werden).
+#   - Automatisierte KI-Trainings-/Scraping-Crawler sind NICHT erlaubt —
+#     es wird kein KI-Trainingsrecht an Code, Design, Texten oder Daten erteilt.
+#     (Rechtsgrundlage und Hinweis: siehe datenschutz.html + impressum.html,
+#     Abschnitt "Urheberrecht / KI-Nutzung".)
+#
+# Hinweis: robots.txt ist eine freiwillige Konvention — böswillige Crawler
+# können sie ignorieren. Die eigentliche Hard-Firewall gegen automatisierte
+# KI-Abfragen ist ein CDN/WAF mit Bot-Management (z. B. Cloudflare) vor der
+# Domain (Abgabe: Issue #7, DNS/Registrar). Die hier ausgeschlossenen
+# Crawler respektieren diese Regeln in der Praxis.
+
+# --- Suchmaschinen (Indexierung weiterhin erlaubt) ---
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# --- Alle übrigen Standard-Crawler dürfen die Seite aufrufen ---
 User-agent: *
 Allow: /
 
+# --- KI-Trainings- und -Scraping-Systeme: ausgeschlossen ---
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: ChatGPT-Research
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Perplexity-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: AmazonAIBot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Meta-Inspector
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: CommonCrawl
+Disallow: /
+
+User-agent: CohereAIBot
+Disallow: /
+
+User-agent: HuggingBot
+Disallow: /
+
+User-agent: Tondou
+Disallow: /
+
+User-agent: xAI
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+# --- Sitemap für zulässige Indexierung ---
 Sitemap: https://superintelnex.com/sitemap.xml
