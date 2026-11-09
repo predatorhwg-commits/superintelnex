@@ -11,6 +11,8 @@ on:
       - 'datenschutz.html'
       - 'og-image.png'
       - 'apple-touch-icon.png'
+      - 'icon-192.png'
+      - 'icon-512.png'
       - 'robots.txt'
       - 'sitemap.xml'
       - 'manifest.webmanifest'
@@ -34,8 +36,9 @@ jobs:
           set -euo pipefail
           mkdir -p .publish
           for f in index.html 404.html impressum.html datenschutz.html \
-                   og-image.png apple-touch-icon.png robots.txt sitemap.xml \
-                   manifest.webmanifest superintelnex-sn-anthrazit.svg CNAME; do
+                   og-image.png apple-touch-icon.png icon-192.png icon-512.png \
+                   robots.txt sitemap.xml manifest.webmanifest \
+                   superintelnex-sn-anthrazit.svg CNAME; do
             [ -f "$f" ] && cp "$f" .publish/ || { echo "FEHLT auf main: $f"; exit 1; }
           done
           git config user.name  "SuperIntelNex CI"

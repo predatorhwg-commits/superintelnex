@@ -1,0 +1,46 @@
+# CIO-Gate: Publish-QA auf dem Publish-Tree (Issue #10)
+#
+# Laeuft auf push/PR von main + gh-pages und prueft den Publish-Tree
+# (github.com/superintelnex.github.io) statisch — kein Secret, kein Wallet:
+#   P1  Tote interne Links (href/src, relative)
+#   P2  Kontrast WCAG AA (Palette-Var-System --bg/--ink/--muted/--line
+#       + Literal-Farben auf den Rechtsseiten)
+#       -> CIO-Abnahmekriterium "Kontrast AA+, Design-Sprache unveraendert"
+#   P3  Mobile-Overflow @390px (statische Obergrenzen: min-width/width > 390px)
+#   P4  SEO-Artefakte (#9): robots.txt, sitemap.xml, manifest (valid JSON),
+#       apple-touch-icon.png
+# Blockierendes Gate fuer die CIO-Abnahme von Publish-Änderungen.
+name: Publish-QA
+
+on:
+  push:
+    branches: [main, gh-pages]
+  pull_request:
+    branches: [main, gh-pages]
+
+permissions:
+  contents: read
+
+jobs:
+  publish-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Den Publish-Tree (gh-pages) pruefen, egal ob der PR main oder
+      # gh-pages beruert: die publizierten Inhalte sind die Abnahmebasis.
+      - name: Fetch Publish-Tree (gh-pages)
+        run: |
+          git fetch origin gh-pages --depth 1
+          rm -rf publish && mkdir publish
+          git archive origin/gh-pages | tar -x -C publish
+
+      - name: Publish-QA (P1–P4)
+        run: python3 .github/scripts/publish-qa.py publish
+        # Skript liegt auf der PR-Head (main-oder-gh-pages-Seite);
+        # der zu pruefende Baum ist immer der aktuelle gh-pages-Stand.
+
+      - name: Publish-QA auf HEAD (Ergaenzung, wenn nicht identisch)
+        if: github.ref_name != 'gh-pages'
+        run: python3 .github/scripts/publish-qa.py .
