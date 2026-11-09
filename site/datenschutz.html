@@ -27,7 +27,7 @@
   .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
   h1{margin:0;font-size:clamp(34px,4.5vw,56px);line-height:1.05;letter-spacing:-.05em;font-weight:750}
   h2{margin:46px 0 14px;font-size:15px;font-weight:750}
-  p,li{color:#bdbdbd;font-size:15px;line-height:1.65;max-width:640px;text-wrap:pretty}
+  p,li{color:#c4c4c4;font-size:15px;line-height:1.65;max-width:640px;text-wrap:pretty}
   p{margin:0}
   ul{margin:0;padding-left:18px}
   li{margin:6px 0}
@@ -37,7 +37,7 @@
   .details dt{color:var(--ink);font-size:13px;font-weight:700;line-height:1.5}
   .details dd{margin:0}
   .placeholder{border:1px dashed #ffffff40;background:#ffffff08;padding:10px 13px}
-  .placeholder .tag{display:block;font:10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#8a8a8a;margin-bottom:6px}
+  .placeholder .tag{display:block;font:10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#9a9a9a;margin-bottom:6px}
   footer{min-height:83px;border-top:1px solid var(--line)}
   .caption{display:flex;align-items:center;gap:10px;margin-inline:var(--edge);min-height:83px;color:var(--muted);font:10px var(--mono);letter-spacing:.15em}
   .caption svg{width:15px;color:var(--ink)}
@@ -47,6 +47,9 @@
     .brand{font-size:16px}.brand svg{width:26px;height:26px}
     nav{grid-column:1/-1;justify-content:flex-start;gap:24px}
     .details div{grid-template-columns:1fr;gap:3px}
+    .details dd{overflow-wrap:anywhere}
+    footer{align-items:center}
+    .caption{flex-wrap:wrap;row-gap:3px;letter-spacing:.05em}
   }
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
