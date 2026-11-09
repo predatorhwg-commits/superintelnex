@@ -53,6 +53,7 @@ jobs:
           fi
           git rm -rq --ignore-unmatch .
           cp -R .publish/. .
+          rm -rf .publish
           git add -A
           if git diff --staged --quiet; then
             echo "gh-pages bereits auf Main-Stand — nichts zu tun."
