@@ -14,7 +14,6 @@ build/
 SuperIntelNex-Profilbild/
 
 # Netlify-CLI: lokaler Site-State gehoert nicht ins Repo
-site/.netlify/
 
 # Token-Arbeitsordner: EINWEG-Test-Wallets (Keys) und lokale
 # Ergebnis-Protokolle koennen nicht committet werden.
