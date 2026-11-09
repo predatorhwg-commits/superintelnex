@@ -6,8 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#000000">
 <meta name="description" content="SuperIntelNex ist ein Community-Token-Projekt im Aufbau mit einer langfristigen Vision für KI, Superintelligenz und digitale Zahlungen.">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://superintelnex.com/">
 <meta property="og:title" content="SuperIntelNex — KI und digitale Zahlungen">
 <meta property="og:description" content="Community-Token-Projekt im Aufbau mit einer langfristigen Vision für KI, Superintelligenz und digitale Zahlungen.">
 <meta property="og:type" content="website">
@@ -303,10 +301,14 @@
   function size() {
     if (!ctx) return;
     const r = canvas.getBoundingClientRect();
+    if (!r.width || !r.height) return;
     width = r.width; height = r.height;
     const dpr = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
+    // Nur das Backing Store neu reservieren, wenn sich die Größe tatsächlich
+    // geändert hat — verhindert ResizeObserver-Feedback-Loops und teures
+    // (und sichtbares) Canvas-Clear bei no-op-Callbacks.
+    const bw = Math.round(width * dpr), bh = Math.round(height * dpr);
+    if (canvas.width !== bw || canvas.height !== bh) { canvas.width = bw; canvas.height = bh; }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const narrow = width <= 560;
     count = narrow ? 4500 : width < 850 ? 5800 : total;
@@ -315,14 +317,16 @@
     draw();
   }
   function selectShape(index, instant = false) {
+    // Szenenindex in den Formen-Indexraum mappen (modulo): zusätzliche Szenen
+    // (z. B. eine FAQ-Szene) dürfen die Partikel-Formen nicht sprengen.
+    const target = ((index % labels.length) + labels.length) % labels.length;
+    if (target === shape) { shapeAgeMs = 0; return; }
     shapeAgeMs = 0;
-    if (index !== shape) {
-      from = instant ? null : coords.slice();
-      morph = instant ? 1 : 0;
-      shape = index;
-    }
-    const number = String(index + 1).padStart(2, '0');
-    document.querySelector('#figure').textContent = 'FIG. ' + number + ' / ' + labels[index];
+    from = instant ? null : coords.slice();
+    morph = instant ? 1 : 0;
+    shape = target;
+    const number = String(target + 1).padStart(2, '0');
+    document.querySelector('#figure').textContent = 'FIG. ' + number + ' / ' + labels[target];
   }
   function animate(now) {
     frame = 0;
@@ -341,7 +345,8 @@
     pointer.strength += (targetStrength - pointer.strength) * (1 - Math.exp(-dt * 12));
     if (pointer.strength < .001) pointer.strength = 0;
     draw();
-    if (running && !document.hidden) frame = requestAnimationFrame(animate);
+    // ctx-Check im Loop: wenn der 2D-Kontext fehlt, läuft die Animation nicht endlos leer.
+    if (running && ctx && !document.hidden) frame = requestAnimationFrame(animate);
   }
   function syncMotion() {
     motion.setAttribute('aria-pressed', String(running));
@@ -349,7 +354,7 @@
     if (frame) cancelAnimationFrame(frame);
     frame = 0; last = null;
     if (running && ctx && !document.hidden) frame = requestAnimationFrame(animate);
-    else if (!running) { morph = 1; pointer.strength = 0; draw(); }
+    else if (!running || !ctx) { morph = 1; pointer.strength = 0; draw(); }
   }
   function show(i, {writeHash = true, focus = null, initial = false} = {}) {
     if (!Number.isInteger(i) || i < 0 || i >= scenes.length) return;
@@ -366,6 +371,8 @@
     const number = String(i + 1).padStart(2, '0');
     document.querySelector('#current').textContent = number;
     document.title = TITLES[scenes[i].id] || 'SuperIntelNex';
+    // Screenreader-Ankündigung: #current steht in einem role="status"-Bereich —
+    // der Zähler-Wechsel wird daher automatisch polit-live gemeldet.
     if (writeHash && location.hash !== '#' + scenes[i].id) {
       try { history.pushState(null, '', '#' + scenes[i].id); }
       catch { location.hash = scenes[i].id; }
@@ -390,7 +397,12 @@
       event.preventDefault(); show(destination, {focus:event.target});
     }
   });
-  addEventListener('hashchange', () => show(sceneFromHash(), {writeHash:false}));
+  addEventListener('hashchange', () => {
+    // Race-Schutz: ein (verzögerter) hashchange darf nicht die Szene zurücksetzen,
+    // die der Nutzer in der Zwischenzeit manuell aufgerufen hat.
+    const i = sceneFromHash();
+    if (i !== active) show(i, {writeHash:false});
+  });
   motion.addEventListener('click', () => {running = !running; syncMotion();});
   preference.addEventListener('change', () => {running = !preference.matches; syncMotion();});
   document.addEventListener('visibilitychange', syncMotion);
