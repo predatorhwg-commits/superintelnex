@@ -227,7 +227,8 @@
   const shapeOrder = [
     'galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere',
     'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit',
-    'wormhole', 'eye', 'mobius', 'comet', 'crystal', 'butterfly'
+    'wormhole', 'eye', 'mobius', 'comet', 'crystal', 'butterfly',
+    'jellyfish', 'aurora', 'hourglass', 'binary', 'supernova'
   ];
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
   let shapeQueue = [];
@@ -493,9 +494,78 @@
         wingY + vein * wingWidth * (upper ? .34 : .32),
         Math.sin(b) * (.035 + .17 * wingWidth) * Math.sqrt(e)];
     }
+
+    // Jellyfish: radial ribs on the bell, inner mantle and staggered tentacles.
+    let jellyfish;
+    if (i % 10 < 6) {
+      const rim = i % 7 === 0;
+      const arch = rim ? 1.57 - .07 * c : Math.asin(Math.sqrt(c));
+      const rib = i % 4 === 0 ? (i % 29) * tau / 29 + (d - .5) * .06 : a;
+      const bellRadius = (.69 + (e - .5) * .045) * Math.sin(arch);
+      jellyfish = [Math.cos(rib) * bellRadius, -.24 - .53 * Math.cos(arch),
+        Math.sin(rib) * bellRadius * .71];
+    } else {
+      const lane = i % 11 / 10 - .5;
+      const length = .61 + .54 * (1 - 1.6 * Math.abs(lane)) + .09 * Math.sin(lane * 18);
+      jellyfish = [lane * (1.19 - .09 * c) + Math.sin(b) * .016,
+        -.22 + c * length, (d - .5) * .09 + .13 * Math.cos(lane * tau)];
+    }
+
+    // Aurora: three folded curtains with luminous edges and vertical striations.
+    const curtain = i % 3;
+    const pleat = i % 5 < 2 ? (Math.floor(c * 88) + .22 * e) / 88 : c;
+    const curtainX = (pleat - .5) * 2.28;
+    const curtainHeight = i % 9 < 3 ? .12 * d : .79 * d ** 1.7;
+    const aurora = [curtainX, .24 + curtain * .16 + .20 * Math.sin(curtainX * 3 + curtain)
+      - curtainHeight, .24 * (curtain - 1) + .26 * Math.sin(curtainX * 3.9 + curtain) + (e - .5) * .06];
+
+    // Hourglass: two glass chambers, circular lips, piles and the falling stream.
+    const glassLane = i % 10;
+    let hourglass;
+    if (glassLane < 6) {
+      const glassY = glassLane === 0 ? (i % 20 === 0 ? -.88 : .88) + (d - .5) * .023 : (2 * c - 1) * .88;
+      const glassRadius = .087 + .54 * Math.sin(Math.abs(glassY) / .88 * Math.PI / 2) ** 1.7;
+      hourglass = [Math.cos(a) * glassRadius, glassY, Math.sin(a) * glassRadius * .66];
+    } else if (glassLane < 9) {
+      const sandRadius = .52 * Math.sqrt(c);
+      hourglass = [Math.cos(a) * sandRadius, 0, Math.sin(a) * sandRadius * .66];
+    } else {
+      hourglass = [(e - .5) * .048, c, (d - .5) * .046];
+    }
+
+    // Binary system: unequal stellar cores, a bridge and diffuse outer arcs.
+    const binaryLane = i % 10;
+    let binary;
+    if (binaryLane < 5) {
+      const primary = binaryLane < 3;
+      const starRadius = (primary ? .28 : .21) * c ** .65;
+      binary = [(primary ? -.61 : .61) + Math.cos(a) * starRadius, Math.sin(a) * starRadius,
+        Math.sin(b) * starRadius * .82];
+    } else if (binaryLane < 8) {
+      const bridge = (c - .5) * 1.19;
+      binary = [bridge, .18 * Math.sin(bridge * 5.25) + (d - .5) * .11,
+        .15 * Math.cos(bridge * 4.5) + (e - .5) * .10];
+    } else {
+      const orbitRadius = .88 + .27 * d;
+      binary = [Math.cos(a) * orbitRadius, Math.sin(a) * orbitRadius * .47,
+        Math.sin(a) * orbitRadius * .53 + (e - .5) * .075];
+    }
+
+    // Supernova: a stellar core, braided shock fronts and faint radial ejecta.
+    const burstLane = i % 12;
+    const rayAngle = (i % 73) * tau / 73 + (d - .5) * .12;
+    const burstAngle = burstLane < 7 ? a : rayAngle;
+    const burstRadius = burstLane < 2 ? .19 * Math.sqrt(c)
+      : burstLane < 7 ? .56 + (burstLane - 2) * .105 + (d - .5) * .045 : .27 + .77 * c;
+    const corrugation = 1 + .08 * Math.sin(burstAngle * 11 + c * 6);
+    const supernova = [Math.cos(burstAngle) * burstRadius * corrugation,
+      Math.sin(burstAngle) * burstRadius * corrugation * .78,
+      Math.sin(b) * burstRadius * .35];
+
     return {
       shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, vortex, knot,
-        circuit, ekg, constellation, orbit, wormhole, eye, mobius, comet, crystal, butterfly],
+        circuit, ekg, constellation, orbit, wormhole, eye, mobius, comet, crystal, butterfly,
+        jellyfish, aurora, hourglass, binary, supernova],
       size:e, phase:b, scatter
     };
   });
@@ -563,6 +633,21 @@
     const turnSin = Math.sin(turnAngle), turnCos = Math.cos(turnAngle);
     const blink = 1 - .82 * Math.max(0, Math.cos(time * .78)) ** 26;
     const flap = .34 * Math.sin(time * 1.42);
+    const jellyPulse = Math.sin(time * 1.75);
+    const jellyDrift = .055 * Math.sin(time * .9);
+    const binaryAngle = time * .69;
+    const binarySin = Math.sin(binaryAngle), binaryCos = Math.cos(binaryAngle);
+    const glassTime = time * .16;
+    const glassTurn = Math.floor(glassTime);
+    const glassCycle = glassTime % 1;
+    const glassDrain = Math.min(1, glassCycle / .76);
+    const glassFlip = clamp((glassCycle - .77) / .23, 0, 1);
+    const glassAngle = Math.PI * (glassTurn + glassFlip * glassFlip * (3 - 2 * glassFlip));
+    const glassSin = Math.sin(glassAngle), glassCos = Math.cos(glassAngle);
+    const glassDirection = glassTurn % 2 ? -1 : 1;
+    const shock = (time * .24) % 1;
+    const shockExpansion = .45 + .72 * shock ** .6;
+    const shockFade = Math.min(1, shock * 9, (1 - shock) * 8);
     const pullScaleSquared = clamp(width * .15, 90, 165) ** 2;
     for (let i = 0; i < skyCount; i++) {
       const star = sky[i];
@@ -573,6 +658,7 @@
       const p = points[i], v = p.shapes[shape], j = i * 3;
       let x = v[0], y = v[1], z = v[2];
       let detailLight = 0;
+      let detailSize = 1;
       if (mode === 'galaxy') {
         const angle = spin * .42 + .026 * Math.sin(time * .7 + p.phase);
         const u = x * Math.cos(angle) - y * Math.sin(angle);
@@ -668,6 +754,82 @@
         x *= Math.cos(flap);
         detailLight = i % 9 === 0 ? .23
           : (i % 3 === 0 ? .04 : -.16) + .09 * Math.sin(Math.abs(x) * 15 - time * 2);
+      } else if (mode === 'jellyfish') {
+        if (i % 10 < 6) {
+          x *= 1 + .075 * jellyPulse;
+          z *= 1 + .075 * jellyPulse;
+          y = (y + .24) * (1 - .10 * jellyPulse) - .24;
+          detailLight = (i % 7 === 0 ? .22 : -.05) + .10 * Math.sin(y * 17 + time * 1.75);
+        } else {
+          const length = y + .22;
+          const ripple = y * 8 - time * 1.7 + (i % 11) * .14;
+          x += length * (.17 * Math.sin(ripple) + .04 * Math.sin(ripple * 1.8));
+          z += length * .11 * Math.cos(ripple);
+          detailLight = (i % 13 === 0 ? .24 : -.02) + .13 * Math.sin(ripple * 2);
+          detailSize = .85;
+        }
+        y += jellyDrift;
+      } else if (mode === 'aurora') {
+        const ripple = x * 4 - time * 1.2 + (i % 3) * .9;
+        y += .10 * Math.sin(ripple);
+        z += .16 * Math.cos(ripple);
+        detailLight = (i % 9 < 3 ? .21 : -.14) + .19 * Math.sin(ripple + y * 6);
+      } else if (mode === 'hourglass') {
+        const lane = i % 10;
+        if (lane < 6) {
+          detailLight = (lane === 0 ? .20 : -.16) + .11 * Math.sin(y * 8 + z * 5);
+        } else if (lane < 9) {
+          const upper = i % 2 === 0;
+          const amount = upper ? 1 - glassDrain : glassDrain;
+          const pile = .34 * amount * (1 - Math.hypot(x, z) / .54) * (.35 + .65 * p.size);
+          y = (upper ? -1 : 1) * (.81 - pile) * glassDirection;
+          const spread = Math.sqrt(amount);
+          x *= spread;
+          z *= spread;
+          detailSize = Math.min(1, amount * 4);
+          detailLight = .12;
+        } else {
+          const grain = (v[1] + time * .70) % 1;
+          y = (grain * 1.15 - .55) * glassDirection;
+          x *= 1 + grain ** 3 * 2;
+          detailSize = Math.min(1, glassDrain * 8, (1 - glassDrain) * 8);
+          detailLight = .24;
+        }
+        y += z * .12;
+        const glassX = x * glassCos - y * glassSin;
+        y = x * glassSin + y * glassCos;
+        x = glassX;
+      } else if (mode === 'binary') {
+        const lane = i % 10;
+        if (lane < 5) {
+          detailLight = .23 + .12 * Math.sin(time * 2.4 + (lane < 3 ? 0 : Math.PI));
+        } else if (lane < 8) {
+          const pulse = x * 8 - time * 2.6;
+          y += .065 * Math.sin(pulse);
+          detailLight = -.07 + .23 * Math.sin(pulse);
+        } else {
+          detailLight = -.24 + .10 * Math.sin(p.phase - time * 1.8);
+        }
+        const orbitX = x * binaryCos - y * binarySin;
+        const orbitY = x * binarySin + y * binaryCos;
+        x = orbitX;
+        y = orbitY * .81 + z * .31;
+        z = z * .81 - orbitY * .31;
+      } else if (mode === 'supernova') {
+        const lane = i % 12;
+        if (lane < 2) {
+          const corePulse = 1.12 - .34 * shockFade;
+          x *= corePulse;
+          y *= corePulse;
+          detailLight = .31 - .16 * shockFade;
+        } else {
+          x *= shockExpansion;
+          y *= shockExpansion;
+          z *= shockExpansion;
+          detailSize = shockFade;
+          detailLight = (lane < 7 ? .22 : -.12) - .31 * shock
+            + .12 * Math.sin(p.phase * 3 - shock * 12);
+        }
       }
       const xx = x * yc - z * ys;
       z = x * ys + z * yc; x = xx;
@@ -682,7 +844,8 @@
       const featured = mode === 'star' || (mode === 'token' && v[2] >= .06);
       const light = .24 + .27 * z + p.size * .43 + .10 * Math.sin(time * 1.7 + p.phase)
         + (featured ? .18 : 0) - (p.scatter ? .25 : 0) + detailLight;
-      const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1) * (featured ? 1.15 : 1);
+      const radius = (.32 + p.size * .84) * persp * (width < 560 ? .84 : 1) * (featured ? 1.15 : 1)
+        * (1 + (detailSize - 1) * t);
       addStar(px, py, radius, light, p.phase, pullScaleSquared);
     }
     ctx.fillStyle = '#fff';
