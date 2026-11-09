@@ -9,6 +9,9 @@
 #   P3  Mobile-Overflow @390px (statische Obergrenzen: min-width/width > 390px)
 #   P4  SEO-Artefakte (#9): robots.txt, sitemap.xml, manifest (valid JSON),
 #       apple-touch-icon.png
+#   P5  Base64-Mailto-Leak: Base64-Literals werden dekodiert; obfuzierte oder
+#       erfundene E-Mail-Adressen (z. B. atob()+mailto: auf ein dekodiertes
+#       Ziel) blockieren das Gate (Scan-Luecke, Reject #2)
 # Blockierendes Gate fuer die CIO-Abnahme von Publish-Änderungen.
 name: Publish-QA
 
@@ -40,7 +43,7 @@ jobs:
           rm -rf publish && mkdir publish
           git archive origin/gh-pages | tar -x -C publish
 
-      - name: Publish-QA (P1–P4)
+      - name: Publish-QA (P1–P5)
         run: python3 .github/scripts/publish-qa.py publish
         # Skript liegt auf der PR-Head (main-oder-gh-pages-Seite);
         # der zu pruefende Baum ist immer der aktuelle gh-pages-Stand.
