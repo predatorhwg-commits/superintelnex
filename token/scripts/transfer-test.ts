@@ -39,8 +39,10 @@ const t1 = new Transaction().add(
 const sig1 = await sendTx(c, t1, [admin]);
 console.log("ATA-Recipient:", dstAta.toBase58(), "sig:", sig1);
 
-// 2) Checked-Transfer von 1.234 SIN — prueft im Programm die Decimals
-const amt = BigInt(cfg.token.decimals === 9 ? 1234000000 : 1234); // 1.234 in smallest units
+// 2) Checked-Transfer von 1.234 SIN — prueft im Programm die Decimals.
+//    1.234 = 1234/1000; in smallest units: 1234 * 10^decimals / 1000
+//    (100 Billion Gesamtmenge bei 5 Dezimalstellen => 123400, nicht 1234000000)
+const amt = 1234n * 10n ** BigInt(cfg.token.decimals) / 1000n;
 const t2 = new Transaction().add(
   token.createTransferCheckedInstruction(srcAta, mint, dstAta, admin.publicKey, amt, cfg.token.decimals, []),
 );
