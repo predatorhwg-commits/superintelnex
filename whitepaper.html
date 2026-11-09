@@ -9,37 +9,15 @@
 <meta property="og:image" content="https://superintelnex.com/og-image.png">
 <meta property="og:url" content="https://superintelnex.com/whitepaper.html">
 <title>SuperIntelNex (SIN) — Whitepaper</title>
-<link rel="icon" href="superintelnex-sn-anthrazit.svg" type="image/svg+xml">
+<link rel="icon" href="superintelnex-sn-weiss.svg" type="image/svg+xml">
 <script>
 /* theme first, before first paint */
 (function(){
-  var t='dark';
-  try{ t = localStorage.getItem('sni-theme') || 'dark'; }catch(e){}
-  document.documentElement.setAttribute('data-theme', t==='dark' ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', 'dark');
 })();
 </script>
 <style>
   :root{
-    --bg:#FFFFFF;
-    --card:#FFFFFF;
-    --ink:#111111;
-    --body:#3D3D3D;
-    --muted:#757575;
-    --faint:#767676;
-    --line:#909090;
-    --code:#F5F5F2;
-    --topbar-bg:rgba(255,255,255,.9);
-    /* allocation chart (monochrome, dark-contrast-safe) */
-    --d1:#111111;
-    --d2:#8A8A8A;
-    --d3:#C9C9C9;
-    --d4:#E4E4E4;
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Charter,"STIX Two Text",Georgia,serif;
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-    --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
-    color-scheme:light;
-  }
-  html[data-theme="dark"]{
     --bg:#0A0A0A;
     --card:#0A0A0A;
     --ink:#F5F5F5;
@@ -49,10 +27,14 @@
     --line:#686868;
     --code:#161616;
     --topbar-bg:rgba(10,10,10,.9);
+    /* allocation chart (monochrome, dark-contrast-safe) */
     --d1:#F5F5F5;
     --d2:#9A9A9A;
     --d3:#4F4F4F;
     --d4:#2A2A2A;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Charter,"STIX Two Text",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
     color-scheme:dark;
   }
   *{box-sizing:border-box}
@@ -66,9 +48,8 @@
   .topbar{position:sticky;top:0;z-index:20;background:var(--topbar-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .topbar .wrap{display:flex;align-items:center;gap:14px;min-height:60px}
   .mark{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
-  .mark img{width:24px;height:24px}
-  html[data-theme="dark"] .mark img{filter:invert(1)}
-  .mark b{font-family:var(--serif);font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .mark img{width:40px;height:40px;flex:none;border-radius:9px;display:block}
+  .mark b{font-family:var(--serif);font-size:18px;font-weight:600;letter-spacing:-.01em}
   .mark small{font-size:9.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.14em}
   .topbar .spacer{flex:1}
 
@@ -86,8 +67,6 @@
   .top:hover{border-color:var(--ink)}
   section{scroll-margin-top:118px}
   .badge{font:10px var(--mono);letter-spacing:.14em;border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:5px 12px;white-space:nowrap}
-  .theme{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-  .theme:hover{border-color:var(--ink)}
   .lang{display:flex;gap:4px}
   .lang button{border:0;background:transparent;color:var(--faint);padding:5px 8px;font:600 11px var(--mono);letter-spacing:.08em;cursor:pointer;text-decoration:none}
   .lang button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
@@ -197,7 +176,7 @@
   .foot a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
   .foot a:hover{border-color:var(--ink)}
   @media print{
-    .topbar,.toc,.chapbar,.coinbox,.theme,.lang,.top{display:none}
+    .topbar,.toc,.chapbar,.coinbox,.lang,.top{display:none}
     body{background:#fff;font-size:12px}
     section{padding:26px 0}
     .card,.fig,.note,.tblwrap{break-inside:avoid}
@@ -210,12 +189,11 @@
 <nav class="topbar" aria-label="Whitepaper navigation">
   <div class="wrap">
     <a class="mark" href="index.html">
-      <img src="superintelnex-sn-anthrazit.svg" alt="" width="24" height="24">
+      <img src="superintelnex-sn-weiss.svg" alt="" width="40" height="40">
       <span><b>SuperIntelNex</b> <small>WHITEPAPER</small></span>
     </a>
     <span class="spacer"></span>
     <span class="badge">DRAFT · V1.1</span>
-    <button type="button" class="theme" id="themeBtn" aria-label="Toggle dark mode / Dark-Modus umschalten"><span id="themeIcon">☾</span></button>
     <div class="lang" role="group" aria-label="Language / Sprache">
       <button type="button" data-lang="en" aria-pressed="true">EN</button>
       <button type="button" data-lang="de" aria-pressed="false">DE</button>
@@ -813,27 +791,6 @@
 })();
 </script>
 
-<!-- theme toggle -->
-<script>
-(() => {
-  'use strict';
-  const btn = document.getElementById('themeBtn');
-  const icon = document.getElementById('themeIcon');
-  const root = document.documentElement;
-  function apply(){
-    const dark = root.getAttribute('data-theme') === 'dark';
-    icon.textContent = dark ? '☀' : '☾';
-    try{ localStorage.setItem('sni-theme', dark ? 'dark' : 'light'); }catch(e){}
-    window.dispatchEvent(new CustomEvent('sni-theme-change', {detail:{dark}}));
-  }
-  btn.addEventListener('click', () => {
-    root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    apply();
-  });
-  apply();
-})();
-</script>
-
 <!-- scroll spy + back to top -->
 <script>
 (() => {
@@ -1023,7 +980,6 @@
     backMat.color.set(dark ? 0xF2F2F2 : 0x141414);
   }
   applyTheme(document.documentElement.getAttribute('data-theme') === 'dark');
-  window.addEventListener('sni-theme-change', function(e){ applyTheme(e.detail.dark); });
 
   function resize(){
     const w = canvas.clientWidth || 600;
