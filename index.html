@@ -33,7 +33,7 @@
   button,a{-webkit-tap-highlight-color:transparent}
   button{font:inherit;color:inherit;cursor:pointer}
   button:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
-  .site{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;isolation:isolate;position:relative;overflow:hidden}
+  .site{min-height:100svh;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto;isolation:isolate;position:relative;overflow:hidden}
   header,footer{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-inline:var(--edge);position:relative;z-index:2}
   header{height:82px;border-bottom:1px solid var(--line)}
   .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:750;font-size:18px;letter-spacing:-.025em;white-space:nowrap}

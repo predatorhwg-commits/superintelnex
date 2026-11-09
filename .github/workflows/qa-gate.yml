@@ -1,0 +1,79 @@
+# QA-Gate (Issue #10): CI-Pruefung des Publish-Zweigs.
+# Laeuft auf Push (main + gh-pages) und PR (nach main):
+#   - tote Links (relativ), Kontrast-WCAG-AA (statisch), mobile-Overflow @390px
+#   - JS-Ausnahmen (Chromium-Playwright, kein Secret, kein Wallet)
+# Ergebnis: Check-Run (dieser Run) + upsert Summary-Comment auf Issue #10
+# (Marker "qa-gate"), wie das CIO-Gate auf #5 — ein Kanal, kein Spam.
+name: QA-Gate
+
+on:
+  push:
+    branches: [main, gh-pages]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup (Python + Chromium)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: QA-Gate (S3: Mobile-Overflow + JS, S2: Kontrast, S1: Tote Links)
+        id: qa
+        run: |
+          set +e
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+          python3 agenten/checks/qa-gate.py . > qa-gate-report.md 2>&1
+          CODE=$?
+          set -e
+          echo "exit=$CODE" >> "$GITHUB_OUTPUT"
+          cat qa-gate-report.md
+          exit 0   # Verdict kommt unten — Summary-Comment darf auch bei ROT posten
+
+      - name: Summary-Comment auf #10 (upsert, Marker qa-gate)
+        if: github.event_name == 'push'
+        env:
+          QA_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          REPORT=qa-gate-report.md
+          head -c 8000 "$REPORT" > qa-gate-report.cap.md
+          {
+            echo "<!-- qa-gate -->"
+            echo "## QA-Gate — letzter Lauf $(date -u +'%Y-%m-%d %H:%M UTC') (Zweig: ${GITHUB_REF#refs/heads/}, Run: ${{ github.run_number }})"
+            echo ""
+            cat qa-gate-report.cap.md
+            echo ""
+            echo "_Koordinator: Summary wird bei jedem Push-Lauf aktualisiert (upsert). Abnahme: Label 'cio:review' auf #10._"
+          } > qa-gate-comment.md
+          API="https://api.github.com/repos/${{ github.repository }}/issues"
+          LAST_ID=$(curl -sf -H "Authorization: Bearer $QA_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "$API/10/comments?per_page=50" \
+            | jq -r '[.[] | select(.body | contains("<!-- qa-gate -->"))] | last | .id // empty')
+          BODY_JSON=$(jq -n --rawfile b qa-gate-comment.md '{body: $b}')
+          if [ -n "$LAST_ID" ]; then
+            curl -sf -X PATCH -H "Authorization: Bearer $QA_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -d "$BODY_JSON" "$API/comments/$LAST_ID" >/dev/null && echo "QA-Comment aktualisiert (#$LAST_ID)"
+          else
+            curl -sf -X POST -H "Authorization: Bearer $QA_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -d "$BODY_JSON" "$API/10/comments" >/dev/null && echo "QA-Comment angelegt"
+          fi
+
+      - name: Gate-Verdikt (blockierend)
+        if: steps.qa.outputs.exit != '0'
+        run: |
+          echo "QA-Gate ROTE — Gate NICHT GRUEN. Fix: obige ROTE-Liste (dead link / Kontrast / Overflow / JS)."
+          exit 1
