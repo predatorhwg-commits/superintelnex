@@ -1,10 +1,12 @@
 # Recht — Offene Angaben für den Betreiber (Lieferliste)
 
-**Agent:** Recht & Compliance · **Datum:** 2026-11-09 · **Status:** offen — die folgenden Angaben fehlen.
+**Agent:** Recht & Compliance · **Stand:** 2026-11-09 · **Status:** offen — die folgenden Angaben fehlen.
 Bis dahin sind sie in `site/impressum.html` und `site/datenschutz.html` als sichtbar markierte
 `PLATZHALTER — wird ergänzt`-Boxen enthalten. **Keine Muster- oder Beispieldaten verwenden.**
 
-Vorrang-Kriterium: Pflichtangaben (§ 5 TMG / § 18 RStV) vor „schön-oder-besser“-Angaben.
+Vorrang-Kriterium: Pflichtangaben (§ 5 DDG / § 18 MStV) vor „schön-oder-besser“-Angaben.
+Gesetzeslage (Stand November 2026): § 5 TMG wurde durch § 5 DDG (Digitale-Dienste-Gesetz, in Kraft seit 14.05.2024)
+ersetzt; § 18 RStV ist in § 18 MStV (Medienstaatsvertrag, in Kraft seit 01.01.2020) übergegangen.
 Innerhalb einer Stufe: P0 erst, dann P1, dann P2.
 
 ## P0 — Pflichtangaben (Impressum lückenhaft ohne diese)
@@ -28,7 +30,7 @@ Innerhalb einer Stufe: P0 erst, dann P1, dann P2.
 
 | # | Angabe | Für welche Pflichtangabe fehlt? | Begründung |
 |---|--------|---------------------------------|------------|
-| 8 | **Verantwortlicher für den Inhalt im Sinne des § 18 RStV** (falls redaktionelle Inhalte über den Community-Status hinaus geplant werden) | RStV-Pflichtangabe, falls Telemedien mit redaktionellen Inhalten vorliegen | Wenn die Website nur Community-Status (kein Rundfunk/keine redaktionellen Inhalte) hat: P2-8 entfällt. |
+| 8 | **Verantwortlicher für journalistisch-redaktionelle Inhalte i. S. d. § 18 Abs. 2 MStV** (falls redaktionelle Inhalte über den Community-Status hinaus geplant werden) | MStV-Pflichtangabe (Nachfolger des früheren § 55 Abs. 2 RStV), wenn journalistisch-redaktionelle Inhalte vorliegen | Wenn die Website nur Community-Status (keine redaktionellen Inhalte) hat: P2-8 entfällt. Hinweis: Ein Verweis auf „§ 55 Abs. 2 RStV“ ist nicht mehr zulässig (RStV seit 2020 außer Kraft) — Abmahnrisiko. |
 
 ## Offene Rechtsfragen (nicht betreibergespeist, aber relevant)
 
