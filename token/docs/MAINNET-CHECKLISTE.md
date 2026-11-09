@@ -11,8 +11,8 @@ Launch". Keine Einzelpost ist vorab erledigt; alles hier ist
 - [ ] **Gesamtmenge** final festlegen (Vorschlag: 1.000.000.000,
       fest, keine weiteren Emissionen).
 - [ ] **Dezimalstellen** final festlegen (Vorschlag: 9).
-- [ ] **Verteilung** final festlegen (Vorschlag 55/20/15/10 —
-      community/founder/dev/liquidity), vor dem Mainnet-Mint.
+- [ ] **Verteilung** final festlegen (Bestätigung 09.11.2026: 81/10/5/4 —
+      community/liquidity/founder/marketing), vor dem Mainnet-Mint.
 - [ ] **Admin-Vollmachten**: beide entziehen oder Freeze behalten?
       (siehe `AUTHORITIES.md`).
 - [ ] **Metadaten-URI**: GitHub Pages (provisorisch) gegen

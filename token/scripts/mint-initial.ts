@@ -3,7 +3,7 @@
 // Netz: SIN_NETWORK (Standard: localnet) / SIN_RPC optional.
 // Erwartet token/result/MINT-ADDRESS.txt (erzeugt von create-mint.ts).
 //
-// ACHTUNG: Die Verteilung (community/founder/dev/liquidity) ist NOCH nicht
+// ACHTUNG: Die Verteilung (community/liquidity/founder/marketing) ist NOCH nicht
 // implementiert und darf erst nach Bestaetigung der Aufteilung erfolgen.
 // Dieses Skript mintet aktuell die GESAMTMENGE an eine EINWEG-Test-Wallet.
 // Es ist kein Distributions- oder Verkaufs-Skript.

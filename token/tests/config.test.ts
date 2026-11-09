@@ -26,7 +26,9 @@ Deno.test("config/token.json laesst sich laden und hat Pflichtfelder", () => {
 
 Deno.test("Verteilung (Planwert) addiert sich zu 100 %", () => {
   const cfg = loadConfig();
-  const sum = Object.values(cfg.token.distribution).reduce((a, b) => a + b, 0);
+  const sum = Object.values(cfg.token.distribution)
+    .filter((v): v is number => typeof v === "number")
+    .reduce((a, b) => a + b, 0);
   if (Math.abs(sum - 1) > 1e-9) throw new Error("Verteilung addiert sich nicht zu 1: " + sum);
 });
 
