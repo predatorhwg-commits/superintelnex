@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: QA-Gate (S3: Mobile-Overflow + JS, S2: Kontrast, S1: Tote Links)
+      - name: "QA-Gate (S3: Mobile-Overflow + JS, S2: Kontrast, S1: Tote Links)"
         id: qa
         run: |
           set +e
