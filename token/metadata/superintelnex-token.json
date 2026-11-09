@@ -1,0 +1,12 @@
+{
+  "name": "SuperIntelNex",
+  "symbol": "SIN",
+  "description": "Community-Prototyp auf Solana (Devnet/Localnet). Testtoken: KEINE Anlage, KEIN Verkauf, KEINE Kursprognose. Bestaetigte Parameter: SIN, 100.000.000.000.000 (100 Billion, 10^14) Gesamtmenge, 5 Nachkommastellen, feste Ausgabe ohne weitere Emissionen.",
+  "image": "https://raw.githubusercontent.com/predatorhwg-commits/superintelnex/feature/solana-devnet-token/token/assets/superintelnex-logo-512.png",
+  "file": "https://raw.githubusercontent.com/predatorhwg-commits/superintelnex/feature/solana-devnet-token/token/assets/superintelnex-logo-512.png",
+  "properties": {
+    "category": "token",
+    "tokenId": "@TOKEN-ADRESSE-WIRD-NACH-ERSTELLUNG-AUSGEGLEICHEN@",
+    "seller_fee_basis_points": 0
+  }
+}

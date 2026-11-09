@@ -13,5 +13,9 @@ build/
 # Bildordner aus der Codex-Ausgabe, nicht Teil der Website
 SuperIntelNex-Profilbild/
 
-# Lokaler Arbeitsordner (Token-Assets), nicht Teil der Website
-token/
+# Token-Arbeitsordner: EINWEG-Test-Wallets (Keys) und lokale
+# Ergebnis-Protokolle koennen nicht committet werden.
+# Der Rest von token/ (Skripte, Konfiguration, Doku, Metadaten)
+# ist Teil des Repositories.
+token/wallets/
+token/result/
