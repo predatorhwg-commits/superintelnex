@@ -33,6 +33,7 @@ Entscheidungen, Umfang der ersten Version). Die Aufgaben stehen als Issues in
 | Basis | Landingpage, Design, Responsive, Navigation | `index.html`, `css/style.css`, `js/main.js`, `assets/logo*.svg` | fertig, geprüft | `d415d0e` + `setup` |
 | Basis | Quellenpflege, Regeln | `AGENTS.md`, `docs/QUELLEN.md` | fertig | `setup` |
 | Basis | **Prüfwerkzeuge implementiert** | `tools/release-check.py`, `tools/verify-markup.py`, `tools/verify-content.py`, `tools/check-links.py`, `tools/sweep.py`, `tools/smoke-test.py`, `tools/a11y-audit.py`, `docs/WERKZEUGE.md` | fertig, 7/7 grün | `setup` |
+| Token-Dev | **SPL-Token SuperIntelNex (Devnet)**: Erzeugungs-Skripte, Metadaten, Tests, Doku | `token/**`, `.gitignore` | fertig, LOCALNET-TEST 4/4 grün; Mainnet/Devnet-Execution offen (Betreiber-Entscheidung: Parameter + SOL) | `ce1108d` + PR #13 |
 | Koordination | Projekt-Brief, Issuesatz, GitHub-API-Helfer | `docs/project-brief.md`, `docs/issues/`, `docs/pr/`, `tools/gh-api.py` | fertig, geprüft | `fe49882` + PR #2 |
 | Redaktion | Inhaltliche Qualität und Tonalität | `index.html` (Texte), `docs/TEXTE.md` | **offen** | — |
 | Design | Struktur, Lesbarkeit, Responsive | `index.html`, `css/style.css`, `docs/DESIGN.md` | **offen** | — |
