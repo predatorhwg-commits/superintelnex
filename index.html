@@ -224,7 +224,7 @@
   let language = 'en';
   const shapeIntervalMs = 7000;
   const shapeTransitionSeconds = 3.6;
-  const shapeOrder = ['galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere', 'phyllo'];
+  const shapeOrder = ['galaxy', 'star', 'dna', 'network', 'token', 'wave', 'nebula', 'sphere', 'phyllo', 'atom', 'vortex', 'knot', 'circuit', 'ekg', 'constellation', 'orbit'];
   let active = 0, running = !preference.matches, frame = 0, time = 0, last = null;
   let shape = 0, shapeAgeMs = 0;
   let width = 0, height = 0, cx = 0, cy = 0, scale = 0, count = 0, skyCount = 0;
@@ -244,6 +244,32 @@
   });
   // Phyllotaxis (sunflower seed spiral): every seed sits at the golden angle from the last.
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  // Constellation: 12 anchor stars, connected by faint traces.
+  const constNodes = [
+    [-1.08,.62],[-.52,.82],[.12,.70],[.64,.92],[1.05,.48],[.42,.08],
+    [-.06,.12],[-.66,-.12],[.86,-.38],[.02,-.58],[-.98,-.62],[.30,-.92]
+  ];
+  const constLinks = [
+    [0,1],[1,2],[1,6],[2,3],[2,5],[3,4],[4,8],[5,8],[5,9],[6,7],[6,9],[9,10],[9,11]
+  ];
+  // Atom: three tilted electron orbits + a dense core cluster.
+  const atomOrbits = [
+    [.96,.34,.55,1.35],  // [rx, ry, tilt, phase]
+    [.70,.55,-.85,2.3],
+    [.52,.86,.45,4.1]
+  ];
+  const aph0 = i => (i * .97) % tau;
+  // Torus knot (2,3) parameters.
+  const knotP = 2, knotQ = 3, knotRadius = .72;
+  // One ECG beat spans ekgPeriod units of x: P wave, Q dip, R spike, T wave.
+  const ekgPeriod = 1.3;
+  function ekgY(x) {
+    const p = ((x % ekgPeriod) + ekgPeriod) % ekgPeriod;
+    return .10 * Math.exp(-((p - .35) ** 2) / .008)
+         - .12 * Math.exp(-((p - .68) ** 2) / .004)
+         + .62 * Math.exp(-((p - .76) ** 2) / .0028)
+         + .16 * Math.exp(-((p - 1.02) ** 2) / .018);
+  }
   const networkNodes = [
     [-1.15,-.16,.16], [-.86,-.59,-.20], [-.59,.14,-.09], [-.93,.56,.19],
     [-.35,.64,-.04], [-.36,-.32,.33], [-.12,-.70,-.13], [.02,.05,.25],
@@ -346,7 +372,76 @@
       phylloRadius * Math.sin(phylloAngle),
       (e - .5) * .03 + .05 * Math.sin(b)
     ];
-    return {shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, phyllo], size:e, phase:b, scatter};
+    // Atom: three tilted electron orbits + a dense core cluster.
+    const atomSpec = atomOrbits[i % 3];
+    const atomCore = i % 16 === 0;
+    const atomAx = atomCore ? (.09 + .13 * Math.sqrt(c)) * Math.cos(a * 3 + aph0(i)) : atomSpec[0] * Math.cos(a) * .92;
+    const atomAy = atomCore ? (.09 + .13 * Math.sqrt(c)) * Math.sin(a * 3 + aph0(i)) : atomSpec[1] * Math.sin(a) * .92;
+    const atom = [
+      atomAx * Math.cos(atomSpec[3]) - atomAy * Math.sin(atomSpec[3]),
+      atomAx * Math.sin(atomSpec[3]) * .8 + atomAy * Math.cos(atomSpec[3]) * .8,
+      (e - .5) * .06
+    ];
+    // Vortex: steep funnel spiral, differential rotation per frame.
+    const vortexDepth = e;
+    const vortexRadius = .10 + 1.2 * Math.pow(vortexDepth, .85);
+    const vortexTheta = vortexDepth * 7.5 + (i % 3) * (tau / 3) + (d - .5) * .5;
+    const vortex = [
+      vortexRadius * Math.cos(vortexTheta),
+      .95 - vortexDepth * 1.9 + (d - .5) * .12,
+      vortexRadius * Math.sin(vortexTheta) * .5
+    ];
+    // Torus knot (2,3).
+    const knotT = (i / total) * tau + (d - .5) * .12;
+    const knotRim = knotRadius + .30 * Math.cos(3 * knotT);
+    const knot = [
+      knotRim * Math.cos(knotP * knotT) * .95 + Math.cos(b) * .045 * spread,
+      .30 * Math.sin(knotQ * knotT) + (e - .5) * .1,
+      knotRim * Math.sin(knotP * knotT) * .62
+    ];
+    // Circuit: Manhattan traces with brighter junctions.
+    const cLane = i % 8;
+    const cH = cLane < 4;
+    const cOffset = ((cLane % 4) - 1.5) * .62;
+    const cAlong = c * 2.6 - 1.3;
+    const cJunction = i % 16 === 0;
+    const circuit = cH
+      ? [cJunction ? cOffset : cAlong, cJunction ? cAlong : cOffset, cJunction ? .22 : (cLane - 2) * .045]
+      : [cJunction ? cOffset : cAlong, cJunction ? cAlong : cOffset, cJunction ? .22 : (cLane - 6) * .045];
+    // ECG: scrolling heart-signal trace.
+    const ekgX = (c - .5) * 2.6;
+    const ekg = [ekgX, ekgY(ekgX) + (d - .5) * .05 * spread, (e - .5) * .05];
+    // Constellation: bright anchor stars linked by faint traces.
+    const isConstNode = i % 14 === 0;
+    let constPos;
+    if (isConstNode) {
+      const cv = constNodes[(i / 14 | 0) % constNodes.length];
+      constPos = [cv[0] + Math.cos(b) * .012, cv[1] + Math.sin(b) * .012, .3];
+    } else {
+      const link = constLinks[i % constLinks.length];
+      const tA = constNodes[link[0]], tB = constNodes[link[1]];
+      constPos = [
+        tA[0] + (tB[0] - tA[0]) * c + Math.cos(b) * .014 * spread,
+        tA[1] + (tB[1] - tA[1]) * c + Math.sin(b) * .014 * spread,
+        .06
+      ];
+    }
+    const constellation = constPos;
+    // Orbit: small core planet with three tilted rings.
+    let orbitPos;
+    if (i % 5 < 2) {
+      const cr = .34 + .14 * d;
+      const cLat = 2 * c - 1;
+      const cEq = cr * Math.sqrt(1 - cLat * cLat);
+      orbitPos = [cEq * Math.cos(a), cr * cLat * .9, cEq * Math.sin(a) * .9];
+    } else {
+      const ringR = knotRadius + ((i - 1) % 3) * .22 + (d - .5) * .03;
+      const rr = ringR * Math.cos(a);
+      const rz = ringR * Math.sin(a);
+      orbitPos = [rr, rz * .44 + (e - .5) * .03, rz];
+    }
+    const orbit = orbitPos;
+    return {shapes:[galaxy, star, dna, network, token, wave, nebula, sphere, phyllo, atom, vortex, knot, circuit, ekg, constellation, orbit], size:e, phase:b, scatter};
   });
   const sky = Array.from({length:1350}, () => {
     const x = random(), y = random(), brightness = random();
@@ -449,6 +544,47 @@
         const u = x * Math.cos(angle) - y * Math.sin(angle);
         const w = x * Math.sin(angle) + y * Math.cos(angle);
         x = u * breathe; y = w * breathe;
+      } else if (mode === 'atom') {
+        // orbits slowly precess while electrons drift along the rings
+        const precess = time * .22;
+        const u = x * Math.cos(precess) - z * Math.sin(precess);
+        z = x * Math.sin(precess) + z * Math.cos(precess);
+        x = u;
+        const drift = .06 * Math.sin(time * 1.4 + p.phase * 3);
+        x *= 1 + drift; y *= 1 + drift;
+      } else if (mode === 'vortex') {
+        // differential rotation: deep particles spin faster (funnel shear)
+        const nx = x * cz + z * sz;
+        z = -x * sz + z * cz;
+        x = nx;
+      } else if (mode === 'knot') {
+        // slow tumble around x and z
+        const t1 = time * .3;
+        const u = x * Math.cos(t1) - z * Math.sin(t1);
+        z = x * Math.sin(t1) + z * Math.cos(t1); x = u;
+        const t2 = time * .19;
+        const v = x * Math.cos(t2) - y * Math.sin(t2);
+        y = x * Math.sin(t2) + y * Math.cos(t2); x = v;
+      } else if (mode === 'circuit') {
+        // light pulse travels along the traces
+        const pulse = ((time * .55 + p.phase * .16) % 1) * 2.6 - 1.3;
+        const boost = Math.exp(-((x - pulse) ** 2) / .05) * .30;
+        z += boost * .35;
+        const v2 = y + boost * .12; y = v2;
+      } else if (mode === 'ekg') {
+        x -= time * .42 % 2.6;
+        x = ((x + 1.3) % 2.6 + 2.6) % 2.6 - 1.3;
+      } else if (mode === 'constellation') {
+        // anchor stars twinkle gently, traces shimmer
+        x *= 1 + .012 * Math.sin(p.phase + time * .4);
+        y *= 1 + .012 * Math.cos(p.phase * 1.3 + time * .4);
+      } else if (mode === 'orbit') {
+        // planet spin + rings precess
+        const u2 = x * Math.cos(time * .25) - z * Math.sin(time * .25);
+        z = x * Math.sin(time * .25) + z * Math.cos(time * .25);
+        x = u2;
+        const wobble = .10 * Math.sin(time * .4);
+        y += z * wobble * .3;
       }
       const xx = x * yc - z * ys;
       z = x * ys + z * yc; x = xx;
@@ -521,7 +657,11 @@
     shapeAgeMs += elapsedMs;
     morph = Math.min(1, morph + dt / shapeTransitionSeconds);
     if (shapeAgeMs >= shapeIntervalMs) {
-      selectShape((shape + 1) % shapeOrder.length);
+      // Random next shape, never the same one twice in a row.
+      const length = shapeOrder.length;
+      let candidate = Math.floor(Math.random() * (length - 1));
+      if (candidate >= shape) candidate++;
+      selectShape(candidate);
     }
     const follow = 1 - Math.exp(-dt * 20);
     pointer.x += (pointer.targetX - pointer.x) * follow;
