@@ -23,11 +23,14 @@ und keine Anlageempfehlung.
 | `scripts/transfer-test.ts` | ATA anlegen + Checked-Transfer 1.234 an Test-Wallet |
 | `scripts/revoke-authorities.ts` | Mint-/Freeze-Vollmacht entziehen (einweg) + Admin-Wallet sperren |
 | `scripts/verify.ts` | Decimals, Supply, Vollmachten, On-Chain-Metadaten gegen Konfig pruefen |
+| `scripts/devnet-prefund.ts` | Devnet-Vorbereitung OHNE Transaktion: zeigt einweg-Admin-Pubkey + Test-SOL-Saldo, exakte Laufbefehle (nur Leseabfrage, kein Signieren) |
 | `scripts/prepare-for-review.ts` | Lokaler Pruefdurchlauf (Burn/Freeze/Thaw/Transfer) fuer Wallet-Inspektion |
 | `tests/config.test.ts` | Offline: Konfiguration ist gueltig und konsistent |
 | `tests/integration.test.ts` | Optin: Kompletter Token-Lebenszyklus gegen lokalen Test-Validator |
+| `tests/authorities.test.ts` | Optin: Vollmachten-Entzug (Mint/Freeze) — danach werden Emission/Freeze On-Chain abgelehnt |
 | `metadata/` | Off-Chain-Metadaten-JSON + (siehe `docs/METADATEN-SPEICHERUNG.md`) |
 | `assets/` | Logo-PNGs (800 px, 512 px) fuer die Metadaten |
+| `docs/FRAGENLISTE.md` | Kurze Fragenliste mit begruendeten Vorschlaegen (Kuerzel, Menge, Dezimalstellen, Policy, Verteilung, Vollmachten, URI, Devnet-Start) — Vorschlaege, nicht Endentscheid |
 | `docs/` | Runbook, Vollmachts-Doku, Test-Doku, Mainnet-Checkliste |
 | `wallets/` | EINWEG-Test-Wallets (base58-JSON) — **gitignoriert**, niemals Tresor |
 | `result/` | Ergebnis-Protokoll (Mint-Adresse, Signaturen) — **gitignoriert** |
@@ -59,8 +62,8 @@ error: 0x5`). Details: `docs/DEVNET-RUNBOOK.md`.
 
 ```bash
 cd SuperIntelNex
-deno test --allow-read token/tests/config.test.ts          # offline
-deno test --allow-all  token/tests/integration.test.ts     # localnet
+deno test --allow-read --allow-env token/tests/config.test.ts   # offline
+deno test --allow-all  token/tests/                             # localnet (integration + authorities)
 deno run --allow-all token/scripts/create-mint.ts           # Mint + Metadaten
 deno run --allow-all token/scripts/mint-initial.ts         # Emission
 deno run --allow-all token/scripts/transfer-test.ts        # 1.234 transferieren
@@ -70,6 +73,9 @@ deno run --allow-all token/scripts/revoke-authorities.ts   # Vollmachten weg (ei
 
 Devnet: `SIN_NETWORK=devnet` + die Admin-Test-Wallet (`token/wallets/main.json`)
 vorab ueber einen Faucet mit Test-SOL finanzieren (siehe Runbook).
+Zur Pruefung der Finanzierung ohne jede Transaktion:
+`deno run --allow-read --allow-write --allow-net --allow-env
+token/scripts/devnet-prefund.ts` (zeigt Pubkey + Saldo + exakte Befehlsfolge).
 
 ## Test-Grundsaetze (aus dem Arbeitsauftrag)
 
